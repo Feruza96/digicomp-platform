@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin Panel — DigiComp</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f6ff;--bg2:#fff;--bg3:#eef0ff;
+  --surface:#fff;--border:#e4e6f5;--border2:#c8cbee;
+  --text:#1a1d3a;--text2:#5a5f8a;--text3:#9699bb;
+  --primary:#6c5ce7;--primary2:#a29bfe;
+  --primary-g:rgba(108,92,231,.1);--primary-b:rgba(108,92,231,.25);
+  --ok:#10b981;--ok-g:rgba(16,185,129,.1);--ok-b:rgba(16,185,129,.25);
+  --warn:#f59e0b;--danger:#ef4444;
+  --m1:#3b82f6;--m2:#10b981;--m3:#f97316;--m4:#8b5cf6;--m5:#f59e0b;
+  --shadow:0 2px 12px rgba(108,92,231,.1);
+  --shadow-lg:0 8px 32px rgba(108,92,231,.15);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.au{animation:fadeUp .4s ease both}
+
+/* NAV */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-brand{display:flex;align-items:center;gap:9px}
+.nav-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--primary2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(108,92,231,.3)}
+.nav-title{font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.nav-badge{padding:3px 10px;background:var(--danger);color:#fff;border-radius:100px;font-size:11px;font-weight:700}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nav-user{font-size:12px;color:var(--text3)}
+.btn-refresh{display:flex;align-items:center;gap:6px;padding:7px 16px;background:var(--primary-g);border:1.5px solid var(--primary-b);color:var(--primary);border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.btn-refresh:hover{background:rgba(108,92,231,.18)}
+.btn-export{display:flex;align-items:center;gap:6px;padding:7px 16px;background:var(--ok-g);border:1.5px solid var(--ok-b);color:var(--ok);border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.btn-export:hover{background:rgba(16,185,129,.18)}
+.btn-home{display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--bg3);border:1.5px solid var(--border2);color:var(--text2);border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:none}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 10px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;flex-shrink:0}
+.sb-sec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;padding:0 8px;margin:12px 0 5px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .2s;border:1.5px solid transparent;margin-bottom:2px}
+.sb-item:hover{background:var(--primary-g);color:var(--primary);border-color:var(--primary-b)}
+.sb-item.active{background:var(--primary);color:#fff;font-weight:700}
+.sb-badge{margin-left:auto;background:var(--danger);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px}
+.sb-badge.green{background:var(--ok)}
+
+.main{flex:1;padding:24px 28px;overflow-y:auto}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0}
+.sc1::before{background:var(--primary)}.sc2::before{background:var(--ok)}.sc3::before{background:var(--warn)}.sc4::before{background:var(--m1)}
+.stat-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.stat-val{font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;line-height:1}
+.sc1 .stat-val{color:var(--primary)}.sc2 .stat-val{color:var(--ok)}.sc3 .stat-val{color:var(--warn)}.sc4 .stat-val{color:var(--m1)}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* TABLE */
+.table-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1.5px solid var(--border)}
+.table-title{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.search-input{padding:7px 14px;background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;font-size:13px;color:var(--text);outline:none;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;width:220px}
+.search-input:focus{border-color:var(--primary-b);background:#fff;box-shadow:0 0 0 3px var(--primary-g)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg3)}
+th{padding:11px 16px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;text-align:left;border-bottom:1.5px solid var(--border)}
+td{padding:12px 16px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+.lv{padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;display:inline-block}
+.lv-a1{background:#fff8e1;color:#f59e0b;border:1px solid #fde68a}
+.lv-a2{background:#f0eeff;color:#6c5ce7;border:1px solid #c4b5fd}
+.lv-b1{background:#e8faf6;color:#10b981;border:1px solid #a7f3d0}
+.lv-b2{background:#eff6ff;color:#3b82f6;border:1px solid #bfdbfe}
+.score{font-family:'JetBrains Mono',monospace;font-weight:600}
+.s-high{color:var(--ok)}.s-mid{color:var(--warn)}.s-low{color:var(--danger)}
+.btn-view{padding:5px 12px;background:var(--primary-g);border:1.5px solid var(--primary-b);color:var(--primary);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.btn-view:hover{background:rgba(108,92,231,.18)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(6px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border-radius:20px;width:100%;max-width:820px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+.modal-head{padding:20px 24px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-title{font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:700;color:var(--text)}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--bg3);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text2);transition:all .2s}
+.modal-close:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1}
+.modal-tabs{display:flex;gap:3px;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:3px;margin-bottom:18px}
+.modal-tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;color:var(--text3);transition:all .2s}
+.modal-tab:hover{color:var(--text2)}
+.modal-tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 6px rgba(108,92,231,.12);border:1.5px solid var(--primary-b)}
+.modal-tc{display:none}
+.modal-tc.active{display:block}
+
+/* Amaliy ish */
+.task-item{background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.task-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.task-mod{padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700}
+.task-num{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.task-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+.task-javob{font-size:12px;color:var(--text2);line-height:1.7;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:10px;white-space:pre-wrap}
+.feedback-area{width:100%;padding:10px 13px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);resize:vertical;min-height:70px;outline:none;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.feedback-area:focus{border-color:var(--primary-b);box-shadow:0 0 0 3px var(--primary-g)}
+.feedback-area::placeholder{color:var(--text3)}
+.btn-feedback{margin-top:8px;padding:8px 18px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.btn-feedback:hover{opacity:.9;transform:translateY(-1px)}
+.feedback-saved{display:none;margin-top:6px;font-size:11px;color:var(--ok);font-weight:600}
+.existing-feedback{background:var(--ok-g);border:1.5px solid var(--ok-b);border-radius:8px;padding:10px 13px;margin-bottom:8px;font-size:12px;color:#065f46;line-height:1.6}
+.existing-feedback strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ok);margin-bottom:3px}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:48px;flex-direction:column;gap:12px;color:var(--text3)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite}
+
+/* Empty state */
+.empty{text-align:center;padding:48px;color:var(--text3)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-text{font-size:14px;font-weight:600}
+
+/* Page views */
+.page{display:none}
+.page.active{display:block;animation:fadeUp .3s ease}
+
+/* Modul progress bars */
+.mod-bars{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.mod-bar-item{display:flex;align-items:center;gap:10px}
+.mod-bar-label{font-size:11px;font-weight:600;color:var(--text2);width:80px;flex-shrink:0}
+.mod-bar-track{flex:1;height:6px;background:var(--border);border-radius:100px;overflow:hidden}
+.mod-bar-fill{height:100%;border-radius:100px;transition:width 1s ease}
+.mod-bar-pct{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text3);width:36px;text-align:right}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--primary);color:#fff;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;transform:translateY(60px);transition:transform .3s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow-lg)}
+.toast.show{transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">🛡</div>
+    <span class="nav-title">DigiComp Admin</span>
+    <span class="nav-badge">ADMIN</span>
+  </div>
+  <div class="nav-right">
+    <a href="index.html" class="btn-home">← Platforma</a>
+    <button class="btn-refresh" onclick="loadAll()">⟳ Yangilash</button>
+    <button class="btn-export" onclick="exportCSV()">⬇ Excel</button>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-sec">Sahifalar</div>
+    <div class="sb-item active" onclick="showPage('dashboard')" id="si-dashboard">📊 Dashboard</div>
+    <div class="sb-item" onclick="showPage('talabalar')" id="si-talabalar">👥 Talabalar <span class="sb-badge" id="badge-talabalar">0</span></div>
+    <div class="sb-item" onclick="showPage('natijalar')" id="si-natijalar">📈 Natijalar <span class="sb-badge green" id="badge-natijalar">0</span></div>
+    <div class="sb-item" onclick="showPage('amaliy')" id="si-amaliy">📝 Amaliy ishlar <span class="sb-badge" id="badge-amaliy">0</span></div>
+    <div class="sb-sec">Modullar</div>
+    <div class="sb-item" onclick="filterByMod('M1')">🔍 M1 natijalari</div>
+    <div class="sb-item" onclick="filterByMod('M2')">💬 M2 natijalari</div>
+    <div class="sb-item" onclick="filterByMod('M3')">🎨 M3 natijalari</div>
+    <div class="sb-item" onclick="filterByMod('M4')">🛡️ M4 natijalari</div>
+    <div class="sb-item" onclick="filterByMod('M5')">💡 M5 natijalari</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="pg-dashboard">
+      <div style="margin-bottom:20px"><h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800">📊 Boshqaruv paneli</h2><p style="font-size:13px;color:var(--text3);margin-top:4px">DigiComp Platform — Admin ko'rinishi</p></div>
+      <div class="stats-grid">
+        <div class="stat-card sc1"><div class="stat-lbl">Jami talabalar</div><div class="stat-val" id="st1">—</div><div class="stat-sub">Ro'yxatdan o'tgan</div></div>
+        <div class="stat-card sc2"><div class="stat-lbl">Quiz natijalari</div><div class="stat-val" id="st2">—</div><div class="stat-sub">Topshirilgan</div></div>
+        <div class="stat-card sc3"><div class="stat-lbl">Amaliy ishlar</div><div class="stat-val" id="st3">—</div><div class="stat-sub">Yuborilgan</div></div>
+        <div class="stat-card sc4"><div class="stat-lbl">O'rtacha ball</div><div class="stat-val" id="st4">—</div><div class="stat-sub">Kirish testi</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <!-- Reyting -->
+        <div class="table-card">
+          <div class="table-head"><span class="table-title">🏆 Top 10 reyting</span></div>
+          <div id="dashReyting"><div class="loading"><div class="spinner"></div><span>Yuklanmoqda...</span></div></div>
+        </div>
+        <!-- Modul statistika -->
+        <div class="table-card">
+          <div class="table-head"><span class="table-title">📚 Modul natijalari</span></div>
+          <div style="padding:16px 20px" id="dashMods"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TALABALAR -->
+    <div class="page" id="pg-talabalar">
+      <div class="table-card">
+        <div class="table-head">
+          <span class="table-title">👥 Talabalar ro'yxati</span>
+          <input type="text" class="search-input" placeholder="Ism yoki email qidirish..." oninput="filterTalabalar(this.value)">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Ism</th><th>Email</th><th>Daraja</th><th>Kirish testi</th><th>Modullar</th><th>Sana</th><th></th></tr></thead>
+            <tbody id="tBody"></tbody>
+          </table>
+        </div>
+        <div id="tEmpty" class="empty" style="display:none"><div class="empty-icon">👥</div><div class="empty-text">Talabalar topilmadi</div></div>
+      </div>
+    </div>
+
+    <!-- NATIJALAR -->
+    <div class="page" id="pg-natijalar">
+      <div class="table-card">
+        <div class="table-head">
+          <span class="table-title">📈 Quiz natijalari</span>
+          <input type="text" class="search-input" placeholder="Qidirish..." oninput="filterNatijalar(this.value)">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Ism</th><th>Modul</th><th>Daraja</th><th>Ball</th><th>To'g'ri</th><th>Sana</th></tr></thead>
+            <tbody id="nBody"></tbody>
+          </table>
+        </div>
+        <div id="nEmpty" class="empty" style="display:none"><div class="empty-icon">📈</div><div class="empty-text">Natijalar topilmadi</div></div>
+      </div>
+    </div>
+
+    <!-- AMALIY ISHLAR -->
+    <div class="page" id="pg-amaliy">
+      <div class="table-card">
+        <div class="table-head">
+          <span class="table-title">📝 Amaliy ishlar</span>
+          <input type="text" class="search-input" placeholder="Qidirish..." oninput="filterAmaliy(this.value)">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Ism</th><th>Modul</th><th>Daraja</th><th>Topshiriq</th><th>Holat</th><th>Sana</th><th></th></tr></thead>
+            <tbody id="aBody"></tbody>
+          </table>
+        </div>
+        <div id="aEmpty" class="empty" style="display:none"><div class="empty-icon">📝</div><div class="empty-text">Amaliy ishlar topilmadi</div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- TALABA MODAL -->
+<div class="modal-overlay" id="talabModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Talaba ma'lumotlari</div>
+      <div class="modal-close" onclick="closeModal('talabModal')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="mTab(this,'mt-info')">ℹ️ Ma'lumot</div>
+        <div class="modal-tab" onclick="mTab(this,'mt-natija')">📈 Natijalar</div>
+        <div class="modal-tab" onclick="mTab(this,'mt-amaliy')">📝 Amaliy</div>
+      </div>
+      <div class="modal-tc active" id="mt-info"></div>
+      <div class="modal-tc" id="mt-natija"></div>
+      <div class="modal-tc" id="mt-amaliy"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AMALIY ISH MODAL -->
+<div class="modal-overlay" id="amaliyModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="amaliyModalTitle">Amaliy ish</div>
+      <div class="modal-close" onclick="closeModal('amaliyModal')">✕</div>
+    </div>
+    <div class="modal-body" id="amaliyModalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+const MOD_COLORS={M1:'#3b82f6',M2:'#10b981',M3:'#f97316',M4:'#8b5cf6',M5:'#f59e0b'};
+const MOD_BG={M1:'#eff6ff',M2:'#f0fdf4',M3:'#fff7ed',M4:'#faf5ff',M5:'#fffbeb'};
+
+let allTalabalar=[],allNatijalar=[],allAmaliy=[];
+let currentFilter='';
+
+// ── DATA LOAD ──────────────────────────────────
+async function loadAll(){
+  showToast('⟳ Ma\'lumotlar yangilanmoqda...');
+  try{
+    const [t,n,a]=await Promise.all([
+      fetch(SCRIPT_URL+'?action=getTalabalar').then(r=>r.json()),
+      fetch(SCRIPT_URL+'?action=getNatijalar').then(r=>r.json()),
+      fetch(SCRIPT_URL+'?action=getAmaliy').then(r=>r.json())
+    ]);
+    if(t.status==='ok') allTalabalar=t.data.slice(1); // header o'tkazish
+    if(n.status==='ok') allNatijalar=n.data.slice(1);
+    if(a.status==='ok') allAmaliy=a.data.slice(1);
+    updateBadges();
+    renderDashboard();
+    renderTalabalar();
+    renderNatijalar();
+    renderAmaliy();
+    showToast('✅ Yangilandi!');
+  }catch(e){showToast('❌ Xatolik: '+e.message);}
+}
+
+async function apiPost(d){
+  const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});
+  return r.json();
+}
+
+function updateBadges(){
+  document.getElementById('badge-talabalar').textContent=allTalabalar.length;
+  document.getElementById('badge-natijalar').textContent=allNatijalar.length;
+  document.getElementById('badge-amaliy').textContent=allAmaliy.length;
+  document.getElementById('st1').textContent=allTalabalar.length||'0';
+  document.getElementById('st2').textContent=allNatijalar.length||'0';
+  document.getElementById('st3').textContent=allAmaliy.length||'0';
+  const balls=allTalabalar.map(r=>parseFloat(r[4])||0).filter(b=>b>0);
+  const avg=balls.length?Math.round(balls.reduce((a,b)=>a+b,0)/balls.length):0;
+  document.getElementById('st4').textContent=avg?avg+'%':'—';
+}
+
+// ── DASHBOARD ──────────────────────────────────
+function renderDashboard(){
+  // Reyting
+  const sorted=[...allTalabalar].sort((a,b)=>(parseFloat(b[4])||0)-(parseFloat(a[4])||0)).slice(0,10);
+  const medals=['🥇','🥈','🥉'];
+  const reyt=document.getElementById('dashReyting');
+  if(!sorted.length){reyt.innerHTML='<div class="empty"><div class="empty-icon">🏆</div><div class="empty-text">Hali natija yo\'q</div></div>';return;}
+  reyt.innerHTML='<table width="100%"><tbody>'+sorted.map((r,i)=>{
+    const ball=parseFloat(r[4])||0;
+    const sc=ball>=70?'s-high':ball>=50?'s-mid':'s-low';
+    return `<tr>
+      <td style="padding:10px 16px;font-size:13px;width:36px">${medals[i]||i+1}</td>
+      <td style="padding:10px 8px;font-size:13px;font-weight:600">${r[1]||'—'}</td>
+      <td style="padding:10px 8px"><span class="lv lv-${(r[5]||'a1').toLowerCase()}">${r[5]||'—'}</span></td>
+      <td style="padding:10px 16px;text-align:right"><span class="score ${sc}">${ball}%</span></td>
+    </tr>`;
+  }).join('')+'</tbody></table>';
+
+  // Modul statistika
+  const mods=['M1','M2','M3','M4','M5'];
+  const modBalls={};
+  allNatijalar.forEach(r=>{if(r[2]&&mods.includes(r[2])){if(!modBalls[r[2]])modBalls[r[2]]=[];modBalls[r[2]].push(parseFloat(r[4])||0);}});
+  const dashMods=document.getElementById('dashMods');
+  dashMods.innerHTML='<div class="mod-bars">'+mods.map(m=>{
+    const bs=modBalls[m]||[];
+    const avg=bs.length?Math.round(bs.reduce((a,b)=>a+b,0)/bs.length):0;
+    return `<div class="mod-bar-item">
+      <span class="mod-bar-label" style="color:${MOD_COLORS[m]};font-weight:700">${m}</span>
+      <div class="mod-bar-track"><div class="mod-bar-fill" style="width:${avg}%;background:${MOD_COLORS[m]}"></div></div>
+      <span class="mod-bar-pct">${avg}%</span>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ── TALABALAR ──────────────────────────────────
+function renderTalabalar(data){
+  const rows=data||allTalabalar;
+  const tbody=document.getElementById('tBody');
+  const empty=document.getElementById('tEmpty');
+  if(!rows.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=rows.map((r,i)=>{
+    const ball=parseFloat(r[4])||0;
+    const sc=ball>=70?'s-high':ball>=50?'s-mid':'s-low';
+    const lv=(r[5]||'').toLowerCase().replace(/\s.*/,'');
+    return `<tr>
+      <td><span style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${i+1}</span></td>
+      <td><span style="font-weight:600">${r[1]||'—'}</span></td>
+      <td><span style="font-size:12px;color:var(--text3)">${r[2]||'—'}</span></td>
+      <td><span class="lv lv-${lv||'a1'}">${r[5]||'—'}</span></td>
+      <td><span class="score ${sc}">${ball?ball+'%':'—'}</span></td>
+      <td><span style="font-size:12px">${r[6]||0}/5 modul</span></td>
+      <td><span style="font-size:11px;color:var(--text3)">${r[3]||'—'}</span></td>
+      <td><button class="btn-view" onclick="showTalaba(${JSON.stringify(r).replace(/"/g,'&quot;')})">Ko'rish</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTalabalar(q){
+  const f=allTalabalar.filter(r=>(r[1]||'').toLowerCase().includes(q.toLowerCase())||(r[2]||'').toLowerCase().includes(q.toLowerCase()));
+  renderTalabalar(f);
+}
+
+// ── NATIJALAR ──────────────────────────────────
+function renderNatijalar(data){
+  const rows=data||(currentFilter?allNatijalar.filter(r=>r[2]===currentFilter):allNatijalar);
+  const tbody=document.getElementById('nBody');
+  const empty=document.getElementById('nEmpty');
+  if(!rows.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=rows.map((r,i)=>{
+    const ball=parseFloat(r[4])||0;
+    const sc=ball>=70?'s-high':ball>=50?'s-mid':'s-low';
+    const mod=r[2]||'';
+    return `<tr>
+      <td><span style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${i+1}</span></td>
+      <td><span style="font-weight:600">${r[1]||'—'}</span></td>
+      <td><span style="padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;background:${MOD_BG[mod]||'#f5f5f5'};color:${MOD_COLORS[mod]||'#666'}">${mod||'—'}</span></td>
+      <td><span style="font-size:12px;color:var(--text2)">${r[3]||'—'}</span></td>
+      <td><span class="score ${sc}">${ball?ball+'%':'—'}</span></td>
+      <td><span style="font-size:12px">${r[5]||'—'}</span></td>
+      <td><span style="font-size:11px;color:var(--text3)">${(r[7]||'').substring(0,16)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterNatijalar(q){
+  const f=allNatijalar.filter(r=>(r[1]||'').toLowerCase().includes(q.toLowerCase())||(r[2]||'').toLowerCase().includes(q.toLowerCase()));
+  renderNatijalar(f);
+}
+
+// ── AMALIY ISHLAR ──────────────────────────────
+function renderAmaliy(data){
+  const rows=data||(currentFilter?allAmaliy.filter(r=>r[2]===currentFilter):allAmaliy);
+  const tbody=document.getElementById('aBody');
+  const empty=document.getElementById('aEmpty');
+  if(!rows.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=rows.map((r,i)=>{
+    const mod=r[2]||'';
+    const hasFb=r[8]&&r[8].toString().trim().length>0;
+    return `<tr>
+      <td><span style="font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace">${i+1}</span></td>
+      <td><span style="font-weight:600">${r[1]||'—'}</span></td>
+      <td><span style="padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;background:${MOD_BG[mod]||'#f5f5f5'};color:${MOD_COLORS[mod]||'#666'}">${mod||'—'}</span></td>
+      <td><span style="font-size:12px;color:var(--text2)">${r[3]||'—'}</span></td>
+      <td style="max-width:200px"><span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block">${r[5]||'—'}</span></td>
+      <td>${hasFb?'<span style="color:var(--ok);font-size:11px;font-weight:700">✅ Feedback</span>':'<span style="color:var(--warn);font-size:11px;font-weight:700">⏳ Kutilmoqda</span>'}</td>
+      <td><span style="font-size:11px;color:var(--text3)">${(r[7]||'').substring(0,16)}</span></td>
+      <td><button class="btn-view" onclick="showAmaliy(${i})">Ko'rish</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterAmaliy(q){
+  const f=allAmaliy.filter(r=>(r[1]||'').toLowerCase().includes(q.toLowerCase())||(r[5]||'').toLowerCase().includes(q.toLowerCase()));
+  renderAmaliy(f);
+}
+
+// ── TALABA MODAL ───────────────────────────────
+function showTalaba(r){
+  document.getElementById('modalTitle').textContent=r[1]||'Talaba';
+  const ball=parseFloat(r[4])||0;
+  const sc=ball>=70?'s-high':ball>=50?'s-mid':'s-low';
+  const lv=(r[5]||'').toLowerCase().replace(/\s.*/,'');
+
+  // Info tab
+  document.getElementById('mt-info').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Ism</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text)">${r[1]||'—'}</div>
+      </div>
+      <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Email</div>
+        <div style="font-size:13px;color:var(--text2)">${r[2]||'—'}</div>
+      </div>
+      <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Kirish testi</div>
+        <div class="score ${sc}" style="font-size:28px;font-family:'JetBrains Mono',monospace;font-weight:600">${ball?ball+'%':'—'}</div>
+      </div>
+      <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Umumiy daraja</div>
+        <div><span class="lv lv-${lv||'a1'}" style="font-size:14px;padding:4px 12px">${r[5]||'—'}</span></div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Ro'yxatdan o'tgan sana</div>
+      <div style="font-size:13px;color:var(--text2)">${r[3]||'—'}</div>
+    </div>`;
+
+  // Natijalar tab
+  const myNat=allNatijalar.filter(n=>n[0]===r[2]);
+  document.getElementById('mt-natija').innerHTML=myNat.length?
+    '<table width="100%"><tbody>'+myNat.map(n=>{const b=parseFloat(n[4])||0;const sc=b>=70?'s-high':b>=50?'s-mid':'s-low';return `<tr><td style="padding:9px 4px"><span style="padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${MOD_BG[n[2]]||'#f5f5f5'};color:${MOD_COLORS[n[2]]||'#666'}">${n[2]}</span></td><td style="padding:9px 8px;font-size:12px">${n[3]||''}</td><td style="padding:9px 8px"><span class="score ${sc}">${b}%</span></td><td style="padding:9px 4px;font-size:11px;color:var(--text3)">${n[5]||''}</td></tr>`;}).join('')+'</tbody></table>':
+    '<div class="empty"><div class="empty-icon">📈</div><div class="empty-text">Quiz natijalari yo\'q</div></div>';
+
+  // Amaliy tab
+  const myAml=allAmaliy.filter(a=>a[0]===r[2]);
+  document.getElementById('mt-amaliy').innerHTML=myAml.length?
+    myAml.map((a,idx)=>{const hasFb=a[8]&&a[8].toString().trim().length>0;return `<div class="task-item">
+      <div class="task-meta"><span class="task-mod" style="background:${MOD_BG[a[2]]||'#f5f5f5'};color:${MOD_COLORS[a[2]]||'#666'}">${a[2]} ${a[3]||''}</span><span class="task-num">№${a[4]||''}</span></div>
+      <div class="task-title">${a[5]||'—'}</div>
+      <div class="task-javob">${a[6]||'Javob yo\'q'}</div>
+      ${hasFb?`<div class="existing-feedback"><strong>✅ Feedback:</strong>${a[8]}</div>`:''}
+      <textarea class="feedback-area" id="fb_m_${idx}" placeholder="Feedback yozing...">${hasFb?a[8]:''}</textarea>
+      <button class="btn-feedback" onclick="saveFeedback('${a[0]}','${a[2]}','${a[3]}',${a[4]},'fb_m_${idx}','fs_m_${idx}')">💬 Feedback saqlash</button>
+      <div class="feedback-saved" id="fs_m_${idx}">✅ Saqlandi!</div>
+    </div>`;}).join(''):
+    '<div class="empty"><div class="empty-icon">📝</div><div class="empty-text">Amaliy ishlar yo\'q</div></div>';
+
+  document.getElementById('talabModal').classList.add('show');
+}
+
+// ── AMALIY ISH MODAL ───────────────────────────
+function showAmaliy(idx){
+  const rows=currentFilter?allAmaliy.filter(r=>r[2]===currentFilter):allAmaliy;
+  const a=rows[idx]||allAmaliy[idx];
+  if(!a)return;
+  document.getElementById('amaliyModalTitle').textContent=(a[1]||'Talaba')+' — Amaliy ish';
+  const hasFb=a[8]&&a[8].toString().trim().length>0;
+  document.getElementById('amaliyModalBody').innerHTML=`
+    <div class="task-meta" style="margin-bottom:14px">
+      <span class="task-mod" style="background:${MOD_BG[a[2]]||'#f5f5f5'};color:${MOD_COLORS[a[2]]||'#666'};padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">${a[2]} — ${a[3]||''}</span>
+      <span class="task-num">Topshiriq №${a[4]||''}</span>
+      <span style="font-size:12px;color:var(--text3)">${a[7]||''}</span>
+    </div>
+    <div class="task-title" style="font-size:15px;margin-bottom:12px">${a[5]||'—'}</div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Talaba javobi:</div>
+    <div class="task-javob">${a[6]||'Javob kiritilmagan'}</div>
+    ${hasFb?`<div class="existing-feedback"><strong>✅ Mavjud feedback (${a[9]||''}):</strong>${a[8]}</div>`:''}
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:14px">Feedback yozing:</div>
+    <textarea class="feedback-area" id="fb_a_0" placeholder="Bu yerga baholash va izoh yozing...">${hasFb?a[8]:''}</textarea>
+    <button class="btn-feedback" onclick="saveFeedback('${a[0]}','${a[2]}','${a[3]}',${a[4]},'fb_a_0','fs_a_0')">💬 Feedback saqlash</button>
+    <div class="feedback-saved" id="fs_a_0">✅ Saqlandi!</div>`;
+  document.getElementById('amaliyModal').classList.add('show');
+}
+
+// ── FEEDBACK SAQLASH ───────────────────────────
+async function saveFeedback(talabId,modul,daraja,taskNum,fbId,savedId){
+  const fb=document.getElementById(fbId)?.value?.trim();
+  if(!fb){showToast('⚠️ Feedback matni bo\'sh!');return;}
+  const btn=event.target;btn.disabled=true;btn.textContent='Saqlanmoqda...';
+  const res=await apiPost({action:'saveFeedback',talabId,modul,daraja,taskNum,feedback:fb});
+  btn.disabled=false;btn.textContent='💬 Feedback saqlash';
+  if(res.status==='ok'){
+    const saved=document.getElementById(savedId);
+    if(saved){saved.style.display='block';setTimeout(()=>saved.style.display='none',3000);}
+    showToast('✅ Feedback saqlandi!');
+    await loadAll();
+  } else {
+    showToast('❌ Xatolik: '+res.message);
+  }
+}
+
+// ── HELPERS ────────────────────────────────────
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('pg-'+p)?.classList.add('active');
+  document.getElementById('si-'+p)?.classList.add('active');
+  currentFilter='';
+  renderNatijalar();renderAmaliy();
+}
+
+function filterByMod(mod){
+  currentFilter=mod;
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.getElementById('pg-natijalar')?.classList.add('active');
+  renderNatijalar();
+  showToast('📊 '+mod+' natijalari ko\'rsatilmoqda');
+}
+
+function mTab(el,tc){
+  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.modal-tc').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(tc)?.classList.add('active');
+}
+
+function closeModal(id){document.getElementById(id)?.classList.remove('show');}
+
+function exportCSV(){
+  const header='Ism,Email,Daraja,Kirish testi %,Modullar,Sana';
+  const rows=allTalabalar.map(r=>`${r[1]||''},${r[2]||''},${r[5]||''},${r[4]||0},${r[6]||0},${r[3]||''}`);
+  const csv=[header,...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='DigiComp_Talabalar_'+new Date().toLocaleDateString('uz-UZ').replace(/\./g,'-')+'.csv';
+  a.click();
+  showToast('⬇ Excel fayl yuklab olindi!');
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+// Modal yopish — orqaga bosish
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');});
+});
+
+// INIT
+loadAll();
+setInterval(loadAll, 60000); // Har daqiqa avtomatik yangilash
+</script>
+</body>
+</html>

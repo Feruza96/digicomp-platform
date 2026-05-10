@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M2 — Kommunikatsiya va hamkorlik | DigiComp</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080c14;--bg2:#0d1220;--bg3:#111827;
+  --surface:#161e2e;--surface2:#1c2840;
+  --border:#ffffff0f;--border2:#ffffff18;
+  --text:#f0f4ff;--text2:#8899bb;--text3:#4a5a7a;
+  --mc:#2dd4a0;--mcg:rgba(45,212,160,.1);--mcb:rgba(45,212,160,.2);
+  --ok:#2dd4a0;--ok-g:rgba(45,212,160,.1);--ok-b:rgba(45,212,160,.2);
+  --warn:#fbbf24;--danger:#ff5757;--accent:#4f8bff;
+  --rad:10px;--rad-lg:16px;--rad-xl:22px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 20% 0%,rgba(45,212,160,.04),transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.topnav{position:sticky;top:0;z-index:200;background:rgba(8,12,20,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:54px}
+.tn-logo{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);font-family:'Fraunces',serif;cursor:pointer}
+.tn-logo span{width:28px;height:28px;background:linear-gradient(135deg,var(--mc),#059669);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.tn-sep{color:var(--text3);font-size:12px}
+.tn-title{font-size:12px;color:var(--text2)}
+.tn-prog{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3)}
+.tn-pb{width:100px;height:3px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.tn-pf{height:100%;background:linear-gradient(90deg,var(--mc),#6ee7b7);border-radius:100px;transition:width .5s}
+
+.layout{display:flex;min-height:calc(100vh - 54px);position:relative;z-index:1}
+.sb{width:256px;min-width:256px;background:var(--bg2);border-right:1px solid var(--border);padding:18px 10px;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+.sb-head{padding:0 8px;margin-bottom:16px}
+.sb-mod-icon{font-size:24px;margin-bottom:6px}
+.sb-mod-name{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.2}
+.sb-mod-en{font-size:10px;color:var(--text3)}
+.sb-sec{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:0 8px;margin:14px 0 6px}
+.sb-lv-wrap{margin-bottom:12px}
+.sb-lv-label{display:flex;align-items:center;gap:6px;padding:5px 8px;margin-bottom:3px}
+.lv-dot{width:6px;height:6px;border-radius:50%}
+.lv-dot.a1{background:#fbbf24}.lv-dot.a2{background:var(--accent)}.lv-dot.b1{background:var(--ok)}.lv-dot.b2{background:#a78bfa}
+.sb-lesson{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--text3);font-size:12px;transition:all .2s;border:1px solid transparent;margin-bottom:2px}
+.sb-lesson:hover:not(.locked){background:var(--surface);color:var(--text2);border-color:var(--border)}
+.sb-lesson.active{background:var(--mcg);color:var(--mc);border-color:var(--mcb)}
+.sb-lesson.done{color:var(--ok)}
+.sb-lesson.locked{opacity:.4;cursor:not-allowed}
+.sb-lesson .sl-ic{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.sb-lesson .sl-lbl{flex:1;line-height:1.3}
+.sb-lesson .sl-st{margin-left:auto;font-size:12px}
+.sb-bottom{margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
+.sb-cert-btn{width:100%;padding:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.sb-cert-btn:disabled{opacity:.3;cursor:not-allowed;background:var(--surface)}
+.sb-cert-btn:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(245,158,11,.3)}
+
+.main{flex:1;padding:28px 32px;max-width:800px}
+.news-panel{width:300px;min-width:300px;background:var(--bg2);border-left:1px solid var(--border);padding:18px 14px;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;flex-shrink:0}
+.np-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.np-live{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.news-item{padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.news-item:hover{border-color:var(--border2);transform:translateY(-1px)}
+.ni-source{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.ni-source span{padding:1px 6px;border-radius:3px;background:var(--mcg);color:var(--mc);border:1px solid var(--mcb)}
+.ni-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:5px}
+.ni-desc{font-size:11px;color:var(--text3);line-height:1.5;margin-bottom:6px}
+.ni-date{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.np-filter{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.npf{padding:4px 9px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text3);transition:all .2s}
+.npf.active{background:var(--mcg);color:var(--mc);border-color:var(--mcb)}
+.np-refresh{width:100%;padding:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px}
+
+.lh{margin-bottom:24px}
+.lh-level{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px}
+.lv-badge{padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace}
+.lv-a1{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.lv-a2{background:rgba(79,139,255,.12);color:#7eb8ff;border:1px solid rgba(79,139,255,.2)}
+.lv-b1{background:rgba(45,212,160,.12);color:#2dd4a0;border:1px solid rgba(45,212,160,.2)}
+.lv-b2{background:rgba(167,139,250,.12);color:#c4b5fd;border:1px solid rgba(167,139,250,.2)}
+.lh-icon{width:52px;height:52px;border-radius:13px;background:var(--mcg);border:1px solid var(--mcb);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:12px}
+.lh-title{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:var(--text);line-height:1.2;margin-bottom:6px}
+.lh-sub{font-size:13px;color:var(--text2);margin-bottom:10px}
+.lh-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--text3)}
+.lh-chip{display:flex;align-items:center;gap:4px;padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:5px}
+
+.tabs{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:22px}
+.tab{flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer;color:var(--text3);transition:all .2s}
+.tab:hover:not(.active){color:var(--text2)}
+.tab.active{background:var(--surface2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.tc{display:none}
+.tc.active{display:block;animation:fu .3s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:20px;margin-bottom:14px}
+.vcard{background:var(--bg);border:1px solid var(--border);border-radius:var(--rad-xl);overflow:hidden;margin-bottom:14px}
+.vthumb{aspect-ratio:16/9;background:linear-gradient(145deg,#071a0e,#0d3320);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.vthumb::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(45,212,160,.07),transparent)}
+.vthumb:hover .pbtn{transform:scale(1.1)}
+.pbtn{position:relative;z-index:1;width:64px;height:64px;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .25s}
+.vinfo{padding:16px 20px}
+.vt{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px}
+.vd{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.vmeta{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:var(--text3)}
+.vchip{padding:2px 8px;background:var(--surface);border:1px solid var(--border2);border-radius:4px}
+.vbtn{margin-top:12px;padding:8px 18px;background:var(--mcg);border:1px solid var(--mcb);color:var(--mc);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+.lt h4{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--text);margin:18px 0 9px}
+.lt h4:first-child{margin-top:0}
+.lt p{font-size:13px;color:var(--text2);line-height:1.85;margin-bottom:9px}
+.lt .note{background:rgba(45,212,160,.06);border-left:2px solid var(--mc);padding:11px 15px;border-radius:0 8px 8px 0;margin:13px 0;font-size:12px;color:#6ee7b7;line-height:1.6}
+.lt .note b{color:var(--mc);display:block;margin-bottom:3px}
+.lt .code{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:13px 15px;font-family:'DM Mono',monospace;font-size:12px;margin:13px 0;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+.term{background:rgba(45,212,160,.1);color:#6ee7b7;padding:1px 6px;border-radius:4px;font-weight:600;font-size:12px;border:1px solid rgba(45,212,160,.18)}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.ti{padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:9px}
+.ti-n{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.ti-d{font-size:11px;color:var(--text3);line-height:1.5}
+.ti-t{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;margin-top:4px}
+.tfree{background:rgba(45,212,160,.1);color:var(--ok)}
+.tedu{background:rgba(79,139,255,.1);color:#7eb8ff}
+.tpaid{background:rgba(251,191,36,.1);color:#fbbf24}
+
+.task{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rad-lg);padding:17px;margin-bottom:13px}
+.th2{display:flex;align-items:flex-start;gap:11px;margin-bottom:11px}
+.tnum{width:27px;height:27px;border-radius:6px;background:var(--mcg);border:1px solid var(--mcb);color:var(--mc);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace}
+.ttitle{font-size:13px;font-weight:700;color:var(--text)}
+.tdesc{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:11px}
+.tsteps{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:11px}
+.tsteps p{font-size:11px;color:var(--text3);margin-bottom:5px;padding-left:13px;position:relative;line-height:1.5}
+.tsteps p:last-child{margin-bottom:0}
+.tsteps p::before{content:'→';position:absolute;left:0;color:var(--mc)}
+textarea{width:100%;padding:10px 13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text);resize:vertical;min-height:85px;outline:none;transition:all .2s;line-height:1.6;font-family:'DM Sans',sans-serif}
+textarea:focus{border-color:var(--mc);box-shadow:0 0 0 3px rgba(45,212,160,.1)}
+textarea::placeholder{color:var(--text3)}
+.tbtn{margin-top:8px;padding:7px 16px;background:var(--mcg);border:1px solid var(--mcb);color:var(--mc);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.tfb{margin-top:7px;padding:8px 12px;border-radius:7px;font-size:11px;display:none;line-height:1.5}
+.fbok{background:var(--ok-g);color:var(--ok);border:1px solid var(--ok-b)}
+.fberr{background:rgba(255,87,87,.07);color:#ff8080;border:1px solid rgba(255,87,87,.18)}
+
+.qq{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rad-lg);padding:17px;margin-bottom:11px}
+.qnum{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;font-family:'DM Mono',monospace}
+.qtext{font-size:13px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:13px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:center;gap:9px;padding:10px 13px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .2s;background:var(--bg)}
+.opt:hover{border-color:var(--mcb);background:var(--mcg);color:var(--text)}
+.opt.sel{border-color:var(--mcb);background:var(--mcg);color:var(--mc);font-weight:600}
+.opt.ok{border-color:var(--ok-b);background:var(--ok-g);color:var(--ok)}
+.opt.bad{border-color:rgba(255,87,87,.2);background:rgba(255,87,87,.05);color:#ff8080}
+.optk{width:22px;height:22px;border-radius:5px;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace}
+.qres{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad-lg);padding:22px;text-align:center;margin-bottom:14px;display:none;position:relative;overflow:hidden}
+.qres::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(45,212,160,.06),transparent);pointer-events:none}
+.qrs{font-family:'DM Mono',monospace;font-size:52px;font-weight:700;line-height:1}
+.qrl{font-size:11px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace}
+.qrm{font-size:13px;color:var(--text2);margin-top:10px;line-height:1.6}
+.qfail{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:9px;padding:13px;text-align:center;margin-bottom:14px;display:none;font-size:12px;color:#fcd34d;line-height:1.6}
+.btn-submit{width:100%;padding:12px;background:linear-gradient(135deg,var(--mc),#059669);color:#fff;border:none;border-radius:var(--rad);font-size:13px;font-weight:700;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(45,212,160,.35)}
+.btn-next{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border:none;border-radius:var(--rad);font-size:13px;font-weight:700;cursor:pointer;transition:all .25s;margin-top:9px;display:none;font-family:'DM Sans',sans-serif}
+.btn-retry{width:100%;padding:11px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#fcd34d;border-radius:var(--rad);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:9px;display:none;font-family:'DM Sans',sans-serif}
+
+.navbtns{display:flex;justify-content:space-between;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.navbtn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:'DM Sans',sans-serif}
+.navbtn:hover{background:var(--surface2);color:var(--text)}
+.navbtn.pri{background:var(--mcg);border-color:var(--mcb);color:var(--mc)}
+.navbtn.pri:hover{background:rgba(45,212,160,.18)}
+
+.cert-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 16px;border-radius:9px;font-size:12px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.show{transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="tn-logo" onclick="window.location.href='index.html'">
+    <span>💬</span>DigiComp
+  </div>
+  <a href="index.html" style="display:flex;align-items:center;gap:6px;padding:6px 14px;background:rgba(79,139,255,.1);border:1px solid rgba(79,139,255,.2);color:#4f8bff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;font-family:'DM Sans',sans-serif">← Bosh sahifa</a>
+  <span class="tn-sep">/</span>
+  <span class="tn-title">M2 — Kommunikatsiya va hamkorlik</span>
+  <div class="tn-prog">
+    <span id="navPtxt">0/4</span>
+    <div class="tn-pb"><div class="tn-pf" id="navPbar" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sb">
+    <div class="sb-head">
+      <div class="sb-mod-icon">💬</div>
+      <div class="sb-mod-name">Kommunikatsiya va hamkorlik</div>
+      <div class="sb-mod-en">Communication & Collaboration · M2</div>
+    </div>
+    <div class="sb-sec">Darslar</div>
+    <div id="sbLessons"></div>
+    <div class="sb-bottom">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px;text-align:center" id="sbProgTxt">0/4 dars yakunlandi</div>
+      <div style="height:3px;background:rgba(255,255,255,.05);border-radius:100px;overflow:hidden;margin-bottom:12px">
+        <div id="sbProgBar" style="height:100%;background:linear-gradient(90deg,var(--mc),#6ee7b7);border-radius:100px;transition:width .5s;width:0%"></div>
+      </div>
+      <button class="sb-cert-btn" id="certBtn" disabled onclick="showCert()">🏆 Sertifikat olish</button>
+    </div>
+  </div>
+
+  <div class="main" id="mainContent"></div>
+
+  <div class="news-panel">
+    <div class="np-title"><span class="np-live"></span>Ta'lim yangiliklari</div>
+    <div class="np-filter">
+      <div class="npf active" onclick="filterNews('all',this)">Barchasi</div>
+      <div class="npf" onclick="filterNews('edtech',this)">EdTech</div>
+      <div class="npf" onclick="filterNews('ai',this)">AI</div>
+      <div class="npf" onclick="filterNews('digital',this)">Raqamli</div>
+    </div>
+    <div id="newsContainer"><div style="text-align:center;padding:30px;color:var(--text3);font-size:12px">⟳ Yuklanmoqda...</div></div>
+    <button class="np-refresh" onclick="loadNews()">⟳ Yangilash</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ═══════ DigiComp API ═══════
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
+async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
+async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
+async function syncAmaliy(u,mod,dar,taskNum,taskTitle,javob){if(!u)return;if(!javob||javob.trim().length<5)return;await apiPost({action:'saveAmaliy',talabId:u.email,name:u.name,modul:mod,daraja:dar,taskNum,taskTitle,javob});}
+// ════════════════════════════
+
+const MOD_ID='m2';
+const LEVELS=['A1','A2','B1','B2'];
+
+const LESSONS=[
+{
+  id:0,level:'A1',icon:'📧',
+  title:'Email va messenjerlar asoslari',
+  subtitle:'Professional email yozish, CC/BCC, messenjerlar etiketi',
+  dur:'30 daqiqa',taskCount:2,quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=O3Zj0sMysz0',
+    url2:'https://www.youtube.com/watch?v=P8sAHH4EGEM',
+    title:'Internetdan to\'g\'ri foydalanish — O\'zbekcha dars',
+    title2:'Professional Email Writing Tutorial (inglizcha)',
+    desc:'Internetdan to\'g\'ri foydalanish, raqamli muloqot va email yozish asoslariga oid o\'zbekcha qo\'llanma. Email etiketi, professional yozishuv qoidalari tushuntiriladi.',
+    dur:'~15 daqiqa',lang:"O'zbekcha",lang2:'Inglizcha (CC subtitle)'
+  },
+  text:`
+<h4>Raqamli kommunikatsiya — zamonaviy o'qituvchi uchun asosiy ko'nikma</h4>
+<p>Raqamli kommunikatsiya <span class="term">Digital Communication</span> — elektron vositalar orqali axborot almashish jarayoni. Bugungi o'qituvchi uchun bu nafaqat email yozish, balki turli platformalarda professional tarzda muloqot olib borish demak.</p>
+<p>Tadqiqotlar ko'rsatadiki (McKinsey, 2024), ishchi vaqtining 28% i email o'qish va yozishga sarflanadi. Shuning uchun email savodxonligi — vaqtni tejash va professional obro' qozonishning muhim omili.</p>
+
+<div class="note"><b>📌 Raqamli kommunikatsiya turlari</b>Sinxron (real vaqt): Video qo'ng'iroq, chat · Asinxron (har vaqt): Email, Telegram xabar, forum · Rasmiy: Email, rasmiy xat · Norasmiy: Telegram, WhatsApp</div>
+
+<h4>Professional email anatomiyasi</h4>
+<p>Yaxshi email — bu to'g'ri tuzilgan, qisqa va maqsadga yo'naltirilgan xabar. Har bir qism ma'lum vazifani bajaradi:</p>
+<div class="code">SUBJECT (Mavzu):   Qisqa, aniq, axborotli
+                   ✓ "Informatika — 5B sinf, 3-chorak natijasi"
+                   ✗ "Salom" / bo'sh / "Muhim!!!"
+
+SALOM:             Rasmiy: "Hurmatli Aziz Karimov"
+                   Yarim rasmiy: "Hurmatli Aziz"
+                   ✗ "Salom!", "Hey"
+
+ASOSIY MATN:       1-abzats: Maqsad
+                   2-abzats: Tafsilotlar
+                   3-abzats: Talab/so'rov/keyingi qadam
+
+XULOSA:            "Hurmat bilan," / "Iltifot bilan,"
+
+IMZO:              Ism, lavozim, kontakt</div>
+
+<h4>CC, BCC, Reply All — to'g'ri ishlatish</h4>
+<div class="tg">
+  <div class="ti"><div class="ti-n">📨 TO (Kimga)</div><div class="ti-d">Asosiy qabul qiluvchi — javob kutiladi</div></div>
+  <div class="ti"><div class="ti-n">📋 CC (Nusxa)</div><div class="ti-d">Xabardor qilish uchun — javob shart emas</div></div>
+  <div class="ti"><div class="ti-n">🔒 BCC (Yashirin nusxa)</div><div class="ti-d">Boshqalar ko'rmasin — maxfiy nusxa</div></div>
+  <div class="ti"><div class="ti-n">⚠️ Reply All (Barchaga javob)</div><div class="ti-d">Faqat barcha ko'rishi kerak bo'lsa ishlatiladi</div></div>
+</div>
+
+<h4>Telegram va WhatsApp — ish muloqotida</h4>
+<p>O'zbekiston ta'lim muhitida Telegram — asosiy muloqot vositasiga aylandi. Lekin professional Telegram-muloqot qoidalari ham mavjud:</p>
+<div class="code">✓ Salom bilan boshlash va o'zingizni tanishtirish
+✓ Qisqa va aniq yozish (email emas, xabar)
+✓ Audio xabar — faqat ruxsat so'rab
+✓ Kech vaqtda yozmaslik (22:00 dan keyin)
+✓ Guruhda shaxsiy masalani ko'tarmaslik
+✗ "???" yoki "alo" yozmaslik
+✗ Ko'p undov belgisi (!!!!) qo'ymaslik</div>`,
+  tasks:[
+    {num:'01',title:'Professional email yozing',
+     desc:'Quyidagi vaziyat uchun to\'liq professional email tuzing: Siz informatika o\'qituvchisisiz. Maktab direktoriga kelgusi oy o\'tkaziladigan "Raqamli savodxonlik kuni" tadbirini tashkil etish uchun ruxsat so\'rayapsiz.',
+     steps:['Subject ni to\'g\'ri yozing (mavzu aniq bo\'lsin)','Rasmiy salom qo\'shing','1-abzats: Maqsad','2-abzats: Tadbir tafsilotlari (sana, joy, ishtirokchilar)','3-abzats: So\'rov va kutilayotgan javob','Imzo bilan yakunlang'],
+     ph:'Subject: ...\n\nHurmatli [Ism Familiya],\n\n[Kirish - nima uchun yozyapsiz]: ...\n\n[Tafsilotlar - tadbir haqida]: ...\n\n[So\'rov - nima kutiladi]: ...\n\nHurmat bilan,\n[Ism]\n[Lavozim]\n[Telefon]'},
+    {num:'02',title:'Telegram guruhi uchun qoidalar tuzing',
+     desc:'Sinf ota-onalari uchun Telegram guruhiga 7 ta oddiy qoida tuzing. Qoidalar o\'zbekcha, qisqa va tushunарli bo\'lsin.',
+     steps:['Guruh maqsadini aniqlang','Yozuv vaqti qoidasi','Mavzu chegarasi','Xurmat qoidasi','Shaxsiy muammolar uchun yo\'l-yo\'riq'],
+     ph:'📋 Guruh qoidalari\n\n1. ...\n2. ...\n3. ...\n4. ...\n5. ...\n6. ...\n7. ...'}
+  ],
+  quiz:[
+    {q:'Professional emailda "Subject" (Mavzu) qanday bo\'lishi kerak?',o:['Uzun va batafsil','Qisqa, aniq va axborotli','Salom yoki xush kelibsiz','Bo\'sh qoldirilsa ham bo\'ladi'],a:1},
+    {q:'BCC nima uchun ishlatiladi?',o:['Asosiy qabul qiluvchi uchun','Ko\'p odamga yuborish uchun','Yashirin nusxa — boshqalar ko\'rmasin','Rasmiy hujjat uchun'],a:2},
+    {q:'"Reply All" (Barchaga javob) qachon to\'g\'ri?',o:['Har doim','Faqat barcha qabul qiluvchilar javobni ko\'rishi kerak bo\'lganda','Hech qachon','Shoshilganda'],a:1},
+    {q:'Telegram da professional muloqotda nima noto\'g\'ri?',o:['Qisqa va aniq yozish','Salom bilan boshlash','Kech vaqtda muhim emas deb xabar yuborish','O\'zingizni tanishtirish'],a:2},
+    {q:'Email imzosida (signature) nima bo\'lishi shart?',o:['Faqat ism','Ism, lavozim va kontakt ma\'lumotlari','Faqat telefon raqami','Hech narsa kerak emas'],a:1},
+    {q:'Asinxron kommunikatsiya deganda nima tushuniladi?',o:['Real vaqtda muloqot','Har qanday vaqtda javob berish mumkin bo\'lgan muloqot','Faqat video qo\'ng\'iroq','Faqat email'],a:1}
+  ]
+},
+{
+  id:1,level:'A2',icon:'🗂️',
+  title:'Google Workspace asoslari',
+  subtitle:'Google Classroom, Drive, Meet — ta\'lim uchun to\'liq qo\'llanma',
+  dur:'35 daqiqa',taskCount:2,quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=u-8nJj1EXhw',
+    url2:'',
+    title:'Google Classroom Tutorial for Teachers (Screencast)',
+    title2:'',
+    desc:'Google Classroom ni o\'qituvchilar uchun boshlang\'ichdan o\'rganish. Sinf yaratish, vazifa berish, baholash va talabalar bilan ishlash — barchasi ekran ko\'rsatmasi orqali tushuntiriladi. Yuz ko\'rinmaydi, faqat ekran.',
+    dur:'~20 daqiqa',lang:'Inglizcha (CC)',lang2:''
+  },
+  text:`
+<h4>Google Workspace for Education — nima va nima uchun?</h4>
+<p><span class="term">Google Workspace for Education</span> — maktab va universitetlar uchun Google tomonidan bepul taqdim etiladigan bulut asosidagi dasturlar to'plami. 2024 yil holatiga ko'ra dunyo bo'yicha 170 milliondan ortiq talaba va o'qituvchi foydalanadi.</p>
+<p>O'zbekistonda edu.uz domeniga ega maktab va universitetlar bepul Google Workspace Education olishi mumkin. Bu Gmail, Drive, Docs, Sheets, Slides, Meet, Classroom va boshqalarni o'z ichiga oladi.</p>
+
+<div class="note"><b>📌 Asosiy afzalliklar</b>Bepul (ta'lim uchun) · Qurilmadan mustaqil (istalgan joyda) · Hamkorlikda ishlash (bir vaqtda) · Google Classroom bilan integratsiya · Offline rejim ham mavjud</div>
+
+<h4>Google Classroom — ta'lim boshqaruvi markazi</h4>
+<p>Google Classroom — <span class="term">Learning Management System (LMS)</span> ning sodda va bepul varianti. Asosiy funksiyalar:</p>
+<div class="code">SINF YARATISH:
+  classroom.google.com → "+" → Create class
+  Sinf nomi, fan, bo'lim, xona nomini kiriting
+
+TALABALAR QO'SHISH:
+  Usul 1: Invitation code — talabalar o'zlari qo'shiladi
+  Usul 2: Email orqali taklif yuborish
+  Usul 3: Google Admin orqali ommaviy
+
+VAZIFA BERISH:
+  Classwork → Create → Assignment
+  Google Docs, Sheets, Slides, yoki har qanday fayl
+  Deadline belgilash · Rubric qo'shish
+
+BAHOLASH:
+  Streamlined grading — to'g'ridan Classroom ichida
+  Google Forms — avtomatik tekshirish (quiz)</div>
+
+<h4>Google Meet — onlayn dars o'tkazish</h4>
+<div class="tg">
+  <div class="ti"><div class="ti-n">🎥 Video dars</div><div class="ti-d">HD video, avtomatik shovqin kamaytirish, 100 ta ishtirokchi (bepul)</div><span class="ti-t tfree">Bepul</span></div>
+  <div class="ti"><div class="ti-n">🖥 Ekranni ulashish</div><div class="ti-d">"Present now" — butun ekran yoki oyna tanlash mumkin</div><span class="ti-t tfree">Bepul</span></div>
+  <div class="ti"><div class="ti-n">✍️ Whiteboard</div><div class="ti-d">Jamboard integratsiyasi — birgalikda chizish va yozish</div><span class="ti-t tfree">Bepul</span></div>
+  <div class="ti"><div class="ti-n">📊 So'rovnoma</div><div class="ti-d">Meet ichida to'g'ridan Polls (so'rovnoma) o'tkazish</div><span class="ti-t tfree">Bepul</span></div>
+</div>
+
+<h4>Google Drive — fayl boshqaruvi va ulashish</h4>
+<p>Google Drive — bulut xotira va fayl almashish tizimi. 15 GB bepul. Ta'lim uchun cheksiz xotira (Education asosida).</p>
+<div class="code">Ulashish huquqlari:
+  Viewer    — faqat ko'radi
+  Commenter — izoh qoldiradi
+  Editor    — tahrirlaydi
+
+Ommaviy ulashish:
+  "Anyone with the link" → View
+  Bu o'quv materiallarini tarqatish uchun ideal
+
+Classroom integratsiyasi:
+  Drive dagi fayl → Classroom ga to'g'ridan biriktirish
+  Talabalar nusxasi avtomatik yaratiladi</div>`,
+  tasks:[
+    {num:'01',title:'Google Classroom sinfi yarating',
+     desc:'classroom.google.com da yangi sinf yarating va bir ta vazifa joylashtiring. Hamma narsani o\'zbekcha to\'ldiring.',
+     steps:['classroom.google.com ga kiring','+ → Create class bosing','Sinf nomi, fan, bo\'lim kiriting','Classwork → Create → Assignment bosing','Mavzu, tavsif va deadline belgilang','Google Docs fayl biriktiring'],
+     ph:'Sinf nomi: ...\nFan: ...\n\nVazifa mavzusi: ...\nDeadline: ...\nBog\'langan material: ...\n\nTalabalar qo\'shilishi uchun kod: ...\n\nQiyin bo\'lgan qism: ...'},
+    {num:'02',title:'Google Meet dars rejasini tuzing',
+     desc:'Keyingi onlayn dars uchun Google Meet da bajariladigan 5 ta amalni rejalashtiring. Har bir amal uchun qaysi funksiya ishlatilishini yozing.',
+     steps:['Dars boshida talabalarni ro\'yxatga olish usuli','Dars davomida interaktivlik (Polls, Q&A)','Ekranni ulashish rejasi','Guruhli ish uchun Breakout rooms','Dars yozib olish/saqlash'],
+     ph:'Dars mavzusi: ...\n\n1-amal (kirish): ... → Ishlatilgan funksiya: ...\n2-amal (faol qism): ... → Funksiya: ...\n3-amal (ekran): ... → Funksiya: ...\n4-amal (guruh): ... → Funksiya: ...\n5-amal (yakun): ... → Funksiya: ...'}
+  ],
+  quiz:[
+    {q:'Google Classroom da talabalar sinfga qo\'shilishining eng qulay usuli?',o:['Muallif qo\'lda qo\'shadi','Invitation code orqali talabalar o\'zlari qo\'shiladi','Faqat email orqali','Admin orqali'],a:1},
+    {q:'Google Meet da "Present now" funksiyasi nima qiladi?',o:['Darsni yozib oladi','Ekranni talabalar bilan ulashadi','So\'rovnoma o\'tkazadi','Davomatni belgilaydi'],a:1},
+    {q:'Google Drive da "Anyone with the link → View" nimani anglatadi?',o:['Faqat siz ko\'rasiz','Havola bor har kim ko\'rishi mumkin','Tahrirlash mumkin','Yuklab olish mumkin emas'],a:1},
+    {q:'Google Workspace for Education qancha turadi?',o:['Oyiga $6','Yiliga $72','Bepul (ta\'lim uchun)','Faqat premium'],a:2},
+    {q:'Google Classroom da Rubric nima uchun?',o:['Avtomatik baholash','Baholash mezonlarini oldindan belgilash','Davomatni kuzatish','Email yuborish'],a:1},
+    {q:'Google Meet da bir vaqtda necha ishtirokchi bo\'lishi mumkin (bepul)?',o:['10 nafar','50 nafar','100 nafar','Cheksiz'],a:2}
+  ]
+},
+{
+  id:2,level:'B1',icon:'🤝',
+  title:'Onlayn hamkorlik platformalari',
+  subtitle:'Moodle, Microsoft Teams, Padlet — qaysi birini tanlash kerak?',
+  dur:'30 daqiqa',taskCount:2,quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=vt1upZMFKl8',
+    url2:'https://www.youtube.com/watch?v=3qPfq_VQAD0',
+    title:'Google Classroom New Features 2024 (Screencast)',
+    title2:'Online Collaboration Platforms Compared (inglizcha)',
+    desc:'Google Classroom 2024 yangiliklari: Practice Sets, yangi funksiyalar va onlayn hamkorlik imkoniyatlari haqida ekran ko\'rsatmasi. Yuz ko\'rinmaydi.',
+    dur:'~10 daqiqa',lang:'Inglizcha (CC)',lang2:'Inglizcha (CC)'
+  },
+  text:`
+<h4>Onlayn hamkorlik platformalarini tanlash</h4>
+<p>Zamonaviy ta'limda onlayn hamkorlik — bu talabalar va o'qituvchilar bir joyda bo'lmasa ham birgalikda ishlashi demak. To'g'ri platformani tanlash o'quv samaradorligini sezilarli oshiradi.</p>
+<p><span class="term">Synchronous (sinxron)</span> — real vaqtda hamkorlik: Google Meet, Zoom, MS Teams. <span class="term">Asynchronous (asinxron)</span> — har vaqt: Moodle, Google Classroom, Telegram.</p>
+
+<div class="note"><b>📌 O'zbekiston uchun eng mos platformalar</b>Google Classroom — eng keng tarqalgan, bepul · Moodle — universitetlar uchun kuchli · Telegram — tezkor muloqot · Zoom — video darslar</div>
+
+<h4>Platformalar batafsil taqqoslamasi</h4>
+<div class="code">GOOGLE CLASSROOM
+  Afzalliklari:  Bepul, qulay, Gmail bilan integratsiya
+  Kamchiliklari: Cheklangan funksiyalar, Analytics kam
+  Kimga mos:     Maktab va kichik universitetlar
+
+MOODLE
+  Afzalliklari:  Kuchli LMS, H5P, ochiq kod, Analytics
+  Kamchiliklari: O'rganish qiyin, server kerak
+  Kimga mos:     Universitetlar, professional kurslar
+
+MICROSOFT TEAMS
+  Afzalliklari:  Office 365 integratsiya, video+chat+fayl
+  Kamchiliklari: Murakkab interfeys
+  Kimga mos:     MS ekotizimida ishlovchilar
+
+TELEGRAM (ta'lim uchun)
+  Afzalliklari:  O'zbekistonda hammada bor, tezkor
+  Kamchiliklari: Rasmiy LMS emas, nazorat yetarli emas
+  Kimga mos:     Tezkor muloqot, material ulashish</div>
+
+<h4>Padlet — interaktiv hamkorlik doskasi</h4>
+<p><span class="term">Padlet</span> — onlayn interaktiv doska. Talabalar birgalikda matn, rasm, video, havola qo'sha oladi. Brainstorming, galeriya, timeline formatlarida ishlaydi.</p>
+<div class="code">Padlet turlari:
+  Wall       — erkin joylashish (brainstorming)
+  Canvas     — bog'langan elementlar (mind map)
+  Stream     — chronologik oqim (blog)
+  Grid       — tartibli to'r
+  Timeline   — vaqt chizig'i
+  Map        — geografik xarita
+  Shelf      — kategorialar bo'yicha
+
+Bepul: 3 ta padlet, ulashish cheksiz</div>`,
+  tasks:[
+    {num:'01',title:'Platformalar taqqoslamasi jadval',
+     desc:'Google Classroom, Moodle va Telegram ni quyidagi 5 ta mezon bo\'yicha solishtiring va sizning maktabingiz uchun qaysi biri mos ekanini asoslang.',
+     steps:['Har platforma uchun 5 mezonni baholang (1-5 ball)','Narx/bepullik','Foydalanish qulayligi','Funksiyalar soni','O\'zbekistonda qo\'llanilish darajasi','Raqamli savodxonlik darajasi (minimal talab)'],
+     ph:'MEZON            | G.Classroom | Moodle | Telegram\nNarx (1-5):      | ...         | ...    | ...\nQulaylik (1-5):  | ...         | ...    | ...\nFunksiyalar:     | ...         | ...    | ...\nO\'zb. tarqalish: | ...         | ...    | ...\nMin. savodxonlik:| ...         | ...    | ...\nJAMI:            | ...         | ...    | ...\n\nXulosa — maktabimiz uchun eng mos: ...\nSabab: ...'},
+    {num:'02',title:'Padlet da dars materiallari to\'plami yarating',
+     desc:'padlet.com da bepul akkaunt oching va "Raqamli ta\'lim resurslari" mavzusida bir padlet yarating. Kamida 4 ta karta (matn/video/havola) qo\'shing.',
+     steps:['padlet.com ga kiring va akkaunt oching','+ Make a Padlet → Grid formatini tanlang','Sarlavha: "Raqamli ta\'lim resurslari"','Kamida 4 ta karta qo\'shing (matn, rasm, havola)','Share → Anyone with link → View'],
+     ph:'Padlet URL: ...\n\nQo\'shilgan kartalar:\n1. ...\n2. ...\n3. ...\n4. ...\n\nBu padletni darsda qanday ishlataman: ...'}
+  ],
+  quiz:[
+    {q:'Sinxron va asinxron kommunikatsiya farqi nima?',o:['Farqi yo\'q','Sinxron real vaqt, asinxron istalgan vaqt','Asinxron tezroq','Sinxron uchinchi shaxs orqali'],a:1},
+    {q:'Moodle qanday platformaga kiradi?',o:['Ijtimoiy tarmoq','LMS — Learning Management System','Video konferensiya','Messenjer'],a:1},
+    {q:'Padlet da bepul nechta doska yaratish mumkin?',o:['1 ta','3 ta','10 ta','Cheksiz'],a:1},
+    {q:'Google Classroom ning Moodle dan ustunligi nima?',o:['Ko\'proq funksiya','Bepul va o\'rganish oson','Server talab qilmaydi','Analytics kuchliroq'],a:1},
+    {q:'Padlet da "Canvas" formati nima uchun?',o:['Chronologik oqim','Bog\'langan elementlar — mind map uchun','Geografik xarita','Erkin joylashish'],a:1},
+    {q:'Microsoft Teams qaysi kompaniya mahsuloti?',o:['Google','Apple','Microsoft','Meta'],a:2}
+  ]
+},
+{
+  id:3,level:'B2',icon:'🌐',
+  title:'Professional raqamli hamkorlik va virtual jamoalar',
+  subtitle:'Notion, Trello, asinxron ish va masofaviy o\'qitish best practices',
+  dur:'40 daqiqa',taskCount:2,quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=FUBzmQdJryQ',
+    url2:'',
+    title:'Google Screencast for Teaching & Learning (Screencast)',
+    title2:'',
+    desc:'Google Screencast vositasi orqali o\'qituvchilar dars yozib olishi, AI yordamida tahrirlashi va talabalar bilan ulashishi mumkin. Yuz ko\'rinmaydi, faqat ekran ko\'rsatmasi.',
+    dur:'~15 daqiqa',lang:'Inglizcha (CC)',lang2:''
+  },
+  text:`
+<h4>Professional raqamli hamkorlik — kelajak ko'nikmasi</h4>
+<p>2024 yil McKinsey hisobotiga ko'ra, qachonki asinxron hamkorlik yaxshi yo'lga qo'yilsa, jamoalar 20-25% samaraliroq ishlaydi. Ta'limda bu: o'qituvchilar birgalikda dars materiallari yaratishi, virtualresurs kutubxonasi qurishi, loyiha boshqaruvi tizimlari ishlatishi demak.</p>
+
+<div class="note"><b>📌 Remote Teaching (Masofaviy o'qitish) best practices</b>Aniq maqsad va kutilmalar belgilash · Asinxron materiallar tayyorlash · Regular feedback mexanizmi · Texnik muammolarga tayyor bo'lish · Talabalar faolligini kuzatish</div>
+
+<h4>Notion — ta'lim va hamkorlik uchun universal vosita</h4>
+<p><span class="term">Notion</span> — matn, jadval, veritabase, kalender va loyiha boshqaruvini birlashtirgan platforma. Ta'lim uchun bepul versiyasi mavjud.</p>
+<div class="code">Notion ta'limda qanday ishlatiladi:
+  • Kurs rejasi va syllabus
+  • Talabalar kuzatish jadvali
+  • Dars materiallar kutubxonasi
+  • Jamoa loyiha boshqaruvi
+  • O'qituvchilar metodik portfeli
+
+Bepul: Cheksiz sahifalar, 10 MB fayl
+Ta'lim: notion.so/education — ko'proq imkoniyat</div>
+
+<h4>Trello — vizual loyiha boshqaruvi</h4>
+<p><span class="term">Trello</span> — Kanban usulida ishlovchi vizual loyiha boshqaruvi. Kartalar va ustunlar orqali vazifalar holati ko'rsatiladi.</p>
+<div class="code">Trello ta'limda:
+  Ustun 1: "Reja"      — bajarilishi kerak
+  Ustun 2: "Jarayonda" — hozir bajarilmoqda
+  Ustun 3: "Tekshiruvda"
+  Ustun 4: "Tayyor"    — yakunlangan
+
+O'qituvchi uchun misol:
+  Karta: "5B sinf test materiallari"
+  → Checklist: [x] Savol tuzish [ ] Tekshirish [ ] Joylashtirish
+  → Deadline: 15-yanvar
+  → Mas'ul: Aziz muallim</div>
+
+<h4>Asinxron ta'lim — texnologiya va pedagogika</h4>
+<p>Eng samarali asinxron ta'lim modeli <span class="term">5E modeli</span> bo'lib, u Engage → Explore → Explain → Elaborate → Evaluate bosqichlaridan iborat. Har bosqich uchun raqamli vosita tanlash mumkin.</p>
+<div class="code">Engage:    Padlet, Mentimeter (qiziqtirish)
+Explore:   Google Drive materiallar, video
+Explain:   Screencast, Google Slides
+Elaborate: Google Docs birgalikda yozish
+Evaluate:  Google Forms, quiz</div>`,
+  tasks:[
+    {num:'01',title:'Notion da kurs rejasi sahifasi yarating',
+     desc:'notion.so/education da bepul akkaunt oching va "Informatika fani — I yarim yillik" uchun kurs rejasi sahifasini yarating. Kamida: mavzular jadvali, resurslar, baholash mezonlari bo\'lsin.',
+     steps:['notion.so/education da ro\'yxatdan o\'ting','Yangi sahifa yarating','Sarlavha: kurs nomi va sana','Mavzular jadvali (Table blok)','Foydali resurslar bo\'limi','Baholash mezonlari'],
+     ph:'Notion sahifa URL: ...\n\nSahifaning tuzilmasi:\n1. ...\n2. ...\n3. ...\n\nJadvalda nechta mavzu bor: ...\n\nNotion dan oldingi usuldan qanday afzal: ...'},
+    {num:'02',title:'Trello da "Dars tayyorlash" jarayonini boshqaring',
+     desc:'trello.com da bepul akkaunt oching va "Informatika darslarini tayyorlash" doskasi yarating. Haqiqiy vazifalaringizni kartalarga kiriting.',
+     steps:['trello.com ga kiring va akkaunt oching','Yangi Board yarating','4 ta List: Reja / Jarayonda / Tekshiruvda / Tayyor','Kamida 4 ta karta qo\'shing (haqiqiy vazifalar)','Bir kartaga Checklist va Deadline qo\'shing'],
+     ph:'Trello doska URL: ...\n\nKartalar:\n1. ... → Holat: ...\n2. ... → Holat: ...\n3. ... → Holat: ...\n4. ... → Holat: ...\n\nTrello dan keyingi dars tayyorlashda foydalanish rejam: ...'}
+  ],
+  quiz:[
+    {q:'McKinsey (2024) ma\'lumotiga ko\'ra asinxron hamkorlik samaradorlikni qancha oshiradi?',o:['5-10%','20-25%','50%','2 marta'],a:1},
+    {q:'Notion ta\'lim uchun qanday taqdim etiladi?',o:['Oyiga $16','Yiliga $100','notion.so/education orqali bepul','Faqat pullik'],a:2},
+    {q:'Trello Kanban usulida nima ko\'rsatiladi?',o:['Fayl saqlash','Vazifalar holati vizual kartalar orqali','Video konferensiya','Email boshqaruvi'],a:1},
+    {q:'5E ta\'lim modelida birinchi "E" nima?',o:['Evaluate','Explain','Engage','Explore'],a:2},
+    {q:'Asinxron ta\'limning sinxronga nisbatan afzalligi?',o:['Tezroq','Talabalar o\'z vaqtida o\'rganishi mumkin','Sifatliroq','Arzonroq'],a:1},
+    {q:'Notion va Trello orasidagi asosiy farq nima?',o:['Farqi yo\'q','Notion keng (matn+jadval+database), Trello faqat Kanban','Trello bepul, Notion pullik','Notion video uchun'],a:1}
+  ]
+}
+];
+
+let userLevel=parseInt(localStorage.getItem('m2_entry_level')||'0');
+let quizScores=JSON.parse(localStorage.getItem('m2_quiz_scores')||'{}');
+let completedLessons=JSON.parse(localStorage.getItem('m2_completed')||'[]');
+let currentLesson=userLevel;
+let quizAns=[],quizDone=false;
+let userName='Talaba';
+let allNews=[],currentFilter='all';
+
+const mainUser=localStorage.getItem('dc2_cur')?JSON.parse(localStorage.getItem('dc2_cur')):null;
+if(mainUser&&mainUser.levels&&mainUser.levels.m2){
+  const lvMap={A1:0,A2:1,B1:2,B2:3};
+  userLevel=lvMap[mainUser.levels.m2]||0;
+  userName=mainUser.name||'Talaba';
+  localStorage.setItem('m2_entry_level',userLevel);
+}
+
+function getUs(){return JSON.parse(localStorage.getItem('dc2_users')||'[]')}
+
+function isUnlocked(idx){
+  if(idx<=userLevel)return true;
+  const prev=quizScores[idx-1];
+  return prev!==undefined&&prev>=70;
+}
+
+function renderSidebar(){
+  const lvCls=['a1','a2','b1','b2'];
+  const lvNames=["Boshlang'ich",'Asosiy',"O'rta",'Mustaqil'];
+  let html='';
+  LESSONS.forEach((L,i)=>{
+    const locked=i>userLevel&&!isUnlocked(i);
+    const done=completedLessons.includes(i);
+    const active=i===currentLesson;
+    const qs=quizScores[i];
+    let st=locked?'🔒':done?'✅':active?'📖':'○';
+    html+=`<div class="sb-lv-wrap">
+      <div class="sb-lv-label"><span class="lv-dot ${lvCls[i]}"></span><span style="font-size:11px;color:var(--text2);font-weight:600">${LEVELS[i]} — ${lvNames[i]}</span></div>
+      <div class="sb-lesson${active?' active':''}${done?' done':''}${locked?' locked':''}" onclick="${locked?'lockedClick('+i+')':'showLesson('+i+')'}">
+        <span class="sl-ic">${L.icon}</span><span class="sl-lbl">${L.title}</span>
+        <span class="sl-st">${st}${qs!==undefined?' '+qs+'%':''}</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById('sbLessons').innerHTML=html;
+  const done=completedLessons.length;
+  document.getElementById('sbProgTxt').textContent=done+'/4 dars yakunlandi';
+  document.getElementById('sbProgBar').style.width=(done*25)+'%';
+  document.getElementById('certBtn').disabled=done<4;
+  document.getElementById('navPtxt').textContent=done+'/4';
+  document.getElementById('navPbar').style.width=(done*25)+'%';
+}
+
+function lockedClick(idx){showToast('🔒 Avval '+LESSONS[idx-1].level+' quizini 70%+ bilan o\'ting');}
+
+function showLesson(idx){
+  if(idx>userLevel&&!isUnlocked(idx)){lockedClick(idx);return;}
+  currentLesson=idx;quizAns=[];quizDone=false;
+  renderSidebar();
+  const L=LESSONS[idx];
+  const lvCls=['lv-a1','lv-a2','lv-b1','lv-b2'];
+  document.getElementById('mainContent').innerHTML=`
+    <div class="lh">
+      <div class="lh-level"><span class="lv-badge ${lvCls[idx]}">${L.level}</span><span style="font-size:11px;color:var(--text3)"> daraja</span></div>
+      <div class="lh-icon">${L.icon}</div>
+      <div class="lh-title">${L.title}</div>
+      <div class="lh-sub">${L.subtitle}</div>
+      <div class="lh-meta">
+        <span class="lh-chip">⏱ ${L.dur}</span>
+        <span class="lh-chip">🛠 ${L.taskCount} amaliy</span>
+        <span class="lh-chip">❓ ${L.quizCount} quiz</span>
+        ${completedLessons.includes(idx)?'<span class="lh-chip" style="color:var(--ok);border-color:var(--ok-b)">✅ Yakunlangan</span>':''}
+        ${quizScores[idx]!==undefined?'<span class="lh-chip" style="color:var(--mc)">Quiz: '+quizScores[idx]+'%</span>':''}
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="stab(this,'video')">🎬 Video</div>
+      <div class="tab" onclick="stab(this,'matn')">📄 Matn</div>
+      <div class="tab" onclick="stab(this,'amaliy')">🛠 Amaliy</div>
+      <div class="tab" onclick="stab(this,'quiz')">✅ Quiz</div>
+    </div>
+    <div id="tc-video" class="tc active">${renderVideo(L)}</div>
+    <div id="tc-matn" class="tc">${renderMatn(L)}</div>
+    <div id="tc-amaliy" class="tc">${renderAmaliy(L,idx)}</div>
+    <div id="tc-quiz" class="tc">${renderQuiz(L,idx)}</div>
+    <div class="navbtns">
+      ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`:`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat</button>`}
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderVideo(L){
+  const v=L.video;
+  const isUz=v.lang&&v.lang.includes("O'zbekcha");
+  const hasSecond=v.url2&&v.url2.length>0;
+  const badge=isUz?`<span style="background:rgba(45,212,160,.12);color:var(--ok);border:1px solid var(--ok-b);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">🇺🇿 O'ZBEKCHA</span>`:`<span style="background:var(--mcg);color:var(--mc);border:1px solid var(--mcb);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">🌐 ${(v.lang||'INGLIZCHA').toUpperCase()}</span>`;
+  return `<div class="vcard">
+    <div class="vthumb" onclick="window.open('${v.url}','_blank')">
+      <div class="pbtn">▶</div>
+      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1"><div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.7)">${v.title}</div></div>
+    </div>
+    <div class="vinfo">
+      <div style="margin-bottom:8px">${badge}</div>
+      <div class="vt">${v.title}</div>
+      <div class="vd">${v.desc}</div>
+      <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
+        ${hasSecond?`<button class="vbtn" style="background:var(--surface2);border-color:var(--border2);color:var(--text2)" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2} →</button>`:''}
+      </div>
+      ${!isUz?`<div style="margin-top:10px;padding:9px 12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:8px;font-size:11px;color:#fbbf24">💡 CC tugmasini bosing → O'zbek yoki Rus subtitlni yoqing</div>`:''}
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button></div>`;
+}
+
+function renderMatn(L){
+  return `<div class="card"><div class="lt">${L.text}</div></div>
+  <div style="text-align:right"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliy →</button></div>`;
+}
+
+function renderAmaliy(L,idx){
+  return L.tasks.map((t,i)=>`
+    <div class="task">
+      <div class="th2"><div class="tnum">${t.num}</div><div class="ttitle">${t.title}</div></div>
+      <div class="tdesc">${t.desc}</div>
+      <div class="tsteps">${t.steps.map(s=>`<p>${s}</p>`).join('')}</div>
+      <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
+      <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
+      <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Bajarildi! Quizga o'ting.</div>
+    </div>`).join('')+
+  `<div style="text-align:right;margin-top:8px"><button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button></div>`;
+}
+
+function renderQuiz(L,idx){
+  const saved=quizScores[idx];
+  if(saved!==undefined){
+    return `<div class="qres" style="display:block">
+      <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
+      <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
+      <div class="qrm">${saved>=70?'✅ O\'tdingiz!':'⚠️ 70% kerak. Qayta urining.'}</div>
+    </div>
+    ${saved<70?`<button class="btn-retry" style="display:block" onclick="retryQuiz(${idx})">🔄 Qayta topshirish</button>`:''}
+    ${idx<3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showLesson(${idx+1})">Keyingi daraja →</button>`:''}
+    ${idx===3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showCert()">🏆 Sertifikat olish</button>`:''}`;
+  }
+  return `<div class="qres" id="qres_${idx}"></div>
+    <div class="qfail" id="qfail_${idx}">⚠️ 70% dan past. Matnni qayta ko'rib, qayta urinib ko'ring.</div>
+    ${L.quiz.map((q,qi)=>`
+      <div class="qq">
+        <div class="qnum">Savol ${qi+1} / ${L.quiz.length}</div>
+        <div class="qtext">${q.q}</div>
+        <div class="opts">${q.o.map((o,oi)=>`<div class="opt" id="opt_${idx}_${qi}_${oi}" onclick="qsel(${idx},${qi},${oi})"><div class="optk">${'ABCD'[oi]}</div><span>${o}</span></div>`).join('')}</div>
+      </div>`).join('')}
+    <button class="btn-submit" id="bsub_${idx}" onclick="submitQuiz(${idx})">✅ Quizni topshirish</button>
+    <button class="btn-retry" id="bret_${idx}" onclick="retryQuiz(${idx})">🔄 Qayta topshirish</button>
+    <button class="btn-next" id="bnxt_${idx}" onclick="${idx<3?'showLesson('+(idx+1)+')':'showCert()'}">
+      ${idx<3?'Keyingi daraja →':'🏆 Sertifikat olish'}</button>`;
+}
+
+function stab(el,name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tc-'+name).classList.add('active');
+}
+function stabName(name){
+  const tabs=['video','matn','amaliy','quiz'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
+  document.querySelectorAll('.tc').forEach((t,i)=>t.classList.toggle('active',tabs[i]===name));
+}
+function chkTask(li,ti){
+  const v=document.getElementById('ta_'+li+'_'+ti)?.value.trim();
+  const fb=document.getElementById('tfb_'+li+'_'+ti);
+  if(!v||v.length<15){fb.className='tfb fberr';fb.textContent='⚠️ Kamida 15 belgi yozing';fb.style.display='block';return;}
+  fb.className='tfb fbok';fb.textContent='✅ Bajarildi! Quiz bo\'limiga o\'ting.';fb.style.display='block';
+}
+function qsel(li,qi,oi){
+  if(quizDone)return;
+  quizAns[qi]=oi;
+  document.querySelectorAll(`[id^="opt_${li}_${qi}_"]`).forEach((el,i)=>el.classList.toggle('sel',i===oi));
+}
+function submitQuiz(idx){
+  const L=LESSONS[idx];quizDone=true;
+  let correct=0;
+  L.quiz.forEach((q,qi)=>{
+    const ua=quizAns[qi];
+    q.o.forEach((_,oi)=>{
+      const el=document.getElementById(`opt_${idx}_${qi}_${oi}`);
+      if(!el)return;
+      el.style.pointerEvents='none';
+      if(oi===q.a)el.classList.add('ok');
+      else if(oi===ua&&ua!==q.a)el.classList.add('bad');
+    });
+    if(ua===q.a)correct++;
+  });
+  const score=Math.round(correct/L.quiz.length*100);
+  quizScores[idx]=score;
+  localStorage.setItem('m2_quiz_scores',JSON.stringify(quizScores));
+  const _cu=localStorage.getItem('dc2_cur')?JSON.parse(localStorage.getItem('dc2_cur')):null;
+  const _lv=LEVELS[idx];
+  syncNatija(_cu,'M2',_lv,score,correct,L.quiz.length,1);
+  if(score>=70&&!completedLessons.includes(idx)){
+    completedLessons.push(idx);
+    localStorage.setItem('m2_completed',JSON.stringify(completedLessons));
+  }
+  const res=document.getElementById('qres_'+idx);
+  if(res){res.style.display='block';res.innerHTML=`<div class="qrs" style="color:${score>=70?'var(--ok)':'var(--warn)'}">${score}%</div><div class="qrl">${correct}/${L.quiz.length} to'g'ri</div><div class="qrm">${score>=70?'✅ O\'tdingiz! '+(idx<3?'Keyingi daraja ochildi 🔓':'Modul yakunlandi 🎓'):'⚠️ 70% kerak.'}</div>`;}
+  document.getElementById('bsub_'+idx).style.display='none';
+  if(score>=70){const nb=document.getElementById('bnxt_'+idx);if(nb)nb.style.display='block';showToast(score>=90?'🌟 Ajoyib! '+score+'%':'✅ O\'tdingiz! '+score+'%');}
+  else{const rb=document.getElementById('bret_'+idx);if(rb)rb.style.display='block';const f=document.getElementById('qfail_'+idx);if(f)f.style.display='block';showToast('⚠️ '+score+'% — 70% kerak!');}
+  renderSidebar();
+}
+function retryQuiz(idx){
+  delete quizScores[idx];
+  localStorage.setItem('m2_quiz_scores',JSON.stringify(quizScores));
+  completedLessons=completedLessons.filter(i=>i!==idx);
+  localStorage.setItem('m2_completed',JSON.stringify(completedLessons));
+  quizDone=false;quizAns=[];
+  const L=LESSONS[idx];
+  document.getElementById('tc-quiz').innerHTML=renderQuiz(L,idx);
+  stabName('quiz');renderSidebar();
+  showToast('🔄 Quiz yangilandi!');
+}
+
+function showCert(){
+  if(completedLessons.length<4){showToast('⚠️ Barcha 4 ta darsni yakunlang!');return;}
+  const avg=Object.keys(quizScores).length?Math.round(Object.values(quizScores).reduce((a,b)=>a+b,0)/Object.keys(quizScores).length):0;
+  const date=new Date().toLocaleDateString('uz-UZ');
+  const safe=userName.replace(/[<>"'&]/g,'').trim();
+  const inner=`<style>@keyframes cfi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cw{animation:cfi .5s ease both;font-family:Georgia,serif;position:relative;overflow:hidden;border-radius:14px;min-height:460px}.cbg{position:absolute;inset:0;z-index:0}.cbd{position:relative;z-index:1;padding:50px 58px;text-align:center}.cb1{position:absolute;inset:8px;border:2px solid rgba(255,255,255,.35);border-radius:10px;pointer-events:none;z-index:2}.cb2{position:absolute;inset:14px;border:1px solid rgba(255,255,255,.18);border-radius:6px;pointer-events:none;z-index:2}</style>
+  <div class="cw">
+    <svg class="cbg" viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+      <defs>
+        <linearGradient id="cbm2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#041a0e"/><stop offset="45%" stop-color="#063d1f"/><stop offset="100%" stop-color="#041510"/></linearGradient>
+        <linearGradient id="cgl2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="rgba(45,212,160,0)"/><stop offset="30%" stop-color="rgba(45,212,160,.7)"/><stop offset="70%" stop-color="rgba(45,212,160,.7)"/><stop offset="100%" stop-color="rgba(45,212,160,0)"/></linearGradient>
+        <radialGradient id="cg2a" cx="20%" cy="20%" r="50%"><stop offset="0%" stop-color="rgba(45,212,160,.18)"/><stop offset="100%" stop-color="rgba(45,212,160,0)"/></radialGradient>
+        <radialGradient id="cg2b" cx="80%" cy="80%" r="50%"><stop offset="0%" stop-color="rgba(110,231,183,.1)"/><stop offset="100%" stop-color="rgba(110,231,183,0)"/></radialGradient>
+      </defs>
+      <rect width="700" height="460" fill="url(#cbm2)"/>
+      <rect width="700" height="460" fill="url(#cg2a)" opacity=".9"/>
+      <rect width="700" height="460" fill="url(#cg2b)" opacity=".9"/>
+      <g opacity=".18" stroke="#2dd4a0" stroke-width=".8" fill="none"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#2dd4a0" stroke="none"/></g>
+      <g opacity=".18" stroke="#2dd4a0" stroke-width=".8" fill="none" transform="translate(700,0) scale(-1,1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#2dd4a0" stroke="none"/></g>
+      <g opacity=".18" stroke="#2dd4a0" stroke-width=".8" fill="none" transform="translate(0,460) scale(1,-1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#2dd4a0" stroke="none"/></g>
+      <g opacity=".18" stroke="#2dd4a0" stroke-width=".8" fill="none" transform="translate(700,460) scale(-1,-1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#2dd4a0" stroke="none"/></g>
+      <rect x="100" y="58" width="500" height="1" fill="url(#cgl2)" opacity=".6"/>
+      <rect x="100" y="398" width="500" height="1" fill="url(#cgl2)" opacity=".6"/>
+      <rect x="120" y="330" width="460" height=".6" fill="url(#cgl2)" opacity=".5"/>
+    </svg>
+    <div class="cb1"></div><div class="cb2"></div>
+    <div class="cbd">
+      <div style="font-size:10px;letter-spacing:.2em;color:rgba(45,212,160,.75);text-transform:uppercase;margin-bottom:3px;font-family:'DM Sans',sans-serif">Qo'qon Davlat Universiteti</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.06em;margin-bottom:26px;font-family:'DM Sans',sans-serif">DigiComp Platform · DigComp 2.2</div>
+      <div style="width:76px;height:76px;background:linear-gradient(145deg,#2dd4a0,#059669);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 20px;box-shadow:0 0 0 4px rgba(45,212,160,.2),0 8px 24px rgba(0,0,0,.5)">🏆</div>
+      <div style="font-size:36px;color:#2dd4a0;font-style:italic;font-weight:700;margin-bottom:4px;text-shadow:0 2px 12px rgba(45,212,160,.3)">Sertifikat</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.12em;text-transform:uppercase;margin-bottom:22px;font-family:'DM Sans',sans-serif">taqdim etiladi</div>
+      <div style="font-size:30px;font-weight:700;color:#fff;margin-bottom:4px;padding:0 20px">${safe}</div>
+      <div style="width:200px;height:1.5px;background:linear-gradient(90deg,transparent,#2dd4a0,transparent);margin:8px auto 18px"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.06em;margin-bottom:22px;font-family:'DM Sans',sans-serif">muvaffaqiyatli yakunladi</div>
+      <div style="font-size:16px;font-weight:700;color:#6ee7b7;margin-bottom:3px;font-family:'DM Sans',sans-serif">M2 — Kommunikatsiya va hamkorlik</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:4px;font-family:'DM Sans',sans-serif">Communication & Collaboration · DigComp 2.2</div>
+      <div style="font-size:11px;color:rgba(45,212,160,.6);font-family:'DM Sans',sans-serif">A1 · A2 · B1 · B2 — barcha darajalar o'tildi</div>
+      <div style="display:flex;justify-content:center;gap:44px;margin-top:28px">
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Sans',sans-serif">Sana</div><div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-top:4px;font-family:'DM Mono',monospace">${date}</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Sans',sans-serif">O'rtacha ball</div><div style="font-size:14px;font-weight:700;color:#2dd4a0;margin-top:4px;font-family:'DM Mono',monospace">${avg}%</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Sans',sans-serif">Darslar</div><div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-top:4px;font-family:'DM Mono',monospace">4 / 4</div></div>
+      </div>
+      <div style="margin-top:22px;font-size:9px;color:rgba(255,255,255,.2);font-family:'DM Sans',sans-serif">DigiComp Platform — Raqamli kompetentlik kursi</div>
+    </div>
+  </div>`;
+
+  const old=document.getElementById('certModal');if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='certModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto';
+  modal.innerHTML=`<div style="max-width:720px;width:100%">
+    <div style="display:flex;gap:10px;margin-bottom:14px;justify-content:flex-end">
+      <button id="certPrintBtn" style="padding:10px 22px;background:linear-gradient(135deg,#2dd4a0,#059669);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">🖨 PDF saqlash</button>
+      <button onclick="document.getElementById('certModal').remove()" style="padding:10px 18px;background:#1c2840;border:1px solid rgba(255,255,255,.12);color:#8899bb;border-radius:9px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">✕ Yopish</button>
+    </div>
+    <div id="certContent" style="background:transparent;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.7)">${inner}</div>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:#4a5a7a">PDF saqlash → Ctrl+P → Save as PDF</div>
+  </div>`;
+  document.body.appendChild(modal);
+  document.getElementById('certPrintBtn').onclick=function(){
+    const win=window.open('','_blank','width=800,height=700');
+    if(win){win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Sertifikat M2</title></head><body style="margin:0;background:#041a0e">'+document.getElementById('certContent').innerHTML+'<br><button onclick="window.print()" style="display:block;margin:20px auto;padding:10px 28px;background:#2dd4a0;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">🖨 Chop etish / PDF</button></body></html>');win.document.close();}
+    else{alert('Pop-up bloklangan. Manzil satrida ruxsat bering.');}
+  };
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+const STATIC_NEWS=[
+  {title:"Google Classroom 2024 — yangi AI funksiyalar",desc:"Google Classroom da Practice Sets va AI yordamida dars tayyorlash imkoniyatlari kengaytirildi.",source:"Google Education",tag:"edtech",date:"2024",url:"https://edu.google.com"},
+  {title:"Microsoft Teams for Education yangilandi",desc:"Teams da yangi Together Mode va raqamli doskalar funksiyalari qo'shildi.",source:"Microsoft Education",tag:"edtech",date:"2024",url:"https://education.microsoft.com"},
+  {title:"O'zbekistonda raqamli ta'lim platformalari",desc:"Maktablar uchun Google Workspace joriy etish davlat dasturi doirasida kengaytirilmoqda.",source:"EDU.UZ",tag:"digital",date:"2024",url:"https://edu.uz"},
+  {title:"Moodle 4.5 yangi funksiyalar",desc:"Moodle yangi versiyasida AI asosida talabalar taraqqiyotini tahlil qilish kuchaytirildi.",source:"Moodle HQ",tag:"edtech",date:"2024",url:"https://moodle.org"},
+  {title:"Zoom AI Companion — ta'lim uchun",desc:"Zoom da dars yozuvini avtomatik xulosa qiladigan AI Assistant ta'lim versiyasida bepul.",source:"Zoom Blog",tag:"ai",date:"2024",url:"https://zoom.us/education"},
+  {title:"Padlet for Education — yangi imkoniyatlar",desc:"Padlet ta'lim versiyasida cheksiz doskalar va LMS integratsiya imkoniyatlari qo'shildi.",source:"Padlet",tag:"edtech",date:"2024",url:"https://padlet.com/about/schools"},
+  {title:"ChatGPT ta'limda etika qoidalari",desc:"UNESCO o'qituvchilar uchun AI vositalarini mas'uliyatli ishlatish bo'yicha yangi qo'llanma e'lon qildi.",source:"UNESCO",tag:"ai",date:"2024",url:"https://www.unesco.org"},
+  {title:"Notion for Education — yangilanish",desc:"Notion ta'lim akkauntlari uchun AI yozuv yordamchisi bepul qilindi.",source:"Notion Blog",tag:"digital",date:"2024",url:"https://notion.so/education"}
+];
+
+async function loadNews(){
+  let loaded=[];
+  try{
+    const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://elearningindustry.com/feed&count=5',{signal:AbortSignal.timeout(4000)});
+    if(r.ok){const d=await r.json();if(d.status==='ok'&&d.items?.length){loaded=d.items.slice(0,5).map(i=>({title:(i.title||'').substring(0,80),desc:(i.description||'').replace(/<[^>]+>/g,'').substring(0,100)+'...',source:'eLearning Industry',tag:'edtech',date:i.pubDate?new Date(i.pubDate).toLocaleDateString('uz-UZ'):'2024',url:i.link||'#'}));}}
+  }catch(e){}
+  if(!loaded.length)loaded=[...STATIC_NEWS];
+  allNews=loaded.sort(()=>Math.random()-.5);
+  renderNews();
+}
+function renderNews(){
+  const c=document.getElementById('newsContainer');
+  const f=currentFilter==='all'?allNews:allNews.filter(n=>n.tag===currentFilter);
+  if(!f.length){c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">Bu bo\'limda yangilik yo\'q</div>';return;}
+  c.innerHTML=f.map(n=>`<div class="news-item" onclick="window.open('${n.url}','_blank')">
+    <div class="ni-source"><span>${n.tag.toUpperCase()}</span>${n.source}</div>
+    <div class="ni-title">${n.title}</div>
+    <div class="ni-desc">${n.desc}</div>
+    <div class="ni-date">📅 ${n.date}</div>
+  </div>`).join('');
+}
+function filterNews(tag,el){currentFilter=tag;document.querySelectorAll('.npf').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderNews();}
+
+renderSidebar();
+showLesson(userLevel);
+loadNews();
+</script>
+</body>
+</html>

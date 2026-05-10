@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>M4 — Xavfsizlik | DigiComp</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f3ff;--bg2:#ffffff;--bg3:#f0eeff;
+  --surface:#ffffff;--surface2:#f5f3ff;
+  --border:#e4e0f8;--border2:#cdc7f0;
+  --text:#1a1d3a;--text2:#5a5f8a;--text3:#9699bb;
+  --mc:#8b5cf6;--mc2:#a78bfa;
+  --mcg:rgba(139,92,246,.1);--mcb:rgba(139,92,246,.25);
+  --ok:#10b981;--ok-g:rgba(16,185,129,.1);--ok-b:rgba(16,185,129,.22);
+  --warn:#f59e0b;--danger:#ef4444;
+  --primary:#6c5ce7;--primary-light:#f0eeff;
+  --shadow-sm:0 2px 8px rgba(139,92,246,.08);
+  --shadow:0 4px 20px rgba(139,92,246,.12);
+  --rad:12px;--rad-lg:18px;--rad-xl:24px;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--mc)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.au{animation:fadeUp .5s ease both}
+.au1{animation:fadeUp .5s .1s ease both}
+.au2{animation:fadeUp .5s .2s ease both}
+
+.topnav{position:sticky;top:0;z-index:200;background:rgba(245,243,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;gap:14px;height:58px;box-shadow:0 2px 12px rgba(139,92,246,.06)}
+.tn-brand{display:flex;align-items:center;gap:9px;cursor:pointer;text-decoration:none}
+.tn-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--mc),var(--mc2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(139,92,246,.3)}
+.tn-name{font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.tn-sep{color:var(--text3);font-size:11px}
+.tn-title{font-size:13px;color:var(--text2);font-weight:500}
+.tn-prog{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)}
+.tn-pb{width:90px;height:4px;background:var(--border);border-radius:100px;overflow:hidden}
+.tn-pf{height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:100px;transition:width .5s}
+
+.layout{display:flex;min-height:calc(100vh - 58px)}
+
+.sb{width:260px;min-width:260px;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column;box-shadow:2px 0 12px rgba(139,92,246,.04)}
+.sb-head{padding:4px 8px 16px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.sb-mod-icon{width:42px;height:42px;border-radius:12px;background:var(--mcg);border:1.5px solid var(--mcb);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.sb-mod-name{font-family:'Bricolage Grotesque',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.2}
+.sb-mod-en{font-size:11px;color:var(--text3);margin-top:2px}
+.sb-sec{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;padding:0 8px;margin:14px 0 6px}
+.sb-lv-wrap{margin-bottom:10px}
+.sb-lv-label{display:flex;align-items:center;gap:6px;padding:4px 8px;margin-bottom:3px}
+.lv-dot{width:7px;height:7px;border-radius:50%}
+.lv-dot.a1{background:#f59e0b}.lv-dot.a2{background:var(--mc)}.lv-dot.b1{background:var(--ok)}.lv-dot.b2{background:#3b82f6}
+.sb-lesson{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .2s;border:1.5px solid transparent;margin-bottom:3px}
+.sb-lesson:hover:not(.locked){background:var(--mcg);color:var(--mc);border-color:var(--mcb)}
+.sb-lesson.active{background:var(--mcg);color:var(--mc);border-color:var(--mcb);font-weight:700}
+.sb-lesson.done{color:var(--ok)}
+.sb-lesson.locked{opacity:.4;cursor:not-allowed}
+.sb-lesson .sl-ic{font-size:14px;width:20px;text-align:center;flex-shrink:0}
+.sb-lesson .sl-lbl{flex:1;line-height:1.3}
+.sb-lesson .sl-st{margin-left:auto;font-size:11px;font-family:'JetBrains Mono',monospace}
+.sb-bottom{margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
+.prog-info{font-size:11px;color:var(--text3);text-align:center;margin-bottom:6px}
+.sb-prog-bar{height:5px;background:var(--border);border-radius:100px;overflow:hidden;margin-bottom:12px}
+.sb-prog-fill{height:100%;background:linear-gradient(90deg,var(--mc),var(--mc2));border-radius:100px;transition:width .6s}
+.btn-cert{width:100%;padding:10px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(139,92,246,.3)}
+.btn-cert:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,92,246,.4)}
+.btn-cert:disabled{opacity:.35;cursor:not-allowed;background:var(--border2);box-shadow:none}
+
+.main{flex:1;padding:28px 32px;max-width:820px}
+
+.news-panel{width:290px;min-width:290px;background:var(--surface);border-left:1px solid var(--border);padding:18px 14px;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;flex-shrink:0}
+.np-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.np-live{width:6px;height:6px;border-radius:50%;background:var(--mc);animation:pulse 2s infinite}
+.np-filter{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.npf{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--bg3);color:var(--text3);transition:all .2s}
+.npf.active{background:var(--mcg);color:var(--mc);border-color:var(--mcb)}
+.news-item{padding:11px;background:var(--bg3);border:1.5px solid var(--border);border-radius:11px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.news-item:hover{border-color:var(--mcb);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.ni-src{font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.ni-src span{padding:1px 6px;border-radius:3px;background:var(--mcg);color:var(--mc);border:1px solid var(--mcb)}
+.ni-title{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:4px}
+.ni-desc{font-size:11px;color:var(--text3);line-height:1.5;margin-bottom:5px}
+.ni-date{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.np-refresh{width:100%;padding:8px;background:var(--bg3);border:1.5px solid var(--border2);color:var(--text2);border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:8px;transition:all .2s}
+.np-refresh:hover{border-color:var(--mcb);color:var(--mc)}
+
+.lh{margin-bottom:22px}
+.lh-level{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px}
+.lv-badge{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.lv-a1{background:#fff8e1;color:#f59e0b;border:1.5px solid #fde68a}
+.lv-a2{background:rgba(139,92,246,.1);color:#8b5cf6;border:1.5px solid rgba(139,92,246,.25)}
+.lv-b1{background:rgba(16,185,129,.1);color:#10b981;border:1.5px solid rgba(16,185,129,.25)}
+.lv-b2{background:#eff6ff;color:#3b82f6;border:1.5px solid #bfdbfe}
+.lh-icon{width:50px;height:50px;border-radius:14px;background:var(--mcg);border:1.5px solid var(--mcb);display:flex;align-items:center;justify-content:center;font-size:23px;margin-bottom:12px}
+.lh-title{font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:5px}
+.lh-sub{font-size:14px;color:var(--text2);margin-bottom:10px}
+.lh-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:12px}
+.lh-chip{display:flex;align-items:center;gap:4px;padding:4px 10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:7px;color:var(--text2);font-weight:500}
+
+.tabs{display:flex;gap:3px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:22px}
+.tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;border-radius:9px;cursor:pointer;color:var(--text3);transition:all .2s}
+.tab:hover:not(.active){color:var(--text2);background:rgba(139,92,246,.05)}
+.tab.active{background:#fff;color:var(--mc);box-shadow:0 2px 10px rgba(139,92,246,.15);border:1.5px solid var(--mcb)}
+.tc{display:none}
+.tc.active{display:block;animation:fadeUp .3s ease}
+
+.vcard{background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.vthumb{aspect-ratio:16/9;background:linear-gradient(145deg,#0f0020,#2d1060);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.vthumb::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(139,92,246,.15),transparent)}
+.pbtn{width:66px;height:66px;background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .25s;position:relative;z-index:1}
+.vthumb:hover .pbtn{transform:scale(1.1);background:rgba(139,92,246,.3);border-color:var(--mc)}
+.vinfo{padding:16px 20px}
+.vt{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.vd{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.vmeta{display:flex;flex-wrap:wrap;gap:7px;font-size:11px}
+.vchip{padding:3px 9px;background:var(--bg3);border:1.5px solid var(--border);border-radius:5px;color:var(--text3)}
+.vbtn{margin-top:12px;padding:9px 20px;background:var(--mcg);border:1.5px solid var(--mcb);color:var(--mc);border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.vbtn:hover{background:rgba(139,92,246,.18)}
+.vbtn.alt{background:var(--bg3);border-color:var(--border2);color:var(--text2)}
+.vbtn.alt:hover{border-color:var(--mcb);color:var(--mc)}
+.cc-note{margin-top:10px;padding:9px 13px;background:#f5f3ff;border:1.5px solid #ddd6fe;border-radius:9px;font-size:12px;color:#5b21b6}
+
+.lt h4{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin:20px 0 10px}
+.lt h4:first-child{margin-top:0}
+.lt p{font-size:14px;color:var(--text2);line-height:1.85;margin-bottom:10px}
+.lt .note{background:rgba(139,92,246,.07);border-left:3px solid var(--mc);padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:13px;color:#4c1d95;line-height:1.6}
+.lt .note b{color:var(--mc);display:block;margin-bottom:3px}
+.lt .warn{background:#fffbeb;border-left:3px solid #f59e0b;padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:13px;color:#78350f;line-height:1.6}
+.lt .warn b{color:#d97706;display:block;margin-bottom:3px}
+.lt .code{background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;margin:13px 0;color:var(--text2);line-height:1.8;white-space:pre-wrap}
+.term{background:rgba(139,92,246,.1);color:#7c3aed;padding:1px 7px;border-radius:5px;font-weight:600;font-size:13px;border:1px solid rgba(139,92,246,.2)}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0}
+.ti{padding:12px 14px;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px}
+.ti-n{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.ti-d{font-size:12px;color:var(--text3);line-height:1.5}
+.ti-t{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-top:5px}
+.tdanger{background:rgba(239,68,68,.1);color:#dc2626}
+.tok{background:rgba(16,185,129,.1);color:#059669}
+.twarn{background:rgba(245,158,11,.1);color:#d97706}
+
+.task-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-lg);padding:18px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.task-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:11px}
+.tnum{width:28px;height:28px;border-radius:7px;background:var(--mcg);border:1.5px solid var(--mcb);color:var(--mc);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.ttitle{font-size:14px;font-weight:700;color:var(--text)}
+.tdesc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.tsteps{background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;padding:12px 15px;margin-bottom:12px}
+.tsteps p{font-size:12px;color:var(--text3);margin-bottom:5px;padding-left:14px;position:relative;line-height:1.5}
+.tsteps p:last-child{margin-bottom:0}
+.tsteps p::before{content:'→';position:absolute;left:0;color:var(--mc);font-weight:700}
+textarea{width:100%;padding:11px 14px;background:var(--bg3);border:1.5px solid var(--border);border-radius:9px;font-size:13px;color:var(--text);resize:vertical;min-height:90px;outline:none;transition:all .2s;line-height:1.6;font-family:'Plus Jakarta Sans',sans-serif}
+textarea:focus{border-color:var(--mc);background:#fff;box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+textarea::placeholder{color:var(--text3)}
+.tbtn{margin-top:9px;padding:8px 18px;background:var(--mcg);border:1.5px solid var(--mcb);color:var(--mc);border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.tbtn:hover{background:rgba(139,92,246,.18)}
+.tfb{margin-top:8px;padding:9px 13px;border-radius:8px;font-size:12px;display:none;line-height:1.5}
+.fbok{background:rgba(16,185,129,.08);color:#059669;border:1.5px solid var(--ok-b)}
+.fberr{background:rgba(239,68,68,.06);color:#ef4444;border:1.5px solid rgba(239,68,68,.2)}
+
+.qq{background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-lg);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.qnum{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.qtext{font-size:14px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .2s;background:#fff}
+.opt:hover{border-color:var(--mcb);background:var(--mcg);color:var(--mc)}
+.opt.sel{border-color:var(--mcb);background:var(--mcg);color:var(--mc);font-weight:600}
+.opt.ok{border-color:var(--ok-b);background:var(--ok-g);color:var(--ok)}
+.opt.bad{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.06);color:#ef4444}
+.optk{width:24px;height:24px;border-radius:6px;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.qres{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--rad-lg);padding:24px;text-align:center;margin-bottom:14px;display:none}
+.qrs{font-family:'JetBrains Mono',monospace;font-size:54px;font-weight:500;line-height:1}
+.qrl{font-size:12px;color:var(--text3);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.qrm{font-size:14px;color:var(--text2);margin-top:10px;line-height:1.6}
+.qfail{background:#fffbeb;border:1.5px solid #fde68a;border-radius:10px;padding:13px;text-align:center;margin-bottom:14px;display:none;font-size:13px;color:#78350f;line-height:1.6}
+.btn-submit{width:100%;padding:13px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:var(--rad);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 14px rgba(139,92,246,.3)}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(139,92,246,.4)}
+.btn-next{width:100%;padding:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:var(--rad);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;margin-top:10px;display:none;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 14px rgba(16,185,129,.3)}
+.btn-retry{width:100%;padding:11px;background:#fffbeb;border:1.5px solid #fde68a;color:#78350f;border-radius:var(--rad);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:10px;display:none;font-family:'Plus Jakarta Sans',sans-serif}
+
+.navbtns{display:flex;justify-content:space-between;margin-top:24px;padding-top:18px;border-top:1.5px solid var(--border)}
+.navbtn{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif}
+.navbtn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.navbtn.pri{background:var(--mcg);border-color:var(--mcb);color:var(--mc)}
+.navbtn.pri:hover{background:rgba(139,92,246,.18)}
+
+.toast{position:fixed;bottom:22px;right:22px;background:var(--mc);color:#fff;padding:11px 18px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 6px 24px rgba(139,92,246,.4)}
+.toast.show{transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="tn-brand" href="index.html">
+    <div class="tn-icon">🛡️</div>
+    <span class="tn-name">DigiComp</span>
+  </a>
+  <a href="index.html" style="display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--primary-light,var(--mcg));border:1.5px solid var(--primary-mid,var(--mcb));color:var(--primary,var(--mc));border-radius:9px;font-size:12px;font-weight:700;text-decoration:none;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif" onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">← Bosh sahifa</a>
+  <span class="tn-sep">/</span>
+  <span class="tn-title">M4 — Xavfsizlik</span>
+  <div class="tn-prog">
+    <span id="navPtxt">0/4</span>
+    <div class="tn-pb"><div class="tn-pf" id="navPbar" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sb">
+    <div class="sb-head">
+      <div class="sb-mod-icon">🛡️</div>
+      <div class="sb-mod-name">Xavfsizlik</div>
+      <div class="sb-mod-en">Safety & Security · M4</div>
+    </div>
+    <div class="sb-sec">Darslar</div>
+    <div id="sbLessons"></div>
+    <div class="sb-bottom">
+      <div class="prog-info" id="sbProgTxt">0/4 dars yakunlandi</div>
+      <div class="sb-prog-bar"><div class="sb-prog-fill" id="sbProgBar" style="width:0%"></div></div>
+      <button class="btn-cert" id="certBtn" disabled onclick="showCert()">🏆 Sertifikat olish</button>
+    </div>
+  </div>
+
+  <div class="main" id="mainContent"></div>
+
+  <div class="news-panel">
+    <div class="np-title"><span class="np-live"></span>Ta'lim yangiliklari</div>
+    <div class="np-filter">
+      <div class="npf active" onclick="filterNews('all',this)">Barchasi</div>
+      <div class="npf" onclick="filterNews('security',this)">Xavfsizlik</div>
+      <div class="npf" onclick="filterNews('ai',this)">AI</div>
+      <div class="npf" onclick="filterNews('edtech',this)">EdTech</div>
+    </div>
+    <div id="newsContainer"><div style="text-align:center;padding:28px;color:var(--text3);font-size:13px">⟳ Yuklanmoqda...</div></div>
+    <button class="np-refresh" onclick="loadNews()">⟳ Yangilash</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+// ═══════ DigiComp API ═══════
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
+async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
+async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
+async function syncAmaliy(u,mod,dar,taskNum,taskTitle,javob){if(!u)return;if(!javob||javob.trim().length<5)return;await apiPost({action:'saveAmaliy',talabId:u.email,name:u.name,modul:mod,daraja:dar,taskNum,taskTitle,javob});}
+// ════════════════════════════
+
+const MOD_ID = 'm4';
+const LEVELS = ['A1','A2','B1','B2'];
+
+const LESSONS = [
+{
+  id:0, level:'A1', icon:'🔐',
+  title:"Parol va hisob himoyasi asoslari",
+  subtitle:"Kuchli parol, 2FA, havfsiz autentifikatsiya",
+  dur:'25 daqiqa', taskCount:2, quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=sPxAHV3P4IU',
+    url2:'',
+    title:'Two Factor Authentication Explained in 3 Minutes — Animation',
+    title2:'',
+    desc:"2FA qanday ishlashini 3 daqiqada tushuntiruvchi CommonCraft animatsion video. Parol + ikkinchi tasdiqlash qanday himoya beradi — sodda va vizual tushuntiriladi. Yuz ko'rinmaydi, to'liq animatsiya.",
+    dur:'~10 daqiqa', lang:'Inglizcha (CC)', lang2:''
+  },
+  text:`
+<h4>Raqamli xavfsizlik — o'qituvchi uchun nima uchun muhim?</h4>
+<p>O'qituvchi shaxsiy ma'lumotlar bilan ishlaydi: talabalar bahosi, ota-onalar kontakti, sinf jadvallari. Bu ma'lumotlar noto'g'ri qo'llarga tushsa jiddiy muammolar yuzaga keladi. <span class="term">DigCompEdu 6.4</span> frameworkiga ko'ra, pedagogik raqamli kompetentlikning ajralmas qismi — o'z va talabalar ma'lumotlarini himoya qilish ko'nikmasi.</p>
+
+<div class="warn"><b>⚠️ Haqiqiy holat — O'zbekiston</b>2023-yilda O'zbekiston ta'lim tizimida 47 ta ma'lumot sızıntısı qayd etildi. Ko'pchiligi zaif parol yoki fishing hujumlari natijasida yuzaga keldi.</div>
+
+<h4>Kuchli parol nima?</h4>
+<p>Ko'pchilik "kuchli parol" deganda murakkab belgilar kombinatsiyasini tushunadi. Lekin eng zamonaviy standart — <span class="term">passphrase</span> yondashuvi:</p>
+<div class="code">ZAIF PAROLLAR (hech qachon ishlatmang):
+  ✗  123456, password, qwerty
+  ✗  Ismingiz + tug'ilgan yil: Feruza1990
+  ✗  Maktab nomi: School42uz
+
+KUCHLI PAROL USULLARI:
+  ✓  Passphrase: "Olma-Sariq-Kompyuter-2024!"
+     (4 tasodifiy so'z + raqam = 30+ belgi)
+  ✓  Tasodifiy: "Kx9#mP2@vL7$nQ"
+     (harf + raqam + belgi, 12+ belgi)
+  ✓  Parol menejeri: Bitwarden (bepul)
+     yordamida har sayt uchun alohida parol
+
+MINIMAL TALAB (NIST 2024 standart):
+  → 12 ta belgi (eski: 8 ta)
+  → Lug'atda bo'lmasin
+  → Saytlar o'rtasida bir xil bo'lmasin</div>
+
+<h4>Ikki bosqichli autentifikatsiya (2FA)</h4>
+<p><span class="term">Two-Factor Authentication (2FA)</span> — paroldan tashqari ikkinchi tasdiqlash usuli. Hatto parolingiz o'g'irlansa ham, hisob himoyalanadi.</p>
+<div class="tg">
+  <div class="ti"><div class="ti-n">📱 SMS kodi</div><div class="ti-d">Telefonga kod keladi — eng keng tarqalgan, lekin eng zaif 2FA turi (SIM swap hujumiga moyil)</div><span class="ti-t twarn">O'rtacha</span></div>
+  <div class="ti"><div class="ti-n">🔑 Authenticator ilovasi</div><div class="ti-d">Google Authenticator, Authy — har 30 soniyada yangi kod. SMS dan xavfsizroq</div><span class="ti-t tok">Tavsiya etiladi</span></div>
+  <div class="ti"><div class="ti-n">📧 Email kodi</div><div class="ti-d">Emailga kod — email hacklanmagan bo'lsa yaxshi, lekin hisob emailga bog'liq bo'ladi</div><span class="ti-t twarn">O'rtacha</span></div>
+  <div class="ti"><div class="ti-n">🔐 Hardware key</div><div class="ti-d">YubiKey — fizik kalit. Eng xavfsiz, lekin qimmat ($50+). Yuqori xavfli hisoblarga</div><span class="ti-t tok">Eng xavfsiz</span></div>
+</div>
+
+<h4>O'qituvchi uchun amaliy qoidalar</h4>
+<div class="code">ALBATTA bajaring:
+  ✓ Gmail, Google Classroom → 2FA yoqing
+  ✓ Har platforma uchun ALOHIDA parol
+  ✓ Bitwarden (bepul) parol menejeri o'rnating
+  ✓ Parolingizni hech kimga aytmang (o'quvchiga ham!)
+  ✓ Ish va shaxsiy email — alohida
+
+HECH QACHON qilmang:
+  ✗ Parolni qog'ozga yozib monitorga yopmaslik
+  ✗ "Meni eslab qol" — umumiy kompyuterlarda
+  ✗ Bir xil parolni ko'p joyda ishlatish
+  ✗ Parolni email yoki Telegram orqali yuborish</div>`,
+  tasks:[
+    {
+      num:'01', title:"Parol mustahkamligini tekshiring",
+      desc:"HaveIBeenPwned.com saytida o'z email manzilingizni tekshiring (ma'lumotlar bazasiga tushganmi?). So'ngra bitta kuchli parol yarating va uni tahlil qiling.",
+      steps:["haveibeenpwned.com ga kiring","Emailingizni kiriting (faqat email, parol shart emas)","Natijani ko'ring — qancha ma'lumot sızıntısı?","Passphrase usulida yangi parol yarating: 4 so'z + raqam","Bitwarden.com da bepul akkaunt oching"],
+      ph:"Email tekshiruv natijasi: ... marta ma'lumot sızıntısı topildi\n\nYaratilgan parol (faqat namuna ko'rinishida yozing, haqiqiy parolni yozmang):\nMisol: '[So'z1]-[So'z2]-[So'z3]-[Raqam]!' formatida\n\nBitwarden o'rnatildi: Ha / Yo'q\n\nNatijadan nima xulosa chiqardim: ..."
+    },
+    {
+      num:'02', title:"Google hisobingizda 2FA yoqing",
+      desc:"Gmail/Google hisobingizda ikki bosqichli autentifikatsiyani yoqing. Authenticator ilovasini o'rnating.",
+      steps:["Google hisobingizga kiring → Xavfsizlik bo'limi","2-Step Verification → Get Started","Authenticator App ni tanlang","Google Authenticator yoki Authy ilovasini o'rnating","QR kodni skanerlang","Sinov kodini kiriting va tasdiqlang"],
+      ph:"2FA yoqildi: Ha / Yo'q\nIshlatilgan usul: SMS / Authenticator / Email\n\nQiyinchiliklar: ...\n\nIkkinchi hisob (Classroom, Moodle) uchun ham rejam: ...\n\nTalabalarga 2FA ni o'rgatishda qanday tushuntiraman: ..."
+    }
+  ],
+  quiz:[
+    {q:"NIST 2024 standartiga ko'ra minimal parol uzunligi?",o:["8 belgi","10 belgi","12 belgi","16 belgi"],a:2},
+    {q:"Eng xavfsiz 2FA usuli qaysi?",o:["SMS kodi","Email kodi","Authenticator ilovasi","Hardware key (YubiKey)"],a:3},
+    {q:"'Passphrase' usuli nima?",o:["Bitta uzun so'z","4 ta tasodifiy so'z kombinatsiyasi","Raqamlar ketma-ketligi","Maxfiy savol"],a:1},
+    {q:"HaveIBeenPwned.com nima uchun ishlatiladi?",o:["Parol yaratish","Email ma'lumot sızıntısını tekshirish","2FA yoqish","Virus tekshirish"],a:1},
+    {q:"Qaysi parol eng zaif?",o:["Kx9#mP2@vL7","Olma-Sariq-Tog-2024","Feruza1990","j7!Ks@9Lm"],a:2},
+    {q:"O'qituvchi umumiy kompyuterda 'Remember me' ni bosishi mumkinmi?",o:["Ha, qulay","Faqat maktab kompyuterida","Yo'q, hech qachon","Faqat klass kompyuterida"],a:2}
+  ]
+},
+{
+  id:1, level:'A2', icon:'🦠',
+  title:"Kiberxavfsizlik: phishing va zararli dasturlar",
+  subtitle:"Fishing hujumlar, virus, ransomware, xavfsiz internet",
+  dur:'30 daqiqa', taskCount:2, quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=Y7zNlEMDmI4',
+    url2:'https://www.youtube.com/watch?v=PWBE2UxcWNk',
+    title:'Phishing Attacks Explained — Animated (Kaspersky)',
+    title2:'How Ransomware Works — Animation',
+    desc:"Phishing hujumlari qanday ishlaydi — Kaspersky animatsion video. Aldamchi email va saytlarni qanday aniqlash ko'rsatiladi. To'liq animatsiya, yuz ko'rinmaydi.",
+    dur:'~8 daqiqa', lang:'Inglizcha (CC)', lang2:'Inglizcha (CC)'
+  },
+  text:`
+<h4>Phishing — eng keng tarqalgan kiberhujum</h4>
+<p><span class="term">Phishing</span> — hujumchi o'zini ishonchli tashkilot (bank, Google, hukumat, maktab) sifatida ko'rsatib, sizdan parol, kredit karta yoki shaxsiy ma'lumot o'g'irlashga urinishi. UNESCO ma'lumotlariga ko'ra, barcha kiberhujumlarning 91% i phishing bilan boshlanadi.</p>
+
+<div class="warn"><b>⚠️ Haqiqiy misol</b>"Sizning Google hisobingiz bloklandi. Iltimos, quyidagi havolaga bosib tasdiqlang" — bu klassik phishing. Google hech qachon shunday xabar yubormaydi.</div>
+
+<h4>Phishing turları va ularni aniqlash</h4>
+<div class="code">EMAIL PHISHING — eng keng tarqalgan
+  Belgilar:
+  → Shoshilinch til: "24 soat ichida!", "Darhol!"
+  → Noto'g'ri domain: support@g00gle.com (nol!)
+  → Umumiy murojaat: "Hurmatli foydalanuvchi"
+  → Noma'lum havola: hover bilan tekshiring
+
+SPEAR PHISHING — maqsadli hujum
+  → Ismingiz bilan murojaat
+  → Ish joyi yoki o'quvchilarni biladi
+  → Ishonchli ko'rinadi — ehtiyot bo'ling!
+
+SMISHING — SMS phishing
+  → "Sizga yutuq! Havolani bosing"
+  → Bank nomi bilan SMS
+
+VISHING — telefon phishing
+  → "Biz bank xodimiyмiz, kartangiz..."</div>
+
+<h4>Zararli dasturlar (Malware) turlari</h4>
+<div class="tg">
+  <div class="ti"><div class="ti-n">🦠 Virus</div><div class="ti-d">O'zini ko'paytiradi, fayllarga yopishadi. Elektrоn pochta orqali tarqaladi</div><span class="ti-t tdanger">Xavfli</span></div>
+  <div class="ti"><div class="ti-n">🔒 Ransomware</div><div class="ti-d">Fayllaringizni shifrlaydi, pul so'raydi. Ta'lim muassasalari asosiy nishon!</div><span class="ti-t tdanger">Juda xavfli</span></div>
+  <div class="ti"><div class="ti-n">👁 Spyware</div><div class="ti-d">Klaviatura bosilishlarini yozadi, parollarni o'g'irlaydi</div><span class="ti-t tdanger">Xavfli</span></div>
+  <div class="ti"><div class="ti-n">📢 Adware</div><div class="ti-d">Keraksiz reklama chiqaradi. Odatda bepul dasturlar bilan keladi</div><span class="ti-t twarn">Bezovta</span></div>
+</div>
+
+<h4>Himoya qilish qoidalari</h4>
+<div class="code">TEXNIK HIMOYA:
+  ✓ Antivirus: Windows Defender (bepul, yetarli)
+  ✓ Brauzer: Chrome/Firefox — avtomatik yangilanadi
+  ✓ OS: Windows yangilanishlarini o'chirmang
+  ✓ Backup: muhim fayllar Google Drive/OneDrive da
+  ✓ VPN: jamoat Wi-Fi da majburiy (Proton VPN bepul)
+
+XATTI-HARAKAT:
+  ✓ Noma'lum havolani bosmasdan oldin hover qiling
+  ✓ URL ni diqqat bilan o'qing (g00gle ≠ google)
+  ✓ Noma'lum yuborilgan faylni ochmang (.exe, .zip)
+  ✓ Shubhali xabar → o'chirish yoki IT ga murojaat
+  ✓ Agar phishing bo'lsa → reportphishing@google.com</div>`,
+  tasks:[
+    {
+      num:'01', title:"Phishing emailni aniqlash mashqi",
+      desc:"Quyidagi 3 ta xabardan qaysilari phishing ekanini aniqlang va sababini tushuntiring. Har biri uchun 2-3 ta belgi ko'rsating.",
+      steps:["Har xabarni diqqat bilan o'qing","Domain nomini tekshiring","Til va shoshilinchlikni baholang","Havolani (link) tahlil qiling","Phishing yoki real ekanini belgilang"],
+      ph:'Xabar 1: "Sizning Google Drive almashuvingiz to\'lib ketdi. Hisob qaydnomangizni yangilash uchun HOZIROQ bosing: drive-google-update.xyz/verify"\nPhishing/Real: ...\nSabablar: ...\n\nXabar 2: "Qo\'qon DU, 15-dekabr. Imtihon jadvali o\'zgardi. Yangi jadval: edu.uzedu.uz/schedule"\nPhishing/Real: ...\nSabablar: ...\n\nXabar 3: "Tabriklaymiz! Siz 500 dollar yutuq qozonding. 24 soat ichida tasdiqla: bit.ly/win500uz"\nPhishing/Real: ...\nSabablar: ...'
+    },
+    {
+      num:'02', title:"Kompyuteringizni tekshiring",
+      desc:"Kompyuteringizda antivirus va xavfsizlik sozlamalarini tekshiring. Windows Security yoki boshqa antivirus holatini ko'ring.",
+      steps:["Windows → Settings → Windows Security oching","Protection History ni ko'ring — hujum bo'lganmi?","Virus & threat protection → Quick Scan bosing","Firewall & network protection — yoqilganmi?","Browser extension larni tekshiring — noma'lumlar bormi?"],
+      ph:"Antivirus holati: ...\nSo'ngi skan sanasi: ...\nTahdidlar topildimi: Ha/Yo'q\n\nFirewall holati: Yoqilgan/O'chirilgan\n\nBrauzer kengaytmalari tekshiruvi:\nShubhali kengaytmalar: ...\n\nNatijadan xulosa: ..."
+    }
+  ],
+  quiz:[
+    {q:"Phishing hujumlarining qancha foizi email orqali boshlanadi (UNESCO)?",o:["45%","67%","91%","100%"],a:2},
+    {q:"Quyidagilardan qaysi biri phishing belgisi?",o:["Ismingiz bilan murojaat","'Hurmatli foydalanuvchi' deb murojaat","Gmail dan kelgan","Rasmiy logotip bor"],a:1},
+    {q:"Ransomware nima qiladi?",o:["Parollarni o'g'irlaydi","Fayllarni shifrlaydi va pul so'raydi","Reklamalar chiqaradi","Internetni sekinlashtiradi"],a:1},
+    {q:"Jamoat Wi-Fi da nima ishlatish shart?",o:["Antivirus","VPN","Firewall","Tor brauzer"],a:1},
+    {q:"Noma'lum .exe fayl keldi — nima qilasiz?",o:["Ochamiz","IT xizmatiga murojaat qilamiz va o'chiramiz","Antivirusga sканирование qilamiz va ochamiz","Birinchi nusxasini olamiz"],a:1},
+    {q:"Phishing emailni topshirish uchun Gmail da nima qilish kerak?",o:["O'chirish","Report spam","Report phishing","Bloklash"],a:2}
+  ]
+},
+{
+  id:2, level:'B1', icon:'📋',
+  title:"Talabalar ma'lumotlarini himoya qilish (PDPA/GDPR)",
+  subtitle:"DigCompEdu 6.4 — Shaxsiy ma'lumotlar, talabalar huquqlari, etika",
+  dur:'35 daqiqa', taskCount:2, quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=acijNEErf-c',
+    url2:'',
+    title:"GDPR Explained — Animated Guide for Teachers",
+    title2:'',
+    desc:"GDPR va ma'lumotlarni himoya qilish qonuni o'qituvchilar uchun tushuntiriladi. Maktab muhitida qanday qoidalarga rioya qilish kerak — animatsion ko'rsatma. Yuz yo'q.",
+    dur:'~12 daqiqa', lang:'Inglizcha (CC)', lang2:''
+  },
+  text:`
+<h4>Nima uchun o'qituvchi PDPA/GDPR ni bilishi kerak?</h4>
+<p>O'qituvchi har kuni talabalar haqida ma'lumot bilan ishlaydi: ism, familiya, baho, sog'liq holati, oilaviy vaziyat. Bu ma'lumotlarning noto'g'ri tarqalishi qonuniy javobgarlikka sabab bo'ladi. <span class="term">DigCompEdu 6.4</span> frameworki o'qituvchilarning ma'lumotlar himoyasi sohasidagi malakasini alohida kompetentlik sifatida belgilaydi.</p>
+<p>O'zbekistonda <span class="term">Shaxsga doir ma'lumotlar to'g'risida</span>gi qonun (2019) mavjud bo'lib, u xalqaro GDPR standartlariga asoslangan. Xalqaro platformalar (Google, Microsoft) ishlatilganda GDPR qoidalari ham amal qiladi.</p>
+
+<div class="note"><b>📌 DigCompEdu 6.4 — Ma'lumotlarni himoya qilish</b>Bu kompetentlik o'qituvchidan talab qiladi: (1) ta'limda ishlatilayotgan platformalar qanday ma'lumot to'plashini tushunish, (2) talabalar ma'lumotlarini himoya qilish choralarini ko'rish, (3) talabalar va ota-onalarga ma'lumot huquqlarini tushuntirish.</div>
+
+<h4>Maktab muhitida GDPR asoslari</h4>
+<div class="code">ASOSIY TAMOYILLAR:
+  Maqsad chegaralash:
+    → Ma'lumotni faqat ta'lim maqsadida ishlating
+    → Ota-ona roziligi bo'lmasa — surat/video olish mumkin emas
+    
+  Minimallashtirish:
+    → Faqat zaruriy ma'lumotni to'plang
+    → Talaba telefon raqami — zarurmi?
+    
+  Xavfsizlik:
+    → Google Classroom — EU serverlarida, GDPR mos
+    → Telegram — GDPR muammoli, rasmiy dars uchun mos emas
+    → WhatsApp — shaxsiy ma'lumot to'playdi
+
+  Shaffoflik:
+    → Talabalar qanday ma'lumot saqlanishini bilishi kerak
+    → Ota-onalar so'rasa — ma'lumotni ko'rsating</div>
+
+<h4>O'qituvchi qanday platforma tanlashi kerak?</h4>
+<div class="tg">
+  <div class="ti"><div class="ti-n">✅ Google Classroom</div><div class="ti-d">GDPR mos, FERPA mos, EU serverlar. Ta'lim uchun rasmiy tavsiya etiladi</div><span class="ti-t tok">Xavfsiz</span></div>
+  <div class="ti"><div class="ti-n">✅ Microsoft Teams Edu</div><div class="ti-d">GDPR mos, ISO 27001 sertifikatlangan, FERPA mos</div><span class="ti-t tok">Xavfsiz</span></div>
+  <div class="ti"><div class="ti-n">⚠️ Telegram</div><div class="ti-d">GDPR muammoli, shaxsiy ma'lumot to'playdi, rasmiy ta'lim uchun mos emas</div><span class="ti-t twarn">Ehtiyot</span></div>
+  <div class="ti"><div class="ti-n">❌ TikTok</div><div class="ti-d">Ko'plab davlatlar maktablarda ta'qiqlagan. 18 yoshgacha talabalar uchun mos emas</div><span class="ti-t tdanger">Mos emas</span></div>
+</div>
+
+<h4>Talabalar ma'lumotlari — amaliy qoidalar</h4>
+<div class="code">QILISH KERAK:
+  ✓ Baholar → faqat yopiq tizimda (Classroom, Moodle)
+  ✓ Rasm/video → ota-ona yozma ruxsati
+  ✓ Guruh chati → Telegram o'rniga Classroom Stream
+  ✓ Test natijalari → umumiy e'lon qilmang (ism bilan)
+  ✓ Kuzatish mos asboblar: faqat ta'lim sertifikatlangan
+
+QILMASLIK KERAK:
+  ✗ Talaba ismini va bahosini ochiq Telegram da e'lon qilish
+  ✗ Talaba suratini ijtimoiy tarmoqda ruxsatsiz joylashtirish
+  ✗ Baholar ro'yxatini email bilan ommaviy yuborish
+  ✗ Talabalar haqida malumoтni uchinchi shaxsga berish</div>`,
+  tasks:[
+    {
+      num:'01', title:"Platformalarni GDPR nuqtai nazaridan baholang",
+      desc:"O'z maktabingiz/universitetingizda ishlatilayotgan 3 ta raqamli platformani GDPR/PDPA talablariga mos kelishini baholang. Har biri uchun xavf darajasini belgilang.",
+      steps:["Hozir ishlatayotgan 3 ta platformani yozing","Har platformaning privacy policy ni tekshiring (Google: 'GDPR compliance' search)","Ma'lumot qayerda saqlanishini aniqlang (EU/US/Boshqa)","GDPR moslik sertifikati bormi?","Xavf darajasi: Xavfsiz / Ehtiyot / Mos emas"],
+      ph:"Platforma 1: ...\n  Ma'lumot joylashuvi: ...\n  GDPR sertifikat: Ha/Yo'q\n  Xavf darajasi: ...\n\nPlatforma 2: ...\n  Ma'lumot joylashuvi: ...\n  GDPR sertifikat: Ha/Yo'q\n  Xavf darajasi: ...\n\nPlatforma 3: ...\n  Ma'lumot joylashuvi: ...\n  GDPR sertifikat: Ha/Yo'q\n  Xavf darajasi: ...\n\nXulosa — qaysi platformani almashtirishni tavsiya etaman: ..."
+    },
+    {
+      num:'02', title:"Ma'lumotlar himoyasi siyosati namunasini tuzing",
+      desc:"O'z sinfingiz uchun oddiy 'Raqamli ma'lumot himoyasi qoidalari' (1 sahifa) tuzib ko'ring. Talabalar va ota-onalar uchun tushunarli tilda yozing.",
+      steps:["Qoidalar sarlavhasini yozing","Nima ma'lumot to'planishini ko'rsating","Ma'lumot qayerda saqlanishini yozing","Rasm/video qoidasini yozing","Talabalar huquqlarini yozing (ma'lumotni ko'rish, o'chirish)","Murojaat kontaktini qo'shing"],
+      ph:"[SINF/KURS] RAQAMLI MA'LUMOT HIMOYASI QOIDALARI\n\n1. Qanday ma'lumot to'planadi:\n...\n\n2. Ma'lumot qayerda saqlanadi:\n...\n\n3. Rasm va video qoidasi:\n...\n\n4. Talabalar huquqlari:\n...\n\n5. Murojaat uchun: ..."
+    }
+  ],
+  quiz:[
+    {q:"DigCompEdu 6.4 kompetentligi nimaga bag'ishlangan?",o:["Parol xavfsizligi","O'qituvchining ma'lumotlar himoyasi malakasi","Antivirus dasturlari","Shifrlash texnologiyasi"],a:1},
+    {q:"O'zbekistonda talabalar ma'lumotlarini tartibga soluvchi asosiy qonun?",o:["IT qonuni 2018","Shaxsga doir ma'lumotlar to'g'risida qonun 2019","Ta'lim qonuni","Raqamli O'zbekiston strategiyasi"],a:1},
+    {q:"Quyidagilardan qaysi platforma GDPR mos?",o:["TikTok","Telegram","Google Classroom","WhatsApp"],a:2},
+    {q:"Talaba suratyini ijtimoiy tarmoqda joylashtirish uchun nima kerak?",o:["Talabaning ruxsati","Ota-onaning yozma ruxsati","Maktab direktorining ruxsati","Ruxsat kerak emas"],a:1},
+    {q:"GDPR da 'minimallashtirish' tamoyili nimani anglatadi?",o:["Kam ma'lumot yuborish","Faqat zaruriy ma'lumot to'plash","Ma'lumotni o'chirish","Ma'lumotni shifrlash"],a:1},
+    {q:"Baholar ro'yxatini ommaga e'lon qilish to'g'rimi?",o:["Ha, shaffoflik uchun","Faqat raqam bilan (ism yo'q)","Yo'q, talabalar huquqini buzadi","Faqat yuqori baholar"],a:2}
+  ]
+},
+{
+  id:3, level:'B2', icon:'🏛️',
+  title:"Raqamli identitet va institutional xavfsizlik",
+  subtitle:"Professional raqamli identitet, ta'lim tizimi xavfsizligi, yaxshi amaliyot",
+  dur:'40 daqiqa', taskCount:2, quizCount:6,
+  video:{
+    url:'https://www.youtube.com/watch?v=Rg5NxQlrGI4',
+    url2:'',
+    title:'Digital Identity & Cybersecurity for Educators — Screencast',
+    title2:'',
+    desc:"O'qituvchilar uchun raqamli identitet va kiberxavfsizlik. Maktab tarmoqlari, bulut xotira xavfsizligi va professional online mavjudlik. Faqat ekran ko'rsatmasi.",
+    dur:'~15 daqiqa', lang:'Inglizcha (CC)', lang2:''
+  },
+  text:`
+<h4>Raqamli identitet — o'qituvchi uchun</h4>
+<p><span class="term">Raqamli identitet</span> — internetda siz haqingizda mavjud bo'lgan barcha ma'lumotlar yig'indisi. Bu o'z-o'zidan shakllanadi yoki ongli ravishda boshqariladi. O'qituvchi sifatida professional raqamli identitetingizni boshqarish — bu DigCompEdu ning muhim qismi.</p>
+
+<div class="note"><b>📌 Google o'zingizni</b>Ismingizni Google da qidiring. Nima chiqadi? Professionallarga yarasha ma'lumot bormi? Nojo'ya kontent bormi? Bu — sizning raqamli izingiz.</div>
+
+<h4>Professional raqamli identitet qurish</h4>
+<div class="code">PROFESSIONAL MAVJUDLIK:
+  LinkedIn:
+    → CV, malaka va sertifikatlar
+    → Professional maqolalar
+    → Kasbdoshlar bilan aloqa
+
+  Academia.edu / ResearchGate:
+    → Ilmiy maqolalar, tadqiqotlar
+    → Dissertatsiya uchun zarur!
+
+  ORCID (orcid.org):
+    → Ilmiy tadqiqotchi ID raqami
+    → Xalqaro bazalarda aniqlash uchun
+    → Bepul, 5 daqiqada ro'yxatdan
+
+  Moodle/Classroom profili:
+    → Rasmiy foto (professional)
+    → Qisqa kasbiy tavsif</div>
+
+<h4>Ta'lim muassasasi tarmoq xavfsizligi</h4>
+<p>Maktab/universitet tarmog'i korporativ xavfsizlik talablariga javob berishi kerak. <span class="term">Zero Trust</span> modeli — hech kimga ishonma, hamma narsani tekshir — zamonaviy ta'lim tarmog'ining asosi.</p>
+<div class="tg">
+  <div class="ti"><div class="ti-n">🔒 Tarmoq segmentatsiyasi</div><div class="ti-d">Talabalar va o'qituvchilar tarmog'i alohida. Admin tizimiga umumiy kirish yo'q</div><span class="ti-t tok">Muhim</span></div>
+  <div class="ti"><div class="ti-n">📡 WPA3 Wi-Fi</div><div class="ti-d">WPA2 dan yangi, kuchli shifrlash. Maktab Wi-Fi da WPA3 bo'lishi kerak</div><span class="ti-t tok">Standart</span></div>
+  <div class="ti"><div class="ti-n">🖥️ MDM tizimi</div><div class="ti-d">Mobile Device Management — maktab qurilmalarini markazdan boshqarish</div><span class="ti-t twarn">Katta maktablar</span></div>
+  <div class="ti"><div class="ti-n">📋 Audit jurnali</div><div class="ti-d">Kim, qachon, nimaga kirgan — barcha faoliyat qayd etiladi</div><span class="ti-t tok">Majburiy</span></div>
+</div>
+
+<h4>Xavfsizlik hodisasi bo'lganda nima qilish kerak?</h4>
+<div class="code">HODISA BOSHQARUV ALGORITMI (Incident Response):
+
+  1. ANIQLASH (Identify):
+     → "Nima bo'ldi?" — aniq belgilang
+     → Qaysi tizim, qaysi ma'lumot ta'sirlandi?
+
+  2. TO'XTATISH (Contain):
+     → Tarmoqdan uzib qo'ying (ethernet kabeli)
+     → Hisobni bloklang (admin ga xabar)
+     → Boshqa qurilmalarga o'tkazilmasin
+
+  3. BARTARAF ETISH (Eradicate):
+     → IT xizmat bilan ishlang
+     → Antivirus skan qiling
+     → Parollarni almashtiring
+
+  4. TIKLASH (Recover):
+     → Backup dan tiklang
+     → Tizimni qayta tekshiring
+
+  5. SABOQ (Lessons Learned):
+     → Nima xato bo'ldi?
+     → Keyingi safar qanday oldini olish?</div>`,
+  tasks:[
+    {
+      num:'01', title:"ORCID va professional profil yarating",
+      desc:"orcid.org da bepul ORCID ID oling. So'ngra LinkedIn profilingizni (yoki boshqa professional platforma) raqamli xavfsizlik nuqtai nazaridan ko'rib chiqing.",
+      steps:["orcid.org ga kiring va bepul ro'yxatdan o'ting","Ismingiz, affiliation (Qo'qon DU), malaka yozing","ORCID ID raqamingizni saqlang (0000-xxxx-xxxx-xxxx)","LinkedIn da Privacy Settings → tekshiring","Qaysi ma'lumotingiz ommaga ko'rinishini sozlang"],
+      ph:"ORCID ID: 0000-...\n\nLinkedIn/Professional profil URL: ...\n\nOmmaga ko'rinadigan ma'lumotlar:\n+ Ko'rinsin: ...\n- Ko'rinmasin: ...\n\nProfessional profilim haqida xulosa: ...\n\nBu dissertatsiyam uchun qanday foyda beradi: ..."
+    },
+    {
+      num:'02', title:"Xavfsizlik hodisasi reaksiya rejasi tuzing",
+      desc:"O'z sinfingiz uchun 'Raqamli xavfsizlik hodisasi bo'lganda nima qilish kerak?' — oddiy instruksiya tuzing. 5 qadamda.",
+      steps:["Hodisa turlarini belgilang (fishing, virus, hisob o'g'irlanish)","Har tur uchun birinchi qadam","Kimga murojaat qilish kerak (IT, rahbariyat)","Qanday hujjatlashtirish","Talabalarni qanday xabardor qilish"],
+      ph:"[MAKTAB/UNIVERSITETINGIZ NOMI]\nRaqamli xavfsizlik hodisasi instruksiyasi\n\nHodisa 1: Fishing email keldi\n  1-qadam: ...\n  Murojaat: ...\n\nHodisa 2: Hisobga kirish mumkin emas\n  1-qadam: ...\n  Murojaat: ...\n\nHodisa 3: Kompyuterda virus\n  1-qadam: ...\n  Murojaat: ...\n\nIT xizmat kontakti: ..."
+    }
+  ],
+  quiz:[
+    {q:"ORCID nima uchun?",o:["Parol saqlash","Ilmiy tadqiqotchi xalqaro ID raqami","Antivirus dastur","VPN xizmat"],a:1},
+    {q:"'Zero Trust' modeli nimani anglatadi?",o:["Hech kimga ishonmaslik, hamma narsani tekshirish","Faqat adminlarga ishonish","Internet o'chirish","Faqat shifrlangan aloqa"],a:0},
+    {q:"Xavfsizlik hodisasida birinchi qadam nima?",o:["Parolni almashtirish","Hodisani aniqlab, tizimni tarmoqdan uzish","IT ga murojaat","Backup dan tiklash"],a:1},
+    {q:"WPA3 nima?",o:["Antivirus dastur","Wi-Fi shifrlash standarti","Tarmoq monitoring","VPN protokol"],a:1},
+    {q:"Raqamli identitetingizni tekshirish uchun nima qilish kerak?",o:["Parolni o'zgartirish","Ismingizni Google da qidirish","Privacy settings ni tekshirish","2FA yoqish"],a:1},
+    {q:"DigCompEdu qaysi kompetentlik sohasida ma'lumot himoyasini ko'rib chiqadi?",o:["Area 1","Area 4","Area 6","Area 3"],a:2}
+  ]
+}
+];
+
+let userLevel = parseInt(localStorage.getItem('m4_entry_level') || '0');
+let quizScores = JSON.parse(localStorage.getItem('m4_quiz_scores') || '{}');
+let completedLessons = JSON.parse(localStorage.getItem('m4_completed') || '[]');
+let currentLesson = userLevel;
+let quizAns = [], quizDone = false;
+let userName = 'Talaba';
+let allNews = [], currentFilter = 'all';
+
+const mainUser = localStorage.getItem('dc2_cur') ? JSON.parse(localStorage.getItem('dc2_cur')) : null;
+if(mainUser && mainUser.levels && mainUser.levels.m4) {
+  const lm = {A1:0,A2:1,B1:2,B2:3};
+  userLevel = lm[mainUser.levels.m4] || 0;
+  userName = mainUser.name || 'Talaba';
+  localStorage.setItem('m4_entry_level', userLevel);
+}
+
+function isUnlocked(idx) {
+  if(idx <= userLevel) return true;
+  return quizScores[idx-1] !== undefined && quizScores[idx-1] >= 70;
+}
+
+function renderSidebar() {
+  const lvCls = ['a1','a2','b1','b2'];
+  const lvNames = ["Boshlang'ich",'Asosiy',"O'rta",'Mustaqil'];
+  let html = '';
+  LESSONS.forEach((L,i) => {
+    const locked = i > userLevel && !isUnlocked(i);
+    const done = completedLessons.includes(i);
+    const active = i === currentLesson;
+    const qs = quizScores[i];
+    const st = locked ? '🔒' : done ? '✅' : active ? '📖' : '○';
+    html += `<div class="sb-lv-wrap">
+      <div class="sb-lv-label">
+        <span class="lv-dot ${lvCls[i]}"></span>
+        <span style="font-size:11px;color:var(--text2);font-weight:600">${LEVELS[i]} — ${lvNames[i]}</span>
+      </div>
+      <div class="sb-lesson${active?' active':''}${done?' done':''}${locked?' locked':''}"
+           onclick="${locked ? 'lockedMsg('+i+')' : 'showLesson('+i+')'}">
+        <span class="sl-ic">${L.icon}</span>
+        <span class="sl-lbl">${L.title}</span>
+        <span class="sl-st">${st}${qs !== undefined ? ' '+qs+'%' : ''}</span>
+      </div>
+    </div>`;
+  });
+  document.getElementById('sbLessons').innerHTML = html;
+  const d = completedLessons.length;
+  document.getElementById('sbProgTxt').textContent = d + '/4 dars yakunlandi';
+  document.getElementById('sbProgBar').style.width = (d*25) + '%';
+  document.getElementById('certBtn').disabled = d < 4;
+  document.getElementById('navPtxt').textContent = d + '/4';
+  document.getElementById('navPbar').style.width = (d*25) + '%';
+}
+
+function lockedMsg(i) { showToast('🔒 Avval ' + LESSONS[i-1].level + ' quizini 70%+ bilan o\'ting'); }
+
+function showLesson(idx) {
+  if(idx > userLevel && !isUnlocked(idx)) { lockedMsg(idx); return; }
+  currentLesson = idx; quizAns = []; quizDone = false;
+  renderSidebar();
+  const L = LESSONS[idx];
+  const lvBadge = ['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
+  document.getElementById('mainContent').innerHTML = `
+    <div class="lh au">
+      <div class="lh-level">
+        <span class="lv-badge ${lvBadge}">${L.level}</span>
+        <span style="font-size:12px;color:var(--text3)">daraja</span>
+      </div>
+      <div class="lh-icon">${L.icon}</div>
+      <div class="lh-title">${L.title}</div>
+      <div class="lh-sub">${L.subtitle}</div>
+      <div class="lh-meta">
+        <span class="lh-chip">⏱ ${L.dur}</span>
+        <span class="lh-chip">🛠 ${L.taskCount} amaliy</span>
+        <span class="lh-chip">❓ ${L.quizCount} quiz</span>
+        ${completedLessons.includes(idx)?'<span class="lh-chip" style="color:var(--ok);border-color:var(--ok-b)">✅ Yakunlangan</span>':''}
+        ${quizScores[idx]!==undefined?'<span class="lh-chip" style="color:var(--mc)">Quiz: '+quizScores[idx]+'%</span>':''}
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="stab(this,'video')">🎬 Video</div>
+      <div class="tab" onclick="stab(this,'matn')">📄 Matn</div>
+      <div class="tab" onclick="stab(this,'amaliy')">🛠 Amaliy</div>
+      <div class="tab" onclick="stab(this,'quiz')">✅ Quiz</div>
+    </div>
+    <div id="tc-video" class="tc active">${renderVideo(L)}</div>
+    <div id="tc-matn"  class="tc">${renderMatn(L)}</div>
+    <div id="tc-amaliy" class="tc">${renderAmaliy(L,idx)}</div>
+    <div id="tc-quiz"  class="tc">${renderQuiz(L,idx)}</div>
+    <div class="navbtns">
+      ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`:`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderVideo(L) {
+  const v = L.video;
+  const badge = `<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 ${(v.lang||'').toUpperCase()}</span>`;
+  return `<div class="vcard">
+    <div class="vthumb" onclick="window.open('${v.url}','_blank')">
+      <div class="pbtn">▶</div>
+      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1">
+        <div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.8)">${v.title}</div>
+      </div>
+    </div>
+    <div class="vinfo">
+      <div style="margin-bottom:10px">${badge}</div>
+      <div class="vt">${v.title}</div>
+      <div class="vd">${v.desc}</div>
+      <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
+        <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
+        ${v.url2?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
+      </div>
+      <div class="cc-note">💡 <b>Subtitle:</b> YouTube da <b>CC</b> tugmasini bosing → O'zbek yoki Rus tilini tanlang</div>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button></div>`;
+}
+
+function renderMatn(L) {
+  return `<div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);padding:22px;box-shadow:var(--shadow-sm)">
+    <div class="lt">${L.text}</div>
+  </div>
+  <div style="text-align:right;margin-top:10px"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga →</button></div>`;
+}
+
+function renderAmaliy(L,idx) {
+  return L.tasks.map((t,i) => `
+    <div class="task-card">
+      <div class="task-head"><div class="tnum">${t.num}</div><div class="ttitle">${t.title}</div></div>
+      <div class="tdesc">${t.desc}</div>
+      <div class="tsteps">${t.steps.map(s=>`<p>${s}</p>`).join('')}</div>
+      <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
+      <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
+      <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Bajarildi! Quizga o'ting.</div>
+    </div>`).join('') +
+  `<div style="text-align:right;margin-top:8px"><button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button></div>`;
+}
+
+function renderQuiz(L,idx) {
+  const saved = quizScores[idx];
+  if(saved !== undefined) {
+    return `<div class="qres" style="display:block">
+      <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
+      <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
+      <div class="qrm">${saved>=70?'✅ O\'tdingiz!':'⚠️ 70% kerak.'}</div>
+    </div>
+    ${saved<70?`<button class="btn-retry" style="display:block" onclick="retryQuiz(${idx})">🔄 Qayta</button>`:''}
+    ${idx<3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showLesson(${idx+1})">Keyingi →</button>`:''}
+    ${idx===3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showCert()">🏆 Sertifikat</button>`:''}`;
+  }
+  return `<div class="qres" id="qres_${idx}"></div>
+    <div class="qfail" id="qfail_${idx}">⚠️ 70% dan past. Matnni qayta o'qib urinib ko'ring.</div>
+    ${L.quiz.map((q,qi)=>`
+    <div class="qq">
+      <div class="qnum">Savol ${qi+1} / ${L.quiz.length}</div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts">${q.o.map((o,oi)=>`<div class="opt" id="opt_${idx}_${qi}_${oi}" onclick="qsel(${idx},${qi},${oi})">
+        <div class="optk">${'ABCD'[oi]}</div><span>${o}</span></div>`).join('')}</div>
+    </div>`).join('')}
+    <button class="btn-submit" id="bsub_${idx}" onclick="submitQuiz(${idx})">✅ Topshirish</button>
+    <button class="btn-retry" id="bret_${idx}" onclick="retryQuiz(${idx})">🔄 Qayta</button>
+    <button class="btn-next" id="bnxt_${idx}" onclick="${idx<3?'showLesson('+(idx+1)+')':'showCert()'}">
+      ${idx<3?'Keyingi →':'🏆 Sertifikat'}</button>`;
+}
+
+function stab(el,name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tc-'+name).classList.add('active');
+}
+function stabName(name){
+  ['video','matn','amaliy','quiz'].forEach((n,i)=>{
+    document.querySelectorAll('.tab')[i]?.classList.toggle('active',n===name);
+    document.getElementById('tc-'+n)?.classList.toggle('active',n===name);
+  });
+}
+
+function chkTask(li,ti){
+  const v=document.getElementById('ta_'+li+'_'+ti)?.value.trim();
+  const fb=document.getElementById('tfb_'+li+'_'+ti);
+  if(!v||v.length<15){fb.className='tfb fberr';fb.textContent='⚠️ Kamida 15 belgi yozing';fb.style.display='block';return;}
+  fb.className='tfb fbok';fb.textContent='✅ Bajarildi! Quizga o\'ting.';fb.style.display='block';
+  const _cu2=localStorage.getItem('dc2_cur')?JSON.parse(localStorage.getItem('dc2_cur')):null;
+  const _L=LESSONS[li];const _dar=LEVELS[li];
+  syncAmaliy(_cu2,'{mod_name}',_dar,ti+1,_L.tasks[ti].title,v);
+}
+
+function qsel(li,qi,oi){
+  if(quizDone)return;
+  quizAns[qi]=oi;
+  document.querySelectorAll(`[id^="opt_${li}_${qi}_"]`).forEach((el,i)=>el.classList.toggle('sel',i===oi));
+}
+
+function submitQuiz(idx){
+  const L=LESSONS[idx]; quizDone=true;
+  let correct=0;
+  L.quiz.forEach((q,qi)=>{
+    const ua=quizAns[qi];
+    q.o.forEach((_,oi)=>{
+      const el=document.getElementById(`opt_${idx}_${qi}_${oi}`);
+      if(!el)return;
+      el.style.pointerEvents='none';
+      if(oi===q.a)el.classList.add('ok');
+      else if(oi===ua&&ua!==q.a)el.classList.add('bad');
+    });
+    if(ua===q.a)correct++;
+  });
+  const score=Math.round(correct/L.quiz.length*100);
+  quizScores[idx]=score;
+  localStorage.setItem('m4_quiz_scores',JSON.stringify(quizScores));
+  const _cu=localStorage.getItem('dc2_cur')?JSON.parse(localStorage.getItem('dc2_cur')):null;
+  const _lv=LEVELS[idx];
+  syncNatija(_cu,'M4',_lv,score,correct,L.quiz.length,1);
+  if(score>=70&&!completedLessons.includes(idx)){
+    completedLessons.push(idx);
+    localStorage.setItem('m4_completed',JSON.stringify(completedLessons));
+  }
+  const res=document.getElementById('qres_'+idx);
+  if(res){res.style.display='block';res.innerHTML=`<div class="qrs" style="color:${score>=70?'var(--ok)':'var(--warn)'}">${score}%</div><div class="qrl">${correct}/${L.quiz.length} to'g'ri</div><div class="qrm">${score>=70?'✅ O\'tdingiz! '+(idx<3?'Keyingi daraja ochildi 🔓':'Modul yakunlandi 🎓'):'⚠️ 70% kerak.'}</div>`;}
+  document.getElementById('bsub_'+idx).style.display='none';
+  if(score>=70){const nb=document.getElementById('bnxt_'+idx);if(nb)nb.style.display='block';showToast(score>=90?'🌟 Ajoyib! '+score+'%':'✅ O\'tdingiz! '+score+'%');}
+  else{const rb=document.getElementById('bret_'+idx);if(rb)rb.style.display='block';const f=document.getElementById('qfail_'+idx);if(f)f.style.display='block';showToast('⚠️ '+score+'% — 70% kerak!');}
+  renderSidebar();
+}
+
+function retryQuiz(idx){
+  delete quizScores[idx];
+  localStorage.setItem('m4_quiz_scores',JSON.stringify(quizScores));
+  completedLessons=completedLessons.filter(i=>i!==idx);
+  localStorage.setItem('m4_completed',JSON.stringify(completedLessons));
+  quizDone=false;quizAns=[];
+  document.getElementById('tc-quiz').innerHTML=renderQuiz(LESSONS[idx],idx);
+  stabName('quiz');renderSidebar();
+  showToast('🔄 Quiz yangilandi!');
+}
+
+function showCert(){
+  if(completedLessons.length<4){showToast('⚠️ Barcha 4 ta darsni yakunlang!');return;}
+  const avg=Object.keys(quizScores).length?Math.round(Object.values(quizScores).reduce((a,b)=>a+b,0)/Object.keys(quizScores).length):0;
+  const date=new Date().toLocaleDateString('uz-UZ');
+  const safe=userName.replace(/[<>"'&]/g,'').trim();
+  const inner=`<style>@keyframes cfi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.cw{animation:cfi .5s ease both;font-family:Georgia,serif;position:relative;overflow:hidden;border-radius:14px}.cbg{position:absolute;inset:0;z-index:0}.cbd{position:relative;z-index:1;padding:50px 56px;text-align:center}.cb1{position:absolute;inset:8px;border:2px solid rgba(255,255,255,.25);border-radius:10px;pointer-events:none;z-index:2}.cb2{position:absolute;inset:14px;border:1px solid rgba(255,255,255,.12);border-radius:6px;pointer-events:none;z-index:2}</style>
+  <div class="cw">
+    <svg class="cbg" viewBox="0 0 700 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+      <defs>
+        <linearGradient id="cbm4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e0050"/><stop offset="50%" stop-color="#2d1080"/><stop offset="100%" stop-color="#1a0045"/></linearGradient>
+        <linearGradient id="cgl4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="rgba(139,92,246,0)"/><stop offset="30%" stop-color="rgba(139,92,246,.8)"/><stop offset="70%" stop-color="rgba(139,92,246,.8)"/><stop offset="100%" stop-color="rgba(139,92,246,0)"/></linearGradient>
+        <radialGradient id="cg4a" cx="25%" cy="25%" r="50%"><stop offset="0%" stop-color="rgba(139,92,246,.2)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+        <radialGradient id="cg4b" cx="75%" cy="75%" r="50%"><stop offset="0%" stop-color="rgba(167,139,250,.12)"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+      </defs>
+      <rect width="700" height="460" fill="url(#cbm4)"/>
+      <rect width="700" height="460" fill="url(#cg4a)"/><rect width="700" height="460" fill="url(#cg4b)"/>
+      <g opacity=".2" stroke="#8b5cf6" stroke-width=".8" fill="none"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#8b5cf6" stroke="none"/></g>
+      <g opacity=".2" stroke="#8b5cf6" stroke-width=".8" fill="none" transform="translate(700,0) scale(-1,1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#8b5cf6" stroke="none"/></g>
+      <g opacity=".2" stroke="#8b5cf6" stroke-width=".8" fill="none" transform="translate(0,460) scale(1,-1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#8b5cf6" stroke="none"/></g>
+      <g opacity=".2" stroke="#8b5cf6" stroke-width=".8" fill="none" transform="translate(700,460) scale(-1,-1)"><path d="M0,0 L80,0 L80,8 L8,8 L8,80 L0,80 Z"/><circle cx="6" cy="6" r="3" fill="#8b5cf6" stroke="none"/></g>
+      <rect x="100" y="56" width="500" height="1" fill="url(#cgl4)" opacity=".7"/>
+      <rect x="100" y="400" width="500" height="1" fill="url(#cgl4)" opacity=".7"/>
+      <rect x="120" y="330" width="460" height=".6" fill="url(#cgl4)" opacity=".5"/>
+    </svg>
+    <div class="cb1"></div><div class="cb2"></div>
+    <div class="cbd">
+      <div style="font-size:10px;letter-spacing:.2em;color:rgba(139,92,246,.9);text-transform:uppercase;margin-bottom:3px;font-family:sans-serif">Qo'qon Davlat Universiteti</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em;margin-bottom:24px;font-family:sans-serif">DigiComp Platform · DigComp 2.2 · DigCompEdu</div>
+      <div style="width:76px;height:76px;background:linear-gradient(145deg,#8b5cf6,#7c3aed);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 18px;box-shadow:0 0 0 4px rgba(139,92,246,.2),0 8px 24px rgba(0,0,0,.5)">🛡️</div>
+      <div style="font-size:36px;color:#a78bfa;font-style:italic;font-weight:700;margin-bottom:4px;text-shadow:0 2px 12px rgba(139,92,246,.4)">Sertifikat</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px;font-family:sans-serif">taqdim etiladi</div>
+      <div style="font-size:30px;font-weight:700;color:#fff;margin-bottom:3px;padding:0 20px">${safe}</div>
+      <div style="width:200px;height:1.5px;background:linear-gradient(90deg,transparent,#8b5cf6,transparent);margin:8px auto 16px"></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;font-family:sans-serif">muvaffaqiyatli yakunladi</div>
+      <div style="font-size:16px;font-weight:700;color:#c4b5fd;margin-bottom:3px;font-family:sans-serif">M4 — Xavfsizlik</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:3px;font-family:sans-serif">Safety & Security · DigComp 2.2 · DigCompEdu 6.4</div>
+      <div style="font-size:11px;color:rgba(139,92,246,.7);font-family:sans-serif">A1 · A2 · B1 · B2 — barcha darajalar o'tildi</div>
+      <div style="display:flex;justify-content:center;gap:44px;margin-top:26px">
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:sans-serif">Sana</div><div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-top:3px;font-family:monospace">${date}</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:sans-serif">O'rtacha ball</div><div style="font-size:14px;font-weight:700;color:#a78bfa;margin-top:3px;font-family:monospace">${avg}%</div></div>
+        <div style="text-align:center"><div style="font-size:9px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.1em;font-family:sans-serif">Darslar</div><div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-top:3px;font-family:monospace">4 / 4</div></div>
+      </div>
+    </div>
+  </div>`;
+  const old=document.getElementById('certModal');if(old)old.remove();
+  const modal=document.createElement('div');
+  modal.id='certModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(26,29,58,.75);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto';
+  modal.innerHTML=`<div style="max-width:720px;width:100%">
+    <div style="display:flex;gap:10px;margin-bottom:14px;justify-content:flex-end">
+      <button id="certPrintBtn" style="padding:10px 22px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">🖨 PDF saqlash</button>
+      <button onclick="document.getElementById('certModal').remove()" style="padding:10px 18px;background:#fff;border:1.5px solid var(--border2);color:var(--text2);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">✕ Yopish</button>
+    </div>
+    <div id="certContent" style="border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)">${inner}</div>
+    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text3)">PDF saqlash: Ctrl+P → Save as PDF</div>
+  </div>`;
+  document.body.appendChild(modal);
+  document.getElementById('certPrintBtn').onclick=function(){
+    const win=window.open('','_blank','width=820,height=680');
+    if(win){win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Sertifikat M4</title></head><body style="margin:0">'+document.getElementById('certContent').innerHTML+'<br><button onclick="window.print()" style="display:block;margin:18px auto;padding:10px 28px;background:#8b5cf6;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer">🖨 Chop etish</button></body></html>');win.document.close();}
+    else{alert('Pop-up bloklangan. Ruxsat bering.');}
+  };
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+}
+
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+const STATIC_NEWS=[
+  {title:"UNESCO 2024 — Kiberxavfsizlik ta'limda",desc:"UNESCO ta'lim muassasalari uchun kiberxavfsizlik standartlarini yangiladi. O'qituvchilar uchun bepul kurs.",source:"UNESCO",tag:"security",date:"2024",url:"https://www.unesco.org"},
+  {title:"Google Classroom GDPR yangilandi",desc:"Google Workspace for Education yangi GDPR sertifikatlari oldi. EU foydalanuvchilar uchun qo'shimcha himoya.",source:"Google Blog",tag:"security",date:"2024",url:"https://edu.google.com"},
+  {title:"Ransomware maktablarni nishonga olmoqda",desc:"2024-yilda global maktab tarmoqlariga 1200+ ransomware hujumi qayd etildi. Zaxira nusxa — eng muhim himoya.",source:"Cybersecurity News",tag:"security",date:"2024",url:"https://www.cisecurity.org"},
+  {title:"ChatGPT xavfsizlik va ta'lim etikasi",desc:"OpenAI ta'lim uchun maxsus xavfsizlik sozlamalarini joriy etdi. 13 yoshdan kichiklar uchun foydalanish cheklandi.",source:"OpenAI Blog",tag:"ai",date:"2024",url:"https://openai.com/safety"},
+  {title:"Bitwarden — bepul parol menejeri yangilandi",desc:"Bitwarden ochiq kod parol menejeri yangi funksiyalar bilan yangilandi. Ta'lim tashkilotlariga bepul.",source:"Bitwarden Blog",tag:"security",date:"2024",url:"https://bitwarden.com"},
+  {title:"ORCID — 10 million ilmiy tadqiqotchi",desc:"ORCID platformasida 10 million ilmiy tadqiqotchi ro'yxatdan o'tdi. O'zbekistondan ham faollar ko'paymoqda.",source:"ORCID",tag:"edtech",date:"2024",url:"https://orcid.org"},
+  {title:"Microsoft Education — Zero Trust yangilanish",desc:"Microsoft maktab va universitetlar uchun Zero Trust xavfsizlik arxitekturasini joriy etishda yordam beradi.",source:"Microsoft Education",tag:"security",date:"2024",url:"https://education.microsoft.com"},
+  {title:"2FA qabul qilish 2024 — 70%",desc:"Global foydalanuvchilarning 70% ikki bosqichli autentifikatsiyani yoqqan. Ta'lim sektori hali 45% da.",source:"Google Security",tag:"security",date:"2024",url:"https://security.google.com"}
+];
+
+async function loadNews(){
+  let loaded=[];
+  try{
+    const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.feedburner.com/TheHackersNews&count=5',{signal:AbortSignal.timeout(4000)});
+    if(r.ok){const d=await r.json();if(d.status==='ok'&&d.items?.length){
+      loaded=d.items.slice(0,5).map(i=>({title:(i.title||'').substring(0,80),desc:(i.description||'').replace(/<[^>]+>/g,'').substring(0,100)+'...',source:'The Hacker News',tag:'security',date:i.pubDate?new Date(i.pubDate).toLocaleDateString('uz-UZ'):'2024',url:i.link||'#'}));
+    }}
+  }catch(e){}
+  if(!loaded.length)loaded=[...STATIC_NEWS];
+  allNews=loaded.sort(()=>Math.random()-.5);
+  renderNews();
+}
+function renderNews(){
+  const c=document.getElementById('newsContainer');
+  const f=currentFilter==='all'?allNews:allNews.filter(n=>n.tag===currentFilter);
+  if(!f.length){c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">Bu bo\'limda yangilik yo\'q</div>';return;}
+  c.innerHTML=f.map(n=>`<div class="news-item" onclick="window.open('${n.url}','_blank')">
+    <div class="ni-src"><span>${n.tag.toUpperCase()}</span>${n.source}</div>
+    <div class="ni-title">${n.title}</div>
+    <div class="ni-desc">${n.desc}</div>
+    <div class="ni-date">📅 ${n.date}</div>
+  </div>`).join('');
+}
+function filterNews(tag,el){currentFilter=tag;document.querySelectorAll('.npf').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderNews();}
+
+renderSidebar();
+showLesson(userLevel);
+loadNews();
+</script>
+</body>
+</html>
