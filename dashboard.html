@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0054)file:///C:/Users/admin/Downloads/dashboard_mobile.html -->
+<html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>DigiComp Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<link href="./dashboard_files/css2" rel="stylesheet">
+<script src="./dashboard_files/chart.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -295,12 +295,145 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 .toast{position:fixed;bottom:22px;right:22px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow-lg)}
 .toast.show{transform:translateY(0)}
+
+/* ══════════ MOBILE ══════════ */
+@media(max-width:768px){
+
+  /* Layout */
+  .app-shell{flex-direction:column!important}
+  .sidebar{
+    display:none!important
+  }
+  .main-area{
+    width:100%!important;
+    min-width:0!important;
+    padding-bottom:72px!important
+  }
+
+  /* Topbar */
+  .topbar{padding:0 14px!important;height:54px!important}
+  .topbar .tb-search{display:none!important}
+  .topbar .tb-title{font-size:17px!important}
+
+  /* Content */
+  .content{padding:14px 12px!important}
+
+  /* Welcome */
+  .welcome-card{padding:16px 14px!important;border-radius:16px!important}
+  .wc-title{font-size:16px!important}
+  .wc-sub{font-size:12px!important}
+
+  /* Rings */
+  .rings-row{
+    grid-template-columns:repeat(2,1fr)!important;
+    gap:10px!important
+  }
+  .ring-card{padding:14px 10px!important}
+  .ring-num{font-size:20px!important}
+
+  /* Grids */
+  .main-grid,.bottom-grid{
+    grid-template-columns:1fr!important;
+    gap:12px!important
+  }
+
+  /* Modullar */
+  #appModGrid,#heroModGrid,
+  .mod-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important
+  }
+
+  /* Hero */
+  #heroWrap .hero-nav{padding:0 12px!important;height:52px!important}
+  #heroWrap .hero-content{
+    flex-direction:column!important;
+    padding:14px 14px 60px!important;
+    gap:20px!important
+  }
+  #heroWrap .hc-right,
+  #heroWrap .hero-visual{display:none!important}
+  #heroWrap .hc-title{font-size:24px!important}
+  #heroWrap .hc-sub{font-size:13px!important}
+  #heroWrap .hc-btns{flex-direction:column!important;gap:8px!important}
+  #heroWrap .hc-btn-p,
+  #heroWrap .hc-btn-s{
+    width:100%!important;
+    justify-content:center!important;
+    text-align:center!important
+  }
+  #heroWrap .hc-stats{gap:16px!important}
+  #heroWrap .hstat .n{font-size:22px!important}
+
+  /* Diag (kirish testi) */
+  .diag-overlay{
+    padding:0!important;
+    align-items:flex-end!important
+  }
+  .diag-box{
+    border-radius:22px 22px 0 0!important;
+    max-height:88vh!important;
+    margin:0!important;
+    width:100%!important
+  }
+  .db-top{padding:18px 16px!important}
+  .db-body{padding:14px 16px 28px!important}
+  .d-opt{
+    padding:12px 14px!important;
+    font-size:13px!important
+  }
+
+  /* Leaderboard */
+  .lb-table th,.lb-table td{
+    padding:8px 8px!important;
+    font-size:11px!important
+  }
+
+  /* Cards */
+  .card,.stat-card{
+    border-radius:14px!important;
+    padding:14px!important
+  }
+}
+
+@media(max-width:480px){
+  .content{padding:10px 8px!important}
+  .rings-row{grid-template-columns:repeat(2,1fr)!important}
+  .topbar .tb-title{font-size:15px!important}
+}
+
+/* Mobile Bottom Nav */
+.mob-tab-bar{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  height:64px;
+  background:#fff;
+  border-top:1.5px solid #e5e7eb;
+  z-index:999;
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+}
+@media(max-width:768px){
+  .mob-tab-bar{display:flex!important}
+}
+.mob-tab-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;border:none;
+  background:none;color:#9ca3af;
+  font-size:10px;font-weight:600;
+  font-family:inherit;padding:6px 0;
+  transition:color .2s
+}
+.mob-tab-item.on{color:var(--primary,#6c5ce7)}
+.mob-tab-item .ti{font-size:22px;line-height:1}
+/* ═══════════════════════════ */
 </style>
 </head>
 <body>
 
 <!-- ══ HERO ══ -->
-<div id="heroWrap">
+<div id="heroWrap" class="hidden">
   <div class="hero-section">
     <nav class="hero-nav">
       <div class="hn-brand">
@@ -348,14 +481,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <div id="modsSection" style="padding:56px 48px;max-width:1140px;margin:0 auto">
     <div style="margin-bottom:28px">
       <div style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">DigComp 2.2 Modullari</div>
-      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:800;color:var(--text)">5 ta kompetentlik sohasi</h2>
+      <h2 style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:32px;font-weight:800;color:var(--text)">5 ta kompetentlik sohasi</h2>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px" id="heroModGrid"></div>
   </div>
 </div>
 
 <!-- ══ APP SHELL ══ -->
-<div id="appShell" class="app-shell hidden">
+<div id="appShell" class="app-shell">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-brand">
@@ -363,18 +496,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div><div class="sb-name">DigiComp</div><div class="sb-ver">DigComp 2.2</div></div>
     </div>
     <div class="sb-sec">Asosiy</div>
-    <div class="sb-item active" onclick="nav('dashboard')" id="si-dashboard"><span class="ic">🏠</span>Boshqaruv paneli</div>
-    <div class="sb-item" onclick="nav('modules')" id="si-modules"><span class="ic">📚</span>Modullar</div>
-    <div class="sb-item" onclick="nav('progress')" id="si-progress"><span class="ic">📈</span>Taraqqiyotim</div>
+    <div class="sb-item active" onclick="nav(&#39;dashboard&#39;)" id="si-dashboard"><span class="ic">🏠</span>Boshqaruv paneli</div>
+    <div class="sb-item" onclick="nav(&#39;modules&#39;)" id="si-modules"><span class="ic">📚</span>Modullar</div>
+    <div class="sb-item" onclick="nav(&#39;progress&#39;)" id="si-progress"><span class="ic">📈</span>Taraqqiyotim</div>
     <div class="sb-sec">Baholash</div>
-    <div class="sb-item" onclick="openDiag()" id="si-diag"><span class="ic">🧭</span>Kirish testi<span class="sb-badge" id="diagBadge">!</span></div>
+    <div class="sb-item" onclick="openDiag()" id="si-diag"><span class="ic">🧭</span>Kirish testi<span class="sb-badge" id="diagBadge" style="display: none;">!</span></div>
     <div class="sb-sec">Boshqalar</div>
-    <div class="sb-item" onclick="nav('ranking')" id="si-ranking"><span class="ic">🏆</span>Reyting</div>
-    <div class="sb-item" onclick="nav('profile')" id="si-profile"><span class="ic">👤</span>Profil</div>
+    <div class="sb-item" onclick="nav(&#39;ranking&#39;)" id="si-ranking"><span class="ic">🏆</span>Reyting</div>
+    <div class="sb-item" onclick="nav(&#39;profile&#39;)" id="si-profile"><span class="ic">👤</span>Profil</div>
     <div class="sb-bottom">
       <div class="sb-user">
-        <div class="sb-av" id="sbAv">?</div>
-        <div><div class="sb-uname" id="sbName">-</div><div class="sb-uemail" id="sbEmail">-</div></div>
+        <div class="sb-av" id="sbAv">DT</div>
+        <div><div class="sb-uname" id="sbName">Demo Talaba</div><div class="sb-uemail" id="sbEmail">demo@test.com</div></div>
       </div>
       <button class="btn-logout" onclick="logout()">🚪 Chiqish</button>
     </div>
@@ -388,8 +521,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="tb-search"><input type="text" placeholder="Qidirish..."></div>
       <div class="tb-notif">🔔</div>
       <div class="tb-user-chip">
-        <div class="tb-av" id="tbAv">?</div>
-        <div><div class="tb-uname" id="tbName">-</div><div class="tb-usub" id="tbSub">Talaba</div></div>
+        <div class="tb-av" id="tbAv">DT</div>
+        <div><div class="tb-uname" id="tbName">Demo Talaba</div><div class="tb-usub" id="tbSub">DigComp foydalanuvchisi</div></div>
       </div>
     </div>
 
@@ -398,9 +531,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="page show" id="pg-dashboard">
         <!-- Welcome card -->
         <div class="welcome-card au" id="wcCard">
-          <div class="wc-title" id="wcHi">Xush kelibsiz!</div>
-          <div class="wc-sub">DigComp 2.2 platformasiga xush kelibsiz. Kirish testini topshirib, o'z darajangizni aniqlang va shaxsiy o'quv yo'lingizni boshlang.</div>
-          <button class="wc-btn" onclick="openDiag()">🧭 Kirish testini topshirish →</button>
+          <div class="wc-title" id="wcHi">Xush kelibsiz, Demo! 👋</div>
+          <div class="wc-sub">O'quv yo'lingiz tayyor. Modullarni bosib darslarni boshlang. Har dars: video + matn + amaliy + quiz.</div>
+          <button class="wc-btn" onclick="openDiag()">📚 Modullarga o'tish →</button>
         </div>
 
         <!-- Ring stats -->
@@ -408,18 +541,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <div class="ring-card">
             <div class="ring-wrap">
               <svg width="80" height="80" viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="45"/>
-                <circle class="ring-fill" id="ring1" cx="50" cy="50" r="45" stroke="#6c5ce7" style="--offset:283"/>
+                <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="ring-fill" id="ring1" cx="50" cy="50" r="45" stroke="#6c5ce7" style="--offset: 254.7; animation: 1.5s ease-out 0s 1 normal both running ringFill;"></circle>
               </svg>
-              <div class="ring-num" id="rn1" style="color:#6c5ce7">—</div>
+              <div class="ring-num" id="rn1" style="color:#6c5ce7">10%</div>
             </div>
             <div class="ring-lbl">Umumiy ball</div>
           </div>
           <div class="ring-card">
             <div class="ring-wrap">
               <svg width="80" height="80" viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="45"/>
-                <circle class="ring-fill" id="ring2" cx="50" cy="50" r="45" stroke="#00b894" style="--offset:283"/>
+                <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="ring-fill" id="ring2" cx="50" cy="50" r="45" stroke="#00b894" style="--offset: 283; animation: 1.5s ease-out 0s 1 normal both running ringFill;"></circle>
               </svg>
               <div class="ring-num" id="rn2" style="color:#00b894">0</div>
             </div>
@@ -428,20 +561,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <div class="ring-card">
             <div class="ring-wrap">
               <svg width="80" height="80" viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="45"/>
-                <circle class="ring-fill" id="ring3" cx="50" cy="50" r="45" stroke="#e17055" style="--offset:283"/>
+                <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="ring-fill" id="ring3" cx="50" cy="50" r="45" stroke="#e17055" style="--offset: 283; animation: 1.5s ease-out 0s 1 normal both running ringFill;"></circle>
               </svg>
-              <div class="ring-num" id="rn3" style="color:#e17055">—</div>
+              <div class="ring-num" id="rn3" style="color:#e17055">A1</div>
             </div>
             <div class="ring-lbl">Joriy daraja</div>
           </div>
           <div class="ring-card">
             <div class="ring-wrap">
               <svg width="80" height="80" viewBox="0 0 100 100">
-                <circle class="ring-bg" cx="50" cy="50" r="45"/>
-                <circle class="ring-fill" id="ring4" cx="50" cy="50" r="45" stroke="#fdcb6e" style="--offset:283"/>
+                <circle class="ring-bg" cx="50" cy="50" r="45"></circle>
+                <circle class="ring-fill" id="ring4" cx="50" cy="50" r="45" stroke="#fdcb6e" style="--offset: 0; animation: 1.5s ease-out 0s 1 normal both running ringFill;"></circle>
               </svg>
-              <div class="ring-num" id="rn4" style="color:#fdcb6e">0/5</div>
+              <div class="ring-num" id="rn4" style="color:#fdcb6e">5/5</div>
             </div>
             <div class="ring-lbl">Faol modullar</div>
           </div>
@@ -453,9 +586,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <div class="chart-card">
             <div class="cc-head">
               <span class="cc-title">📊 Modul taraqqiyoti</span>
-              <span class="cc-badge" id="chartBadge">Barcha modullar</span>
+              <span class="cc-badge" id="chartBadge">Kirish testi natijalari</span>
             </div>
-            <canvas id="progChart" height="180"></canvas>
+            <canvas id="progChart" height="606" style="display: block; box-sizing: border-box; height: 484.8px; width: 809.6px;" width="1012"></canvas>
             <div id="chartEmpty" style="text-align:center;padding:40px;color:var(--text3);display:none">
               <div style="font-size:36px;margin-bottom:8px">📊</div>
               <div style="font-size:14px;font-weight:600">Kirish testini topshiring</div>
@@ -465,7 +598,23 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <!-- Rec modules -->
           <div class="rec-card">
             <div class="cc-head"><span class="cc-title">🎯 Tavsiya etilgan darslar</span></div>
-            <div id="recMods"></div>
+            <div id="recMods"><div class="rec-item" onclick="window.location.href=&#39;m1.html&#39;">
+      <div class="rec-icon" style="background:#ede9ff">🔍</div>
+      <div style="flex:1"><div class="rec-title">Ma'lumot va axborot savodxonligi</div><div class="rec-sub">B1 darajasidan · 4 dars</div></div>
+      <button class="rec-btn" onclick="event.stopPropagation();window.location.href=&#39;m1.html&#39;">Boshlash</button>
+    </div><div class="rec-item" onclick="window.location.href=&#39;m2.html&#39;">
+      <div class="rec-icon" style="background:#e8faf6">💬</div>
+      <div style="flex:1"><div class="rec-title">Kommunikatsiya va hamkorlik</div><div class="rec-sub">A1 darajasidan · 4 dars</div></div>
+      <button class="rec-btn" onclick="event.stopPropagation();window.location.href=&#39;m2.html&#39;">Boshlash</button>
+    </div><div class="rec-item" onclick="window.location.href=&#39;m3.html&#39;">
+      <div class="rec-icon" style="background:#fff3f0">🎨</div>
+      <div style="flex:1"><div class="rec-title">Raqamli kontent yaratish</div><div class="rec-sub">A1 darajasidan · 4 dars</div></div>
+      <button class="rec-btn" onclick="event.stopPropagation();window.location.href=&#39;m3.html&#39;">Boshlash</button>
+    </div><div class="rec-item" onclick="window.location.href=&#39;m4.html&#39;">
+      <div class="rec-icon" style="background:#f5f3ff">🛡️</div>
+      <div style="flex:1"><div class="rec-title">Xavfsizlik</div><div class="rec-sub">A1 darajasidan · 4 dars</div></div>
+      <button class="rec-btn" onclick="event.stopPropagation();window.location.href=&#39;m4.html&#39;">Boshlash</button>
+    </div></div>
           </div>
         </div>
 
@@ -479,33 +628,33 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
             </div>
             <table class="lb-table">
               <thead><tr><th>O'rin</th><th>Ism</th><th>Ball</th><th>Daraja</th></tr></thead>
-              <tbody id="lbBody"></tbody>
+              <tbody id="lbBody"><tr><td><div class="lb-rank rank-1">🥇</div></td><td><div style="font-size:13px;font-weight:600">Aliyev Ali</div><div style="font-size:11px;color:var(--text3)">aliyevali2000@gmail.com</div></td><td><span class="lb-score" style="color:var(--primary)">90%</span></td><td><span class="lv lv-b2">B2</span></td></tr><tr><td><div class="lb-rank rank-2">🥈</div></td><td><div style="font-size:13px;font-weight:600">Demo Talaba</div><div style="font-size:11px;color:var(--text3)">demo@test.com</div></td><td><span class="lb-score" style="color:var(--primary)">10%</span></td><td><span class="lv lv-a1">A1</span></td></tr></tbody>
             </table>
           </div>
 
           <!-- Module progress -->
           <div class="mod-prog-card">
             <div class="cc-head"><span class="cc-title">📈 Modul natijalari</span></div>
-            <div id="modProgList"></div>
+            <div id="modProgList"><div class="mp-item"><div class="mp-icon" style="background:#ede9ff">🔍</div><div class="mp-info"><div class="mp-name">Ma'lumot va axborot savodxonligi</div><div class="mp-bar"><div class="mp-fill" style="width:50%;background:#6c5ce7"></div></div></div><span class="mp-pct">50%</span></div><div class="mp-item"><div class="mp-icon" style="background:#e8faf6">💬</div><div class="mp-info"><div class="mp-name">Kommunikatsiya va hamkorlik</div><div class="mp-bar"><div class="mp-fill" style="width:0%;background:#00b894"></div></div></div><span class="mp-pct">0%</span></div><div class="mp-item"><div class="mp-icon" style="background:#fff3f0">🎨</div><div class="mp-info"><div class="mp-name">Raqamli kontent yaratish</div><div class="mp-bar"><div class="mp-fill" style="width:0%;background:#e17055"></div></div></div><span class="mp-pct">0%</span></div><div class="mp-item"><div class="mp-icon" style="background:#f5f3ff">🛡️</div><div class="mp-info"><div class="mp-name">Xavfsizlik</div><div class="mp-bar"><div class="mp-fill" style="width:0%;background:#a29bfe"></div></div></div><span class="mp-pct">0%</span></div><div class="mp-item"><div class="mp-icon" style="background:#fffaec">💡</div><div class="mp-info"><div class="mp-name">Muammo hal qilish</div><div class="mp-bar"><div class="mp-fill" style="width:0%;background:#fdcb6e"></div></div></div><span class="mp-pct">0%</span></div></div>
           </div>
         </div>
       </div>
 
       <!-- MODULES PAGE -->
       <div class="page" id="pg-modules">
-        <div style="margin-bottom:20px"><h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--text)">📚 Modullar</h2><p style="font-size:14px;color:var(--text3);margin-top:4px">DigComp 2.2 — 5 ta kompetentlik sohasi</p></div>
+        <div style="margin-bottom:20px"><h2 style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:22px;font-weight:800;color:var(--text)">📚 Modullar</h2><p style="font-size:14px;color:var(--text3);margin-top:4px">DigComp 2.2 — 5 ta kompetentlik sohasi</p></div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px" id="appModGrid"></div>
       </div>
 
       <!-- PROGRESS PAGE -->
       <div class="page" id="pg-progress">
-        <div style="margin-bottom:20px"><h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--text)">📈 Taraqqiyotim</h2></div>
+        <div style="margin-bottom:20px"><h2 style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:22px;font-weight:800;color:var(--text)">📈 Taraqqiyotim</h2></div>
         <div id="progCont"></div>
       </div>
 
       <!-- RANKING PAGE -->
       <div class="page" id="pg-ranking">
-        <div style="margin-bottom:20px"><h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--text)">🏆 Reyting jadvali</h2></div>
+        <div style="margin-bottom:20px"><h2 style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:22px;font-weight:800;color:var(--text)">🏆 Reyting jadvali</h2></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
           <div class="lb-card">
             <div class="lb-head"><span class="lb-title">Top talabalar</span><button class="export-btn" onclick="exportCSV()">⬇ CSV</button></div>
@@ -517,13 +666,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
       <!-- PROFILE PAGE -->
       <div class="page" id="pg-profile">
-        <div style="margin-bottom:20px"><h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:800;color:var(--text)">👤 Profil</h2></div>
+        <div style="margin-bottom:20px"><h2 style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:22px;font-weight:800;color:var(--text)">👤 Profil</h2></div>
         <div class="welcome-card" style="margin-bottom:20px">
           <div style="display:flex;align-items:center;gap:18px">
             <div style="width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;border:3px solid rgba(255,255,255,.35)" id="profAv">?</div>
-            <div><div style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700" id="profNm">-</div>
+            <div><div style="font-family:&#39;Bricolage Grotesque&#39;,sans-serif;font-size:20px;font-weight:700" id="profNm">-</div>
             <div style="font-size:13px;opacity:.7;margin-top:2px" id="profEm">-</div>
-            <div style="display:flex;gap:8px;margin-top:10px"><span class="lv lv-none" id="profLv">—</span><span style="padding:3px 10px;background:rgba(255,255,255,.15);border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace" id="profSc">—</span></div></div>
+            <div style="display:flex;gap:8px;margin-top:10px"><span class="lv lv-none" id="profLv">—</span><span style="padding:3px 10px;background:rgba(255,255,255,.15);border-radius:6px;font-size:12px;font-family:&#39;JetBrains Mono&#39;,monospace" id="profSc">—</span></div></div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
@@ -910,5 +1059,40 @@ setTimeout(()=>{document.querySelectorAll('.ring-fill').forEach(el=>{el.style.an
 // Progress bar animatsiyasi
 setTimeout(()=>{document.querySelectorAll('.mp-fill,.av-bar-fill').forEach(el=>{if(el.dataset.w)el.style.width=el.dataset.w+'%';});},600);
 </script>
-</body>
-</html>
+
+<div class="mob-tab-bar">
+  <button class="mob-tab-item on" onclick="mobTab(&#39;home&#39;,this)">
+    <span class="ti">🏠</span><span>Bosh</span>
+  </button>
+  <button class="mob-tab-item" onclick="mobTab(&#39;modules&#39;,this)">
+    <span class="ti">📚</span><span>Modullar</span>
+  </button>
+  <button class="mob-tab-item" onclick="mobTab(&#39;progress&#39;,this)">
+    <span class="ti">📈</span><span>Progress</span>
+  </button>
+  <button class="mob-tab-item" onclick="mobTab(&#39;rating&#39;,this)">
+    <span class="ti">🏆</span><span>Reyting</span>
+  </button>
+  <button class="mob-tab-item" onclick="mobTab(&#39;profile&#39;,this)">
+    <span class="ti">👤</span><span>Profil</span>
+  </button>
+</div>
+
+<script>
+function mobTab(tab, el){
+  document.querySelectorAll('.mob-tab-item').forEach(function(b){b.classList.remove('on')});
+  if(el) el.classList.add('on');
+  // Sidebar menyu funksiyasini chaqiramiz
+  var fnMap = {
+    home: function(){ window.scrollTo({top:0,behavior:'smooth'}); if(typeof showDashboard==='function')showDashboard(); },
+    modules: function(){ if(typeof showModules==='function')showModules(); else{ var e=document.getElementById('appModGrid')||document.getElementById('heroModGrid'); if(e)e.scrollIntoView({behavior:'smooth'}); } },
+    progress: function(){ var e=document.getElementById('progressSection')||document.getElementById('progressWrap'); if(e)e.scrollIntoView({behavior:'smooth'}); if(typeof showProgress==='function')showProgress(); },
+    rating: function(){ var e=document.getElementById('leaderboard')||document.getElementById('ratingSection'); if(e)e.scrollIntoView({behavior:'smooth'}); if(typeof showRating==='function')showRating(); },
+    profile: function(){ var e=document.getElementById('profileSection')||document.getElementById('profileWrap'); if(e)e.scrollIntoView({behavior:'smooth'}); if(typeof showProfile==='function')showProfile(); }
+  };
+  if(fnMap[tab]) fnMap[tab]();
+}
+</script>
+
+
+</body></html>
