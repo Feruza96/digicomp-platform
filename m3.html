@@ -204,6 +204,42 @@ textarea::placeholder{color:var(--text3)}
 
 /* ── CERT OVERLAY ── */
 .cert-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+
+/* Cert overlay fix */
+#certOverlay{position:fixed !important;inset:0 !important;z-index:9000 !important;background:rgba(0,0,0,0.85) !important;display:none !important;align-items:center !important;justify-content:center !important;}
+#certOverlay.show{display:flex !important;}
+
+/* AI */
+@keyframes ai-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 14px rgba(239,68,68,.0)}}
+@keyframes ai-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ai-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai-wrap{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ai-tip{background:#1a1d3a;color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;position:relative}
+.ai-tip::after{content:'';position:absolute;bottom:-5px;right:20px;border:5px solid transparent;border-top-color:#1a1d3a}
+.ai-btn{width:56px;height:56px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:50%;border:none;cursor:pointer;font-size:26px;animation:ai-pulse 2s infinite,ai-bounce 3s ease-in-out infinite;position:relative;display:flex;align-items:center;justify-content:center}
+.ai-btn.on{background:linear-gradient(135deg,var(--mc),var(--mc2));animation:none}
+.ai-badge{position:absolute;top:-1px;right:-1px;width:18px;height:18px;background:#fff;border-radius:50%;border:2px solid #ef4444;font-size:10px;font-weight:800;color:#ef4444;display:flex;align-items:center;justify-content:center}
+.ai-panel{width:310px;background:#fff;border:1.5px solid #e0e0e0;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;max-height:480px;animation:ai-fade .25s ease}
+.ai-panel.on{display:flex}
+.ai-ph{background:linear-gradient(135deg,var(--mc),var(--mc2));padding:12px 14px;display:flex;align-items:center;gap:10px}
+.ai-ph-av{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ai-ph-t{flex:1}
+.ai-ph-t b{font-size:13px;color:#fff;display:block}
+.ai-ph-t small{font-size:10px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:3px}
+.ai-ph-t small::before{content:'';width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block}
+.ai-ph button{background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px}
+.ai-sugs{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+.ai-sug{padding:4px 10px;background:#f0eeff;border:1px solid #d0c8ff;border-radius:20px;font-size:11px;color:#6c5ce7;cursor:pointer}
+.ai-sug:hover{background:#6c5ce7;color:#fff}
+.ai-msgs{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;min-height:140px;max-height:240px}
+.ai-msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.6}
+.ai-msg.u{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;align-self:flex-end;border-radius:12px 12px 2px 12px}
+.ai-msg.b{background:#f5f5f5;color:#333;align-self:flex-start;border-radius:12px 12px 12px 2px}
+.ai-msg.ld{background:#f5f5f5;color:#aaa;font-style:italic;align-self:flex-start}
+.ai-ft{padding:9px;border-top:1px solid #eee;display:flex;gap:6px}
+.ai-inp{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:12.5px;outline:none;resize:none;font-family:inherit}
+.ai-inp:focus{border-color:var(--mc)}
+.ai-send{width:36px;height:36px;min-width:36px;background:linear-gradient(135deg,var(--mc),var(--mc2));border:none;border-radius:9px;color:#fff;cursor:pointer;font-size:16px}
 </style>
 </head>
 <body>
@@ -261,7 +297,7 @@ textarea::placeholder{color:var(--text3)}
 <script>
 
 // ═══════ DigiComp API ═══════
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec';
 async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
 async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
 async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
@@ -285,48 +321,41 @@ const LESSONS = [
     desc:"Canva da ta'lim uchun professional prezentatsiya yaratish: rang palitasi, shrift qoidalari, 10-20-30 qoidasi, Creative Commons. Faqat ekran ko'rsatmasi — yuz ko'rinmaydi.",
     dur:'~15 daqiqa', lang:'Inglizcha (CC)', lang2:'Inglizcha (CC)'
   },
-  text:`
-<h4>Nima uchun vizual kontent muhim?</h4>
-<p>Tadqiqotlar ko'rsatadiki, insonlar ko'rgan ma'lumotni tinglagandan 6 barobar yaxshiroq eslab qoladi. Shuning uchun ta'lim materiallarida vizual kontent — rasmlar, diagrammalar, infografikalar — juda muhim rol o'ynaydi. <span class="term">Visual Learning</span> nazariyasiga ko'ra, 65% odam vizual turdagi o'quvchidir (Fleming & Mills, 1992).</p>
-<p>Zamonaviy o'qituvchi uchun asosiy vizual kontent yaratish vositalari: Canva, Google Slides, Microsoft PowerPoint va Prezi. Ularning eng mashhuri va qulaylik jihatidan eng yuqorisi — <span class="term">Canva</span>.</p>
-
-<div class="note"><b>📌 Canva for Education — bepul!</b>Canva ta'lim tashkilotlari uchun to'liq bepul. canva.com/education da o'qituvchi yoki talaba sifatida ro'yxatdan o'ting — barcha premium funksiyalar ochilaди.</div>
-
-<h4>Canva asosiy funksiyalari</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🎨 Shablonlar</div><div class="ti-d">100,000+ professional shablon — prezentatsiya, poster, infografika, sertifikat va boshqalar</div><span class="ti-t tfree">Bepul (edu)</span></div>
-  <div class="ti"><div class="ti-n">🤖 AI vositalar</div><div class="ti-d">Magic Write — matn yaratish; Background Remover; AI Image Generator; Magic Design</div><span class="ti-t tedu">Edu bepul</span></div>
-  <div class="ti"><div class="ti-n">👥 Hamkorlik</div><div class="ti-d">Bir vaqtda bir necha kishi tahrirlashi, sharhlar qoldirishi, taqdimot o'tkazishi mumkin</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📱 Har qurilmada</div><div class="ti-d">Brauzer, iOS, Android ilovalari — barcha qurilmalarda bir xil ishlaydi, offline ham</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-
-<h4>10-20-30 qoidasi — Guy Kawasaki</h4>
-<p>Ta'lim prezentatsiyasi uchun eng mashhur qoida — <span class="term">10-20-30 qoidasi</span>:</p>
-<div class="code">10 — Slayd soni: 10 tadan ko'p bo'lmasin
-20 — Vaqt: 20 daqiqadan oshmasin
-30 — Shrift: 30 punktdan kichik bo'lmasin
-
-Qo'shimcha qoidalar:
-  ✓ Bir slaydda — 1 ta asosiy g'oya
-  ✓ Matn minimal — rasmlar ko'proq
-  ✓ Rang sxemasi: 2-3 rangdan iborat
-  ✓ Kontrast yuqori bo'lsin (oq/qora)
-  ✗ Qizil matni yashil fonda — yo'q
-  ✗ 5 xil shrift — yo'q</div>
-
-<h4>Creative Commons litsenziyasi</h4>
-<p>Prezentatsiyangizda boshqalarning rasm, musiqа yoki matnidan foydalanganda <span class="term">Creative Commons (CC)</span> litsenziyasiga e'tibor bering. CC litsenziyasi mualliflar o'z asarlaridan qanday foydalanishga ruxsat berishini belgilaydi.</p>
-<div class="code">CC BY      — Manbani ko'rsatib istalgancha ishlatish mumkin
-CC BY-SA   — Manbani ko'rsating + o'zgartirsa ham CC da chiqaring
-CC BY-NC   — Faqat tijorat maqsadsida emas
-CC BY-ND   — O'zgartirmang (Non-Derivative)
-CC0        — Mualliflik huquqi yo'q, erkin foydalaning
-
-Rasmlar uchun bepul CC manbalar:
-  Unsplash.com  — yuqori sifatli fotolar
-  Pexels.com    — bepul video va fotolar
-  Pixabay.com   — rasm, video, vektor
-  Canva         — o'z kutubxonasi (edu bepul)</div>`,
+  text:'<h4>Nima uchun vizual kontent muhim?</h4>'
+  +'<p>Tadqiqotlar ko\'rsatadiki, insonlar ko\'rgan ma\'lumotni tinglagandan 6 barobar yaxshiroq eslab qoladi. Shuning uchun ta\'lim materiallarida vizual kontent — rasmlar, diagrammalar, infografikalar — juda muhim rol o\'ynaydi. <span class="term">Visual Learning</span> nazariyasiga ko\'ra, 65% odam vizual turdagi o\'quvchidir (Fleming & Mills, 1992).</p>'
+  +'<p>Zamonaviy o\'qituvchi uchun asosiy vizual kontent yaratish vositalari: Canva, Google Slides, Microsoft PowerPoint va Prezi. Ularning eng mashhuri va qulaylik jihatidan eng yuqorisi — <span class="term">Canva</span>.</p>'
+  +'<div class="note"><b>📌 Canva for Education — bepul!</b>Canva ta\'lim tashkilotlari uchun to\'liq bepul. canva.com/education da o\'qituvchi yoki talaba sifatida ro\'yxatdan o\'ting — barcha premium funksiyalar ochilaди.</div>'
+  +'<h4>Canva asosiy funksiyalari</h4>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🎨 Shablonlar</div><div class="ti-d">100,000+ professional shablon — prezentatsiya, poster, infografika, sertifikat va boshqalar</div><span class="ti-t tfree">Bepul (edu)</span></div>'
+  +'  <div class="ti"><div class="ti-n">🤖 AI vositalar</div><div class="ti-d">Magic Write — matn yaratish; Background Remover; AI Image Generator; Magic Design</div><span class="ti-t tedu">Edu bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">👥 Hamkorlik</div><div class="ti-d">Bir vaqtda bir necha kishi tahrirlashi, sharhlar qoldirishi, taqdimot o\'tkazishi mumkin</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">📱 Har qurilmada</div><div class="ti-d">Brauzer, iOS, Android ilovalari — barcha qurilmalarda bir xil ishlaydi, offline ham</div><span class="ti-t tfree">Bepul</span></div>'
+  +'</div>'
+  +'<h4>10-20-30 qoidasi — Guy Kawasaki</h4>'
+  +'<p>Ta\'lim prezentatsiyasi uchun eng mashhur qoida — <span class="term">10-20-30 qoidasi</span>:</p>'
+  +'<div class="code">10 — Slayd soni: 10 tadan ko\'p bo\'lmasin'
+  +'20 — Vaqt: 20 daqiqadan oshmasin'
+  +'30 — Shrift: 30 punktdan kichik bo\'lmasin'
+  +'Qo\'shimcha qoidalar:'
+  +'  ✓ Bir slaydda — 1 ta asosiy g\'oya'
+  +'  ✓ Matn minimal — rasmlar ko\'proq'
+  +'  ✓ Rang sxemasi: 2-3 rangdan iborat'
+  +'  ✓ Kontrast yuqori bo\'lsin (oq/qora)'
+  +'  ✗ Qizil matni yashil fonda — yo\'q'
+  +'  ✗ 5 xil shrift — yo\'q</div>'
+  +'<h4>Creative Commons litsenziyasi</h4>'
+  +'<p>Prezentatsiyangizda boshqalarning rasm, musiqа yoki matnidan foydalanganda <span class="term">Creative Commons (CC)</span> litsenziyasiga e\'tibor bering. CC litsenziyasi mualliflar o\'z asarlaridan qanday foydalanishga ruxsat berishini belgilaydi.</p>'
+  +'<div class="code">CC BY      — Manbani ko\'rsatib istalgancha ishlatish mumkin'
+  +'CC BY-SA   — Manbani ko\'rsating + o\'zgartirsa ham CC da chiqaring'
+  +'CC BY-NC   — Faqat tijorat maqsadsida emas'
+  +'CC BY-ND   — O\'zgartirmang (Non-Derivative)'
+  +'CC0        — Mualliflik huquqi yo\'q, erkin foydalaning'
+  +'Rasmlar uchun bepul CC manbalar:'
+  +'  Unsplash.com  — yuqori sifatli fotolar'
+  +'  Pexels.com    — bepul video va fotolar'
+  +'  Pixabay.com   — rasm, video, vektor'
+  +'  Canva         — o\'z kutubxonasi (edu bepul)</div>',
   tasks:[
     {
       num:'01', title:"Canva da ta'lim slaydlari yarating",
@@ -363,53 +392,41 @@ Rasmlar uchun bepul CC manbalar:
     desc:"Media kontent va raqamli savodxonlik haqida animatsion dars. Yuz ko'rinmaydi — to'liq animatsiya, Crash Course seriyasi. Screencasting va video kontent yaratish asoslari tushuntiriladi.",
     dur:'~12 daqiqa', lang:'Inglizcha (CC)', lang2:''
   },
-  text:`
-<h4>O'qituvchi uchun video kontent nima uchun kerak?</h4>
-<p>COVID-19 pandemiyasi ta'lim sektorida video kontentni zaruriyatga aylantirdi. Lekin undan keyin ham video asincron ta'limning asosi bo'lib qoldi. <span class="term">Flipped Classroom</span> modelida talabalar uyda videoni ko'rib, sinfda amaliy mashg'ulotlar o'tkazadi. Bu model O'zbekiston universitetlarida ham joriy etilmoqda.</p>
-<p>O'qituvchi uchun eng qulay video yaratish usuli — <span class="term">screencasting</span> (ekran yozib olish). Screencasting orqali yuz ko'rinmasdan, faqat ekran va ovoz orqali dars beriladi. Bu usul O'zbek madaniyatiga ham to'liq mos keladi.</p>
-
-<div class="note"><b>📌 Screencasting vositalari</b>Loom — bepul, brauzer kengaytmasi, darhol yuklash · OBS Studio — ochiq kod, professional · Canva — o'rnatmay to'g'ridan yozish · Windows Snipping Tool — oddiy, o'rnatish shart emas</div>
-
-<h4>Loom — eng qulay screencasting vositasi</h4>
-<p><span class="term">Loom</span> — brauzer kengaytmasi yoki ilova orqali ekranizni yozib, darhol havola olish imkonini beruvchi vosita. Talabalar siz yuborgan havolani bosishi bilan videoni ko'ra oladi — YouTube ga yuklash shart emas.</p>
-<div class="code">Loom bepul rejimi:
-  ✓ 25 ta video (bepul)
-  ✓ Har video 5 daqiqagacha
-  ✓ Havola orqali ulashish
-  ✓ Avtomatik transkript (inglizcha)
-  ✓ Viewer analitika
-  
-Loom Education (bepul, edu tasdiqlansa):
-  ✓ Cheksiz video, cheksiz uzunlik
-  ✓ Klass yaratish imkoniyati
-  ✓ Talabalar javobi (Loom ilova)</div>
-
-<h4>OBS Studio — professional screencasting</h4>
-<p><span class="term">OBS Studio</span> (Open Broadcaster Software) — ochiq kod, to'liq bepul, Windows/Mac/Linux da ishlaydigan professional yozib olish va jonli efir dasturi. YouTube darslar, webinar, onlayn darslar uchun ideal.</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🖥 Ekran yozib olish</div><div class="ti-d">Butun ekran yoki faqat bitta oyna tanlash mumkin</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🎙 Audio sozlama</div><div class="ti-d">Mikrofon va tizim ovozini alohida boshqarish</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">⚡ Virtual Camera</div><div class="ti-d">OBS ni kamera sifatida Zoom, Meet ga ulash</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📁 MP4/MKV</div><div class="ti-d">Sifatli MP4 yoki MKV formatida saqlash</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-
-<h4>Sifatli dars videosi uchun 7 ta qoida</h4>
-<div class="code">1. Vaqt: 6-9 daqiqa optimal (Guo et al., 2014)
-   — undan uzun bo'lsa diqqat tarqaladi
-   
-2. Ovoz: sifatli mikrofon bilan yozing
-   — quloqchin mikrofoni ham kifoya
-   
-3. Tezlik: normal gapirib, keyin ±1.25x rejalash
-   — talabalar tezlikni o'zlari belgilaydi
-   
-4. CC subtitle: avtomatik yoqilsin (YouTube)
-   
-5. Intro: 10 soniyada nima o'rganilishini ayting
-   
-6. Chapters: uzun videoda bo'limlar belgilang
-   
-7. Thumbnail: aniq, kontrast, matnli bo'lsin</div>`,
+  text:'<h4>O\'qituvchi uchun video kontent nima uchun kerak?</h4>'
+  +'<p>COVID-19 pandemiyasi ta\'lim sektorida video kontentni zaruriyatga aylantirdi. Lekin undan keyin ham video asincron ta\'limning asosi bo\'lib qoldi. <span class="term">Flipped Classroom</span> modelida talabalar uyda videoni ko\'rib, sinfda amaliy mashg\'ulotlar o\'tkazadi. Bu model O\'zbekiston universitetlarida ham joriy etilmoqda.</p>'
+  +'<p>O\'qituvchi uchun eng qulay video yaratish usuli — <span class="term">screencasting</span> (ekran yozib olish). Screencasting orqali yuz ko\'rinmasdan, faqat ekran va ovoz orqali dars beriladi. Bu usul O\'zbek madaniyatiga ham to\'liq mos keladi.</p>'
+  +'<div class="note"><b>📌 Screencasting vositalari</b>Loom — bepul, brauzer kengaytmasi, darhol yuklash · OBS Studio — ochiq kod, professional · Canva — o\'rnatmay to\'g\'ridan yozish · Windows Snipping Tool — oddiy, o\'rnatish shart emas</div>'
+  +'<h4>Loom — eng qulay screencasting vositasi</h4>'
+  +'<p><span class="term">Loom</span> — brauzer kengaytmasi yoki ilova orqali ekranizni yozib, darhol havola olish imkonini beruvchi vosita. Talabalar siz yuborgan havolani bosishi bilan videoni ko\'ra oladi — YouTube ga yuklash shart emas.</p>'
+  +'<div class="code">Loom bepul rejimi:'
+  +'  ✓ 25 ta video (bepul)'
+  +'  ✓ Har video 5 daqiqagacha'
+  +'  ✓ Havola orqali ulashish'
+  +'  ✓ Avtomatik transkript (inglizcha)'
+  +'  ✓ Viewer analitika'
+  +'Loom Education (bepul, edu tasdiqlansa):'
+  +'  ✓ Cheksiz video, cheksiz uzunlik'
+  +'  ✓ Klass yaratish imkoniyati'
+  +'  ✓ Talabalar javobi (Loom ilova)</div>'
+  +'<h4>OBS Studio — professional screencasting</h4>'
+  +'<p><span class="term">OBS Studio</span> (Open Broadcaster Software) — ochiq kod, to\'liq bepul, Windows/Mac/Linux da ishlaydigan professional yozib olish va jonli efir dasturi. YouTube darslar, webinar, onlayn darslar uchun ideal.</p>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🖥 Ekran yozib olish</div><div class="ti-d">Butun ekran yoki faqat bitta oyna tanlash mumkin</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">🎙 Audio sozlama</div><div class="ti-d">Mikrofon va tizim ovozini alohida boshqarish</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">⚡ Virtual Camera</div><div class="ti-d">OBS ni kamera sifatida Zoom, Meet ga ulash</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">📁 MP4/MKV</div><div class="ti-d">Sifatli MP4 yoki MKV formatida saqlash</div><span class="ti-t tfree">Bepul</span></div>'
+  +'</div>'
+  +'<h4>Sifatli dars videosi uchun 7 ta qoida</h4>'
+  +'<div class="code">1. Vaqt: 6-9 daqiqa optimal (Guo et al., 2014)'
+  +'   — undan uzun bo\'lsa diqqat tarqaladi'
+  +'2. Ovoz: sifatli mikrofon bilan yozing'
+  +'   — quloqchin mikrofoni ham kifoya'
+  +'3. Tezlik: normal gapirib, keyin ±1.25x rejalash'
+  +'   — talabalar tezlikni o\'zlari belgilaydi'
+  +'4. CC subtitle: avtomatik yoqilsin (YouTube)'
+  +'5. Intro: 10 soniyada nima o\'rganilishini ayting'
+  +'6. Chapters: uzun videoda bo\'limlar belgilang'
+  +'7. Thumbnail: aniq, kontrast, matnli bo\'lsin</div>',
   tasks:[
     {
       num:'01', title:'Loom bilan qisqa screencasting yarating',
@@ -446,53 +463,43 @@ Loom Education (bepul, edu tasdiqlansa):
     desc:"H5P dan interaktiv ta'lim materiallari yaratish — to'liq ekran ko'rsatmali screencasting. H5P ni LMS platformalarga qanday joylash ko'rsatiladi. Yuz ko'rinmaydi.",
     dur:'~12 daqiqa', lang:'Inglizcha (CC)', lang2:'Inglizcha (CC)'
   },
-  text:`
-<h4>Interaktiv kontent nima va nima uchun muhim?</h4>
-<p>Passiv kontentdan (video, matn) farqli ravishda, <span class="term">interaktiv kontent</span> talabaning faol ishtirokini talab qiladi. Talaba javob beradi, tanlov qiladi, tortib qo'yadi, bosadi. Tadqiqotlar ko'rsatadiki, interaktiv kontent oddiy kontentga nisbatan 94% ko'proq o'zlashtirish ta'minlaydi (Demand Gen Report, 2022).</p>
-<p>O'qituvchilar uchun eng qulay interaktiv kontent platformalari: <span class="term">H5P</span> (eng kuchli), <span class="term">Mentimeter</span> (jonli so'rovnomalar) va <span class="term">Padlet</span> (hamkorlik doskasi).</p>
-
-<div class="note"><b>📌 H5P — ochiq standart, bepul!</b>H5P ochiq kod bo'lib, h5p.org da to'g'ridan yaratish mumkin. Bundan tashqari WordPress, Moodle, Canvas, Blackboard da plugin sifatida o'rnatiladi. O'zbekiston universitetlarida Moodle keng tarqalgan.</div>
-
-<h4>H5P interaktiv kontent turlari</h4>
-<div class="code">Eng ko'p qo'llaniladigan H5P content types:
-
-Course Presentation  — interaktiv slaydlar (quiz bilan)
-Interactive Video    — videoga savollar joylashtirish
-Quiz (Question Set)  — aralash savol turlari
-Drag and Drop        — tortib qo'yish topshiriqlari
-Fill in the Blanks   — bo'sh joylarni to'ldirish
-Flashcards           — so'z kartalar (til o'rganish)
-Timeline             — vaqt chizig'i
-Branching Scenario   — ssenariy tanlash (simulyatsiya)
-Image Hotspot        — rasm ustida yashirin ma'lumot
-Memory Game          — xotira o'yini</div>
-
-<h4>Mentimeter — jonli interaktiv dars</h4>
-<p><span class="term">Mentimeter</span> — dars davomida real vaqtda talabalar ovoz berishi, savol berishi yoki so'rovnomada ishtirok etishi uchun qurilma. Talabalar menti.run ga kirib, kod teradi va siz savol berasiz.</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">📊 Word Cloud</div><div class="ti-d">Talabalar so'z yozadi → katta-kichiklik songa bog'liq bulut hosil bo'ladi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🗳 Voting</div><div class="ti-d">Ko'p tanlovli ovoz berish — natija darhol ko'rinadi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">❓ Q&A</div><div class="ti-d">Talabalar savollarini yozadi, boshqalar like bosadi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📈 Scale</div><div class="ti-d">1-dan 5-gacha baholash — fikr-mulohaza olish</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-
-<h4>Interaktiv kontentni darsga qo'shish strategiyasi</h4>
-<div class="code">Dars bosqichi    → Vosita        → Maqsad
-─────────────────────────────────────────
-Kirish           → Mentimeter    → Mavzuni tekshirish
-                   (Word Cloud)
-
-Tushuntirish     → H5P           → Interaktiv slaydlar
-                   (Course Pres)
-
-Mustahkamlash    → H5P           → Quiz, Drag & Drop
-                   (Quiz Set)
-
-Yakun            → Mentimeter    → Fikr-mulohaza
-                   (Rating)
-
-Uy vazifa        → H5P Padlet    → Ijodiy topshiriq
-                   (Branching)</div>`,
+  text:'<h4>Interaktiv kontent nima va nima uchun muhim?</h4>'
+  +'<p>Passiv kontentdan (video, matn) farqli ravishda, <span class="term">interaktiv kontent</span> talabaning faol ishtirokini talab qiladi. Talaba javob beradi, tanlov qiladi, tortib qo\'yadi, bosadi. Tadqiqotlar ko\'rsatadiki, interaktiv kontent oddiy kontentga nisbatan 94% ko\'proq o\'zlashtirish ta\'minlaydi (Demand Gen Report, 2022).</p>'
+  +'<p>O\'qituvchilar uchun eng qulay interaktiv kontent platformalari: <span class="term">H5P</span> (eng kuchli), <span class="term">Mentimeter</span> (jonli so\'rovnomalar) va <span class="term">Padlet</span> (hamkorlik doskasi).</p>'
+  +'<div class="note"><b>📌 H5P — ochiq standart, bepul!</b>H5P ochiq kod bo\'lib, h5p.org da to\'g\'ridan yaratish mumkin. Bundan tashqari WordPress, Moodle, Canvas, Blackboard da plugin sifatida o\'rnatiladi. O\'zbekiston universitetlarida Moodle keng tarqalgan.</div>'
+  +'<h4>H5P interaktiv kontent turlari</h4>'
+  +'<div class="code">Eng ko\'p qo\'llaniladigan H5P content types:'
+  +'Course Presentation  — interaktiv slaydlar (quiz bilan)'
+  +'Interactive Video    — videoga savollar joylashtirish'
+  +'Quiz (Question Set)  — aralash savol turlari'
+  +'Drag and Drop        — tortib qo\'yish topshiriqlari'
+  +'Fill in the Blanks   — bo\'sh joylarni to\'ldirish'
+  +'Flashcards           — so\'z kartalar (til o\'rganish)'
+  +'Timeline             — vaqt chizig\'i'
+  +'Branching Scenario   — ssenariy tanlash (simulyatsiya)'
+  +'Image Hotspot        — rasm ustida yashirin ma\'lumot'
+  +'Memory Game          — xotira o\'yini</div>'
+  +'<h4>Mentimeter — jonli interaktiv dars</h4>'
+  +'<p><span class="term">Mentimeter</span> — dars davomida real vaqtda talabalar ovoz berishi, savol berishi yoki so\'rovnomada ishtirok etishi uchun qurilma. Talabalar menti.run ga kirib, kod teradi va siz savol berasiz.</p>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">📊 Word Cloud</div><div class="ti-d">Talabalar so\'z yozadi → katta-kichiklik songa bog\'liq bulut hosil bo\'ladi</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">🗳 Voting</div><div class="ti-d">Ko\'p tanlovli ovoz berish — natija darhol ko\'rinadi</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">❓ Q&A</div><div class="ti-d">Talabalar savollarini yozadi, boshqalar like bosadi</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">📈 Scale</div><div class="ti-d">1-dan 5-gacha baholash — fikr-mulohaza olish</div><span class="ti-t tfree">Bepul</span></div>'
+  +'</div>'
+  +'<h4>Interaktiv kontentni darsga qo\'shish strategiyasi</h4>'
+  +'<div class="code">Dars bosqichi    → Vosita        → Maqsad'
+  +'─────────────────────────────────────────'
+  +'Kirish           → Mentimeter    → Mavzuni tekshirish'
+  +'                   (Word Cloud)'
+  +'Tushuntirish     → H5P           → Interaktiv slaydlar'
+  +'                   (Course Pres)'
+  +'Mustahkamlash    → H5P           → Quiz, Drag & Drop'
+  +'                   (Quiz Set)'
+  +'Yakun            → Mentimeter    → Fikr-mulohaza'
+  +'                   (Rating)'
+  +'Uy vazifa        → H5P Padlet    → Ijodiy topshiriq'
+  +'                   (Branching)</div>',
   tasks:[
     {
       num:'01', title:'H5P da interaktiv quiz yarating',
@@ -529,63 +536,53 @@ Uy vazifa        → H5P Padlet    → Ijodiy topshiriq
     desc:"ADDIE modeli asosida kurs loyihalash jarayoni — to'liq screencasting. Tahlil, dizayn, ishlab chiqish, joriy etish va baholash bosqichlari amaliy ko'rsatiladi. Yuz ko'rinmaydi.",
     dur:'~15 daqiqa', lang:'Inglizcha (CC)', lang2:''
   },
-  text:`
-<h4>Instructional Design nima?</h4>
-<p><span class="term">Instructional Design (ID)</span> — o'quv materiallarini tizimli va samarali tarzda loyihalash jarayoni. ID nafaqat kontent tayyorlash, balki o'quvchi qanday o'rganishini, qanday baholanishini va qanday motivatsiyalanishini ham hisobga oladi.</p>
-<p>Zamonaviy o'qituvchi ID tamoyillarini bilsa, u oddiy dars berishdan o'tib, to'laqonli o'quv tajribasini loyihalashga qodir bo'ladi. Bu ko'nikma ayniqsa raqamli va masofaviy ta'limda juda muhim.</p>
-
-<div class="note"><b>📌 ADDIE modeli — eng keng tarqalgan ID modeli</b>ADDIE: Analysis → Design → Development → Implementation → Evaluation. Florida State University da 1970-yillarda ishlab chiqilgan, bugungi kunda ham global standart hisoblanadi.</div>
-
-<h4>ADDIE modeli — 5 bosqich</h4>
-<div class="code">A — ANALYSIS (Tahlil)
-  • Maqsadli auditoriya kim?
-  • Hozirgi bilim darajasi qanday?
-  • O'quv maqsadlari nima?
-  • Mavjud resurslar va cheklovlar?
-
-D — DESIGN (Loyihalash)
-  • O'quv maqsadlarini Bloom bo'yicha yozing
-  • Kontent strukturasini belgilang
-  • Baholash strategiyasini tanlang
-  • Media va vositalarni aniqlang
-
-D — DEVELOPMENT (Ishlab chiqish)
-  • Kontentni yarating (matn, video, quiz)
-  • Prototipni sinov guruhda tekshiring
-  • Qayta ishlang
-
-I — IMPLEMENTATION (Joriy etish)
-  • LMS ga yuklang
-  • O'qituvchilar va talabalarni tayyorlang
-  • Texnik yordam ta'minlang
-
-E — EVALUATION (Baholash)
-  • Formativ: jarayon davomida
-  • Summativ: kurs oxirida
-  • Kirkpatrick 4 darajasi: reaction, learning, behavior, results</div>
-
-<h4>Bloom taksonomiyasi — o'quv maqsadlari yozish</h4>
-<p>O'quv maqsadlari <span class="term">Bloom taksonomiyasi</span> bo'yicha 6 kognitiv darajaga ajratiladi. Har daraja uchun aniq fe'llar ishlatiladi:</p>
-<div class="code">Daraja 1 — ESLASH:    belgilash, ro'yxat tuzish, sanash
-Daraja 2 — TUSHUNISH: tushuntirish, ta'riflash, misol keltirish  
-Daraja 3 — QOLLASH:   qo'llash, hisoblash, bajarish
-Daraja 4 — TAHLIL:    taqqoslash, farqlash, ajratish
-Daraja 5 — BAHOLASH:  argumentlash, tanqid qilish, asoslash
-Daraja 6 — YARATISH:  loyihalash, ishlab chiqish, tuzish
-
-Misol:
-✗ Yomon: "Talaba tarmoqni biladi"
-✓ Yaxshi: "Talaba LAN va WAN tarmoq turlarini 
-           taqqoslab, asosiy farqlarini bayon qiladi"</div>
-
-<h4>OER — Ochiq Ta'lim Resurslari</h4>
-<p><span class="term">Open Educational Resources (OER)</span> — erkin foydalanish, moslash va tarqatish mumkin bo'lgan ta'lim materiallari. OER portallari:</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🌐 OER Commons</div><div class="ti-d">oercommons.org — keng to'plamli bepul ta'lim resurslari kutubxonasi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🎓 Khan Academy</div><div class="ti-d">khanacademy.org — matematika, fan, informatika bo'yicha video darslar</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📚 MIT OpenCourseWare</div><div class="ti-d">ocw.mit.edu — MIT universitetining barcha kurs materiallari bepul</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🇺🇿 ZiyoNet</div><div class="ti-d">ziyonet.uz — O'zbekiston elektron ta'lim resurslari portali</div><span class="ti-t tfree">Bepul</span></div>
-</div>`,
+  text:'<h4>Instructional Design nima?</h4>'
+  +'<p><span class="term">Instructional Design (ID)</span> — o\'quv materiallarini tizimli va samarali tarzda loyihalash jarayoni. ID nafaqat kontent tayyorlash, balki o\'quvchi qanday o\'rganishini, qanday baholanishini va qanday motivatsiyalanishini ham hisobga oladi.</p>'
+  +'<p>Zamonaviy o\'qituvchi ID tamoyillarini bilsa, u oddiy dars berishdan o\'tib, to\'laqonli o\'quv tajribasini loyihalashga qodir bo\'ladi. Bu ko\'nikma ayniqsa raqamli va masofaviy ta\'limda juda muhim.</p>'
+  +'<div class="note"><b>📌 ADDIE modeli — eng keng tarqalgan ID modeli</b>ADDIE: Analysis → Design → Development → Implementation → Evaluation. Florida State University da 1970-yillarda ishlab chiqilgan, bugungi kunda ham global standart hisoblanadi.</div>'
+  +'<h4>ADDIE modeli — 5 bosqich</h4>'
+  +'<div class="code">A — ANALYSIS (Tahlil)'
+  +'  • Maqsadli auditoriya kim?'
+  +'  • Hozirgi bilim darajasi qanday?'
+  +'  • O\'quv maqsadlari nima?'
+  +'  • Mavjud resurslar va cheklovlar?'
+  +'D — DESIGN (Loyihalash)'
+  +'  • O\'quv maqsadlarini Bloom bo\'yicha yozing'
+  +'  • Kontent strukturasini belgilang'
+  +'  • Baholash strategiyasini tanlang'
+  +'  • Media va vositalarni aniqlang'
+  +'D — DEVELOPMENT (Ishlab chiqish)'
+  +'  • Kontentni yarating (matn, video, quiz)'
+  +'  • Prototipni sinov guruhda tekshiring'
+  +'  • Qayta ishlang'
+  +'I — IMPLEMENTATION (Joriy etish)'
+  +'  • LMS ga yuklang'
+  +'  • O\'qituvchilar va talabalarni tayyorlang'
+  +'  • Texnik yordam ta\'minlang'
+  +'E — EVALUATION (Baholash)'
+  +'  • Formativ: jarayon davomida'
+  +'  • Summativ: kurs oxirida'
+  +'  • Kirkpatrick 4 darajasi: reaction, learning, behavior, results</div>'
+  +'<h4>Bloom taksonomiyasi — o\'quv maqsadlari yozish</h4>'
+  +'<p>O\'quv maqsadlari <span class="term">Bloom taksonomiyasi</span> bo\'yicha 6 kognitiv darajaga ajratiladi. Har daraja uchun aniq fe\'llar ishlatiladi:</p>'
+  +'<div class="code">Daraja 1 — ESLASH:    belgilash, ro\'yxat tuzish, sanash'
+  +'Daraja 2 — TUSHUNISH: tushuntirish, ta\'riflash, misol keltirish  '
+  +'Daraja 3 — QOLLASH:   qo\'llash, hisoblash, bajarish'
+  +'Daraja 4 — TAHLIL:    taqqoslash, farqlash, ajratish'
+  +'Daraja 5 — BAHOLASH:  argumentlash, tanqid qilish, asoslash'
+  +'Daraja 6 — YARATISH:  loyihalash, ishlab chiqish, tuzish'
+  +'Misol:'
+  +'✗ Yomon: "Talaba tarmoqni biladi"'
+  +'✓ Yaxshi: "Talaba LAN va WAN tarmoq turlarini '
+  +'           taqqoslab, asosiy farqlarini bayon qiladi"</div>'
+  +'<h4>OER — Ochiq Ta\'lim Resurslari</h4>'
+  +'<p><span class="term">Open Educational Resources (OER)</span> — erkin foydalanish, moslash va tarqatish mumkin bo\'lgan ta\'lim materiallari. OER portallari:</p>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🌐 OER Commons</div><div class="ti-d">oercommons.org — keng to\'plamli bepul ta\'lim resurslari kutubxonasi</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">🎓 Khan Academy</div><div class="ti-d">khanacademy.org — matematika, fan, informatika bo\'yicha video darslar</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">📚 MIT OpenCourseWare</div><div class="ti-d">ocw.mit.edu — MIT universitetining barcha kurs materiallari bepul</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">🇺🇿 ZiyoNet</div><div class="ti-d">ziyonet.uz — O\'zbekiston elektron ta\'lim resurslari portali</div><span class="ti-t tfree">Bepul</span></div>'
+  +'</div>',
   tasks:[
     {
       num:'01', title:"ADDIE bo'yicha dars rejasi tuzing",
@@ -671,18 +668,16 @@ function lockedMsg(i) {
 }
 
 // ── SHOW LESSON ──
-function showLesson(idx) {
-  if(idx > userLevel && !isUnlocked(idx)) { lockedMsg(idx); return; }
-  currentLesson = idx; quizAns = []; quizDone = false;
+function showLesson(idx){
+  if(idx>userLevel&&!isUnlocked(idx)){lockedClick(idx);return;}
+  currentLesson=idx;quizAns=[];quizDone=false;
   renderSidebar();
-  const L = LESSONS[idx];
-  const lvBadge = ['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
-  document.getElementById('mainContent').innerHTML = `
+  const L=LESSONS[idx];
+  const lb=['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
+  document.getElementById('mainContent').innerHTML=`
     <div class="lh au">
-      <div class="lh-level">
-        <span class="lv-badge ${lvBadge}">${L.level}</span>
-        <span style="font-size:12px;color:var(--text3)">daraja</span>
-      </div>
+      <div class="lh-level"><span class="lv-badge ${lb}">${L.level}</span>
+      <span style="font-size:12px;color:var(--text3)">daraja</span></div>
       <div class="lh-icon">${L.icon}</div>
       <div class="lh-title">${L.title}</div>
       <div class="lh-sub">${L.subtitle}</div>
@@ -690,8 +685,8 @@ function showLesson(idx) {
         <span class="lh-chip">⏱ ${L.dur}</span>
         <span class="lh-chip">🛠 ${L.taskCount} amaliy</span>
         <span class="lh-chip">❓ ${L.quizCount} quiz</span>
-        ${completedLessons.includes(idx) ? '<span class="lh-chip" style="color:var(--ok);border-color:var(--ok-b)">✅ Yakunlangan</span>' : ''}
-        ${quizScores[idx] !== undefined ? '<span class="lh-chip" style="color:var(--mc)">Quiz: '+quizScores[idx]+'%</span>' : ''}
+        ${completedLessons.includes(idx)?'<span class="lh-chip" style="color:var(--ok);border-color:var(--ok-b)">✅ Yakunlangan</span>':''}
+        ${quizScores[idx]!==undefined?'<span class="lh-chip" style="color:var(--mc)">Quiz: '+quizScores[idx]+'%</span>':''}
       </div>
     </div>
     <div class="tabs">
@@ -703,23 +698,26 @@ function showLesson(idx) {
     <div id="tc-video" class="tc active">${renderVideo(L)}</div>
     <div id="tc-matn"  class="tc">${renderMatn(L)}</div>
     <div id="tc-amaliy" class="tc">${renderAmaliy(L,idx)}</div>
-    <div id="tc-quiz" class="tc">${renderQuiz(L,idx)}</div>
+    <div id="tc-quiz"  class="tc">${renderQuiz(L,idx)}</div>
     <div class="navbtns">
-      ${idx > 0 ? `<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>` : '<div></div>'}
-      ${idx < 3 ? `<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`
-                : `<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
+      ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`
+             :`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ── RENDER VIDEO ──
-function renderVideo(L) {
-  const v = L.video;
-  const isUz = v.lang && v.lang.includes("O'zbekcha");
-  const hasAlt = v.url2 && v.url2.length > 0;
-  const badge = isUz
-    ? `<span style="background:rgba(0,184,148,.1);color:var(--ok);border:1.5px solid var(--ok-b);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🇺🇿 O'ZBEKCHA</span>`
-    : `<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 ${(v.lang||'INGLIZCHA').toUpperCase()}</span>`;
+// ──────────────────────────────────────────
+// RENDER HELPERS
+// ──────────────────────────────────────────
+
+function renderVideo(L){
+  const v=L.video;
+  const isUz=v.lang&&v.lang.includes("O'zbekcha");
+  const hasAlt=v.url2&&v.url2.length>0;
+  const badge=isUz
+    ?'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1.5px solid rgba(16,185,129,.25);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🇺🇿 O\'ZBEKCHA</span>'
+    :'<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 '+(v.lang||'INGLIZCHA').toUpperCase()+'</span>';
   return `<div class="vcard">
     <div class="vthumb" onclick="window.open('${v.url}','_blank')">
       <div class="pbtn">▶</div>
@@ -731,34 +729,26 @@ function renderVideo(L) {
       <div style="margin-bottom:10px">${badge}</div>
       <div class="vt">${v.title}</div>
       <div class="vd">${v.desc}</div>
-      <div class="vmeta">
-        <span class="vchip">🎬 YouTube</span>
-        <span class="vchip">⏱ ${v.dur}</span>
-        <span class="vchip">🌐 ${v.lang}</span>
-      </div>
-      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
+      <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
+      <div style="margin-top:12px">
         <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
-        ${hasAlt ? `<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>` : ''}
+        ${hasAlt?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
       </div>
-      ${!isUz ? `<div class="cc-note">💡 <b>Subtitle:</b> YouTube da <b>CC</b> tugmasini bosing → O'zbek yoki Rus tilini tanlang</div>` : ''}
+      ${!isUz?'<div class="cc-note">💡 <b>CC tugmasi</b> → O\'zbek yoki Rus subtitlni yoqing</div>':''}
     </div>
   </div>
-  <div style="text-align:right;margin-top:6px">
-    <button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button>
-  </div>`;
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName(\'matn\')">Matnni o\'qish →</button></div>`;
 }
 
-// ── RENDER MATN ──
-function renderMatn(L) {
+
+function renderMatn(L){
   return `<div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);padding:22px;box-shadow:var(--shadow-sm)">
     <div class="lt">${L.text}</div>
   </div>
-  <div style="text-align:right;margin-top:10px">
-    <button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga o'tish →</button>
-  </div>`;
+  <div style="text-align:right;margin-top:10px"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga →</button></div>`;
 }
 
-// ── RENDER AMALIY ──
+
 function renderAmaliy(L,idx) {
   return L.tasks.map((t,i) => `
     <div class="task-card">
@@ -771,6 +761,8 @@ function renderAmaliy(L,idx) {
       <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
       <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
       <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Ajoyib! Endi quizga o'ting.</div>
+      <button class="aifb-btn" id="aifb_${idx}_${i}" onclick="aiFeedback(${idx},${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0eeff;border:1.5px solid #c0b0ff;color:#6c5ce7;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit">🤖 AI baholash</button>
+      <div class="aifb-res" id="aifbr_${idx}_${i}" style="display:none;margin-top:8px;padding:10px 13px;background:#f8f6ff;border:1.5px solid #d0c8ff;border-radius:10px;font-size:12px;line-height:1.7;color:#333"></div>
     </div>`).join('') +
   `<div style="text-align:right;margin-top:8px">
     <button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button>
@@ -781,7 +773,12 @@ function renderAmaliy(L,idx) {
 function renderQuiz(L,idx) {
   const saved = quizScores[idx];
   if(saved !== undefined) {
-    return `<div class="qres" style="display:block">
+    return `<div style="background:#f8f6ff;border:1.5px dashed #c0b0ff;border-radius:12px;padding:14px;margin-bottom:14px">
+      <p style="font-weight:700;font-size:13px;color:#6c5ce7;margin:0 0 6px">✨ AI Quiz Generator</p>
+      <button id="aiqb_${idx}" onclick="aiGenQuiz(${idx})" style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">✨ AI savollar yaratish</button>
+      <div id="aiqr_${idx}" style="display:none;margin-top:10px"></div>
+    </div>
+    <div class="qres" style="display:block">
       <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
       <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
       <div class="qrm">${saved>=70 ? '✅ O\'tdingiz!' : '⚠️ 70% kerak. Qayta urining.'}</div>
@@ -1052,4 +1049,130 @@ showLesson(userLevel);
 loadNews();
 </script>
 </body>
+
+
+<div class="ai-wrap">
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-ph">
+      <div class="ai-ph-av">🤖</div>
+      <div class="ai-ph-t"><b>AI Yordamchi</b><small>Faol</small></div>
+      <button onclick="aiToggle()">✕</button>
+    </div>
+    <div class="ai-sugs" id="aiSugs">
+      <button class="ai-sug" onclick="aiQuick('Bu dars haqida tushuntir')">📖 Dars haqida</button>
+      <button class="ai-sug" onclick="aiQuick('Muhim terminlarni tushuntir')">📝 Terminlar</button>
+      <button class="ai-sug" onclick="aiQuick('Amaliy misol ber')">💡 Misol</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg b">Salom! 👋 Savol bering — yordam beraman!</div>
+    </div>
+    <div class="ai-ft">
+      <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Savol yozing..."
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){{event.preventDefault();aiSend()}}"></textarea>
+      <button class="ai-send" onclick="aiSend()">➤</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="ai-tip" id="aiTip">💬 Savol bormi? So'rang!</div>
+    <button class="ai-btn" id="aiBtn" onclick="aiToggle()">🤖<span class="ai-badge">?</span></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb';
+  var history=[];
+
+  setTimeout(function(){var t=document.getElementById('aiTip');if(t)t.style.display='none';},4000);
+
+  window.aiToggle=function(){
+    var p=document.getElementById('aiPanel');
+    var b=document.getElementById('aiBtn');
+    var t=document.getElementById('aiTip');
+    var open=p.classList.contains('on');
+    p.classList.toggle('on');b.classList.toggle('on');
+    if(t)t.style.display='none';
+    if(!open)setTimeout(function(){var i=document.getElementById('aiInp');if(i)i.focus();},200);
+  };
+
+  window.aiQuick=function(q){
+    document.getElementById('aiInp').value=q;
+    var s=document.getElementById('aiSugs');if(s)s.style.display='none';
+    aiSend();
+  };
+
+  window.aiSend=function(){
+    var inp=document.getElementById('aiInp');
+    var msg=(inp.value||'').trim();if(!msg)return;
+    inp.value='';addMsg(msg,'u');
+    var lid='lid'+Date.now();addMsg('⟳ Javob...','b ld',lid);
+    var ch=history.map(function(h){return {role:h.role,message:h.message};}); 
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:msg,preamble:'Sen DigiComp M3 AI yordamchisisаn. Mavzu: Raqamli kontent yaratish. Uzbek tilida qisqa javob ber.',chat_history:ch})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById(lid);if(el)el.remove();
+      if(d.text){addMsg(d.text,'b');history.push({role:'USER',message:msg});history.push({role:'CHATBOT',message:d.text});if(history.length>16)history=history.slice(-16);}
+      else addMsg('Xatolik: '+(d.message||'nomalum'),'b');
+    }).catch(function(e){var el=document.getElementById(lid);if(el)el.remove();addMsg('Xatolik: '+e.message,'b');});
+  };
+
+  window.aiFeedback=function(li,ti){
+    var L=LESSONS[li];var task=L.tasks[ti];
+    var inp=document.getElementById('ta_'+li+'_'+ti);
+    var val=inp?(inp.value||'').trim():'';
+    if(val.length<10){showToast('Avval javobingizni yozing!');return;}
+    var btn=document.getElementById('aifb_'+li+'_'+ti);
+    var res=document.getElementById('aifbr_'+li+'_'+ti);
+    btn.disabled=true;btn.textContent='⟳ Baholanmoqda...';
+    res.style.display='block';res.textContent='🤖 AI baholamoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:'Topshiriq: '+task.title+'. Talaba javobi: '+val+'. Baho: A/B/C/D va izoh.',preamble:'Sen ta\'lim AI baholovchisisаn. Uzbek tilida qisqa baho ber.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text)res.innerHTML='<b style="color:var(--mc)">🤖 AI Baholash:</b><br>'+d.text;
+      else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='🤖 AI baholash';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='🤖 AI baholash';});
+  };
+
+  window.aiGenQuiz=function(idx){
+    var L=LESSONS[idx];
+    var btn=document.getElementById('aiqb_'+idx);
+    var res=document.getElementById('aiqr_'+idx);
+    btn.disabled=true;btn.textContent='⟳ Yaratilmoqda...';
+    res.style.display='block';res.textContent='🤖 Savollar yaratilmoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:L.title+' mavzusida 4 ta test savol. JSON: [{"q":"?","o":["A","B","C","D"],"a":0}]',preamble:'Faqat JSON qaytarasan, boshqa matn yozma.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text){
+        try{
+          var raw=d.text.replace(/```json|```|`/g,'').trim();
+          var m=raw.match(/\[.*\]/s);if(m)raw=m[0];
+          var qs=JSON.parse(raw);
+          res.innerHTML=qs.map(function(q,i){
+            return '<div style="background:#fff;border:1px solid #e0d8ff;border-radius:9px;padding:11px;margin-bottom:8px">'+
+              '<div style="font-size:12px;font-weight:700;color:#333;margin-bottom:7px">'+(i+1)+'. '+q.q+'</div>'+
+              q.o.map(function(o,j){var ok=j===q.a;return '<div style="font-size:11px;padding:4px 9px;border-radius:6px;margin-bottom:3px;background:'+(ok?'#dcfce7':'#f5f5f5')+';color:'+(ok?'#16a34a':'#555')+';font-weight:'+(ok?'700':'400')+'">'+'ABCD'[j]+'. '+o+(ok?' ✓':'')+'</div>';}).join('')+'</div>';
+          }).join('');
+        }catch(e){res.textContent=d.text;}
+      }else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='✨ Yangi savollar';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='✨ AI savollar';});
+  };
+
+  function addMsg(t,cls,id){
+    var box=document.getElementById('aiMsgs');if(!box)return;
+    var el=document.createElement('div');el.className='ai-msg '+cls;el.textContent=t;
+    if(id)el.id=id;box.appendChild(el);box.scrollTop=box.scrollHeight;
+  }
+})();
+</script>
 </html>

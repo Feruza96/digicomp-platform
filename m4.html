@@ -189,6 +189,42 @@ textarea::placeholder{color:var(--text3)}
 
 .toast{position:fixed;bottom:22px;right:22px;background:var(--mc);color:#fff;padding:11px 18px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 6px 24px rgba(139,92,246,.4)}
 .toast.show{transform:translateY(0)}
+
+/* Cert overlay fix */
+#certOverlay{position:fixed !important;inset:0 !important;z-index:9000 !important;background:rgba(0,0,0,0.85) !important;display:none !important;align-items:center !important;justify-content:center !important;}
+#certOverlay.show{display:flex !important;}
+
+/* AI */
+@keyframes ai-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 14px rgba(239,68,68,.0)}}
+@keyframes ai-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ai-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai-wrap{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ai-tip{background:#1a1d3a;color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;position:relative}
+.ai-tip::after{content:'';position:absolute;bottom:-5px;right:20px;border:5px solid transparent;border-top-color:#1a1d3a}
+.ai-btn{width:56px;height:56px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:50%;border:none;cursor:pointer;font-size:26px;animation:ai-pulse 2s infinite,ai-bounce 3s ease-in-out infinite;position:relative;display:flex;align-items:center;justify-content:center}
+.ai-btn.on{background:linear-gradient(135deg,var(--mc),var(--mc2));animation:none}
+.ai-badge{position:absolute;top:-1px;right:-1px;width:18px;height:18px;background:#fff;border-radius:50%;border:2px solid #ef4444;font-size:10px;font-weight:800;color:#ef4444;display:flex;align-items:center;justify-content:center}
+.ai-panel{width:310px;background:#fff;border:1.5px solid #e0e0e0;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;max-height:480px;animation:ai-fade .25s ease}
+.ai-panel.on{display:flex}
+.ai-ph{background:linear-gradient(135deg,var(--mc),var(--mc2));padding:12px 14px;display:flex;align-items:center;gap:10px}
+.ai-ph-av{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ai-ph-t{flex:1}
+.ai-ph-t b{font-size:13px;color:#fff;display:block}
+.ai-ph-t small{font-size:10px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:3px}
+.ai-ph-t small::before{content:'';width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block}
+.ai-ph button{background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px}
+.ai-sugs{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+.ai-sug{padding:4px 10px;background:#f0eeff;border:1px solid #d0c8ff;border-radius:20px;font-size:11px;color:#6c5ce7;cursor:pointer}
+.ai-sug:hover{background:#6c5ce7;color:#fff}
+.ai-msgs{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;min-height:140px;max-height:240px}
+.ai-msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.6}
+.ai-msg.u{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;align-self:flex-end;border-radius:12px 12px 2px 12px}
+.ai-msg.b{background:#f5f5f5;color:#333;align-self:flex-start;border-radius:12px 12px 12px 2px}
+.ai-msg.ld{background:#f5f5f5;color:#aaa;font-style:italic;align-self:flex-start}
+.ai-ft{padding:9px;border-top:1px solid #eee;display:flex;gap:6px}
+.ai-inp{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:12.5px;outline:none;resize:none;font-family:inherit}
+.ai-inp:focus{border-color:var(--mc)}
+.ai-send{width:36px;height:36px;min-width:36px;background:linear-gradient(135deg,var(--mc),var(--mc2));border:none;border-radius:9px;color:#fff;cursor:pointer;font-size:16px}
 </style>
 </head>
 <body>
@@ -243,7 +279,7 @@ textarea::placeholder{color:var(--text3)}
 <script>
 
 // ═══════ DigiComp API ═══════
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec';
 async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
 async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
 async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
@@ -267,54 +303,46 @@ const LESSONS = [
     desc:"2FA qanday ishlashini 3 daqiqada tushuntiruvchi CommonCraft animatsion video. Parol + ikkinchi tasdiqlash qanday himoya beradi — sodda va vizual tushuntiriladi. Yuz ko'rinmaydi, to'liq animatsiya.",
     dur:'~10 daqiqa', lang:'Inglizcha (CC)', lang2:''
   },
-  text:`
-<h4>Raqamli xavfsizlik — o'qituvchi uchun nima uchun muhim?</h4>
-<p>O'qituvchi shaxsiy ma'lumotlar bilan ishlaydi: talabalar bahosi, ota-onalar kontakti, sinf jadvallari. Bu ma'lumotlar noto'g'ri qo'llarga tushsa jiddiy muammolar yuzaga keladi. <span class="term">DigCompEdu 6.4</span> frameworkiga ko'ra, pedagogik raqamli kompetentlikning ajralmas qismi — o'z va talabalar ma'lumotlarini himoya qilish ko'nikmasi.</p>
-
-<div class="warn"><b>⚠️ Haqiqiy holat — O'zbekiston</b>2023-yilda O'zbekiston ta'lim tizimida 47 ta ma'lumot sızıntısı qayd etildi. Ko'pchiligi zaif parol yoki fishing hujumlari natijasida yuzaga keldi.</div>
-
-<h4>Kuchli parol nima?</h4>
-<p>Ko'pchilik "kuchli parol" deganda murakkab belgilar kombinatsiyasini tushunadi. Lekin eng zamonaviy standart — <span class="term">passphrase</span> yondashuvi:</p>
-<div class="code">ZAIF PAROLLAR (hech qachon ishlatmang):
-  ✗  123456, password, qwerty
-  ✗  Ismingiz + tug'ilgan yil: Feruza1990
-  ✗  Maktab nomi: School42uz
-
-KUCHLI PAROL USULLARI:
-  ✓  Passphrase: "Olma-Sariq-Kompyuter-2024!"
-     (4 tasodifiy so'z + raqam = 30+ belgi)
-  ✓  Tasodifiy: "Kx9#mP2@vL7$nQ"
-     (harf + raqam + belgi, 12+ belgi)
-  ✓  Parol menejeri: Bitwarden (bepul)
-     yordamida har sayt uchun alohida parol
-
-MINIMAL TALAB (NIST 2024 standart):
-  → 12 ta belgi (eski: 8 ta)
-  → Lug'atda bo'lmasin
-  → Saytlar o'rtasida bir xil bo'lmasin</div>
-
-<h4>Ikki bosqichli autentifikatsiya (2FA)</h4>
-<p><span class="term">Two-Factor Authentication (2FA)</span> — paroldan tashqari ikkinchi tasdiqlash usuli. Hatto parolingiz o'g'irlansa ham, hisob himoyalanadi.</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">📱 SMS kodi</div><div class="ti-d">Telefonga kod keladi — eng keng tarqalgan, lekin eng zaif 2FA turi (SIM swap hujumiga moyil)</div><span class="ti-t twarn">O'rtacha</span></div>
-  <div class="ti"><div class="ti-n">🔑 Authenticator ilovasi</div><div class="ti-d">Google Authenticator, Authy — har 30 soniyada yangi kod. SMS dan xavfsizroq</div><span class="ti-t tok">Tavsiya etiladi</span></div>
-  <div class="ti"><div class="ti-n">📧 Email kodi</div><div class="ti-d">Emailga kod — email hacklanmagan bo'lsa yaxshi, lekin hisob emailga bog'liq bo'ladi</div><span class="ti-t twarn">O'rtacha</span></div>
-  <div class="ti"><div class="ti-n">🔐 Hardware key</div><div class="ti-d">YubiKey — fizik kalit. Eng xavfsiz, lekin qimmat ($50+). Yuqori xavfli hisoblarga</div><span class="ti-t tok">Eng xavfsiz</span></div>
-</div>
-
-<h4>O'qituvchi uchun amaliy qoidalar</h4>
-<div class="code">ALBATTA bajaring:
-  ✓ Gmail, Google Classroom → 2FA yoqing
-  ✓ Har platforma uchun ALOHIDA parol
-  ✓ Bitwarden (bepul) parol menejeri o'rnating
-  ✓ Parolingizni hech kimga aytmang (o'quvchiga ham!)
-  ✓ Ish va shaxsiy email — alohida
-
-HECH QACHON qilmang:
-  ✗ Parolni qog'ozga yozib monitorga yopmaslik
-  ✗ "Meni eslab qol" — umumiy kompyuterlarda
-  ✗ Bir xil parolni ko'p joyda ishlatish
-  ✗ Parolni email yoki Telegram orqali yuborish</div>`,
+  text:'<h4>Raqamli xavfsizlik — o\'qituvchi uchun nima uchun muhim?</h4>'
+  +'<p>O\'qituvchi shaxsiy ma\'lumotlar bilan ishlaydi: talabalar bahosi, ota-onalar kontakti, sinf jadvallari. Bu ma\'lumotlar noto\'g\'ri qo\'llarga tushsa jiddiy muammolar yuzaga keladi. <span class="term">DigCompEdu 6.4</span> frameworkiga ko\'ra, pedagogik raqamli kompetentlikning ajralmas qismi — o\'z va talabalar ma\'lumotlarini himoya qilish ko\'nikmasi.</p>'
+  +'<div class="warn"><b>⚠️ Haqiqiy holat — O\'zbekiston</b>2023-yilda O\'zbekiston ta\'lim tizimida 47 ta ma\'lumot sızıntısı qayd etildi. Ko\'pchiligi zaif parol yoki fishing hujumlari natijasida yuzaga keldi.</div>'
+  +'<h4>Kuchli parol nima?</h4>'
+  +'<p>Ko\'pchilik "kuchli parol" deganda murakkab belgilar kombinatsiyasini tushunadi. Lekin eng zamonaviy standart — <span class="term">passphrase</span> yondashuvi:</p>'
+  +'<div class="code">ZAIF PAROLLAR (hech qachon ishlatmang):'
+  +'  ✗  123456, password, qwerty'
+  +'  ✗  Ismingiz + tug\'ilgan yil: Feruza1990'
+  +'  ✗  Maktab nomi: School42uz'
+  +'KUCHLI PAROL USULLARI:'
+  +'  ✓  Passphrase: "Olma-Sariq-Kompyuter-2024!"'
+  +'     (4 tasodifiy so\'z + raqam = 30+ belgi)'
+  +'  ✓  Tasodifiy: "Kx9#mP2@vL7$nQ"'
+  +'     (harf + raqam + belgi, 12+ belgi)'
+  +'  ✓  Parol menejeri: Bitwarden (bepul)'
+  +'     yordamida har sayt uchun alohida parol'
+  +'MINIMAL TALAB (NIST 2024 standart):'
+  +'  → 12 ta belgi (eski: 8 ta)'
+  +'  → Lug\'atda bo\'lmasin'
+  +'  → Saytlar o\'rtasida bir xil bo\'lmasin</div>'
+  +'<h4>Ikki bosqichli autentifikatsiya (2FA)</h4>'
+  +'<p><span class="term">Two-Factor Authentication (2FA)</span> — paroldan tashqari ikkinchi tasdiqlash usuli. Hatto parolingiz o\'g\'irlansa ham, hisob himoyalanadi.</p>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">📱 SMS kodi</div><div class="ti-d">Telefonga kod keladi — eng keng tarqalgan, lekin eng zaif 2FA turi (SIM swap hujumiga moyil)</div><span class="ti-t twarn">O\'rtacha</span></div>'
+  +'  <div class="ti"><div class="ti-n">🔑 Authenticator ilovasi</div><div class="ti-d">Google Authenticator, Authy — har 30 soniyada yangi kod. SMS dan xavfsizroq</div><span class="ti-t tok">Tavsiya etiladi</span></div>'
+  +'  <div class="ti"><div class="ti-n">📧 Email kodi</div><div class="ti-d">Emailga kod — email hacklanmagan bo\'lsa yaxshi, lekin hisob emailga bog\'liq bo\'ladi</div><span class="ti-t twarn">O\'rtacha</span></div>'
+  +'  <div class="ti"><div class="ti-n">🔐 Hardware key</div><div class="ti-d">YubiKey — fizik kalit. Eng xavfsiz, lekin qimmat ($50+). Yuqori xavfli hisoblarga</div><span class="ti-t tok">Eng xavfsiz</span></div>'
+  +'</div>'
+  +'<h4>O\'qituvchi uchun amaliy qoidalar</h4>'
+  +'<div class="code">ALBATTA bajaring:'
+  +'  ✓ Gmail, Google Classroom → 2FA yoqing'
+  +'  ✓ Har platforma uchun ALOHIDA parol'
+  +'  ✓ Bitwarden (bepul) parol menejeri o\'rnating'
+  +'  ✓ Parolingizni hech kimga aytmang (o\'quvchiga ham!)'
+  +'  ✓ Ish va shaxsiy email — alohida'
+  +'HECH QACHON qilmang:'
+  +'  ✗ Parolni qog\'ozga yozib monitorga yopmaslik'
+  +'  ✗ "Meni eslab qol" — umumiy kompyuterlarda'
+  +'  ✗ Bir xil parolni ko\'p joyda ishlatish'
+  +'  ✗ Parolni email yoki Telegram orqali yuborish</div>',
   tasks:[
     {
       num:'01', title:"Parol mustahkamligini tekshiring",
@@ -351,54 +379,45 @@ HECH QACHON qilmang:
     desc:"Phishing hujumlari qanday ishlaydi — Kaspersky animatsion video. Aldamchi email va saytlarni qanday aniqlash ko'rsatiladi. To'liq animatsiya, yuz ko'rinmaydi.",
     dur:'~8 daqiqa', lang:'Inglizcha (CC)', lang2:'Inglizcha (CC)'
   },
-  text:`
-<h4>Phishing — eng keng tarqalgan kiberhujum</h4>
-<p><span class="term">Phishing</span> — hujumchi o'zini ishonchli tashkilot (bank, Google, hukumat, maktab) sifatida ko'rsatib, sizdan parol, kredit karta yoki shaxsiy ma'lumot o'g'irlashga urinishi. UNESCO ma'lumotlariga ko'ra, barcha kiberhujumlarning 91% i phishing bilan boshlanadi.</p>
-
-<div class="warn"><b>⚠️ Haqiqiy misol</b>"Sizning Google hisobingiz bloklandi. Iltimos, quyidagi havolaga bosib tasdiqlang" — bu klassik phishing. Google hech qachon shunday xabar yubormaydi.</div>
-
-<h4>Phishing turları va ularni aniqlash</h4>
-<div class="code">EMAIL PHISHING — eng keng tarqalgan
-  Belgilar:
-  → Shoshilinch til: "24 soat ichida!", "Darhol!"
-  → Noto'g'ri domain: support@g00gle.com (nol!)
-  → Umumiy murojaat: "Hurmatli foydalanuvchi"
-  → Noma'lum havola: hover bilan tekshiring
-
-SPEAR PHISHING — maqsadli hujum
-  → Ismingiz bilan murojaat
-  → Ish joyi yoki o'quvchilarni biladi
-  → Ishonchli ko'rinadi — ehtiyot bo'ling!
-
-SMISHING — SMS phishing
-  → "Sizga yutuq! Havolani bosing"
-  → Bank nomi bilan SMS
-
-VISHING — telefon phishing
-  → "Biz bank xodimiyмiz, kartangiz..."</div>
-
-<h4>Zararli dasturlar (Malware) turlari</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🦠 Virus</div><div class="ti-d">O'zini ko'paytiradi, fayllarga yopishadi. Elektrоn pochta orqali tarqaladi</div><span class="ti-t tdanger">Xavfli</span></div>
-  <div class="ti"><div class="ti-n">🔒 Ransomware</div><div class="ti-d">Fayllaringizni shifrlaydi, pul so'raydi. Ta'lim muassasalari asosiy nishon!</div><span class="ti-t tdanger">Juda xavfli</span></div>
-  <div class="ti"><div class="ti-n">👁 Spyware</div><div class="ti-d">Klaviatura bosilishlarini yozadi, parollarni o'g'irlaydi</div><span class="ti-t tdanger">Xavfli</span></div>
-  <div class="ti"><div class="ti-n">📢 Adware</div><div class="ti-d">Keraksiz reklama chiqaradi. Odatda bepul dasturlar bilan keladi</div><span class="ti-t twarn">Bezovta</span></div>
-</div>
-
-<h4>Himoya qilish qoidalari</h4>
-<div class="code">TEXNIK HIMOYA:
-  ✓ Antivirus: Windows Defender (bepul, yetarli)
-  ✓ Brauzer: Chrome/Firefox — avtomatik yangilanadi
-  ✓ OS: Windows yangilanishlarini o'chirmang
-  ✓ Backup: muhim fayllar Google Drive/OneDrive da
-  ✓ VPN: jamoat Wi-Fi da majburiy (Proton VPN bepul)
-
-XATTI-HARAKAT:
-  ✓ Noma'lum havolani bosmasdan oldin hover qiling
-  ✓ URL ni diqqat bilan o'qing (g00gle ≠ google)
-  ✓ Noma'lum yuborilgan faylni ochmang (.exe, .zip)
-  ✓ Shubhali xabar → o'chirish yoki IT ga murojaat
-  ✓ Agar phishing bo'lsa → reportphishing@google.com</div>`,
+  text:'<h4>Phishing — eng keng tarqalgan kiberhujum</h4>'
+  +'<p><span class="term">Phishing</span> — hujumchi o\'zini ishonchli tashkilot (bank, Google, hukumat, maktab) sifatida ko\'rsatib, sizdan parol, kredit karta yoki shaxsiy ma\'lumot o\'g\'irlashga urinishi. UNESCO ma\'lumotlariga ko\'ra, barcha kiberhujumlarning 91% i phishing bilan boshlanadi.</p>'
+  +'<div class="warn"><b>⚠️ Haqiqiy misol</b>"Sizning Google hisobingiz bloklandi. Iltimos, quyidagi havolaga bosib tasdiqlang" — bu klassik phishing. Google hech qachon shunday xabar yubormaydi.</div>'
+  +'<h4>Phishing turları va ularni aniqlash</h4>'
+  +'<div class="code">EMAIL PHISHING — eng keng tarqalgan'
+  +'  Belgilar:'
+  +'  → Shoshilinch til: "24 soat ichida!", "Darhol!"'
+  +'  → Noto\'g\'ri domain: support@g00gle.com (nol!)'
+  +'  → Umumiy murojaat: "Hurmatli foydalanuvchi"'
+  +'  → Noma\'lum havola: hover bilan tekshiring'
+  +'SPEAR PHISHING — maqsadli hujum'
+  +'  → Ismingiz bilan murojaat'
+  +'  → Ish joyi yoki o\'quvchilarni biladi'
+  +'  → Ishonchli ko\'rinadi — ehtiyot bo\'ling!'
+  +'SMISHING — SMS phishing'
+  +'  → "Sizga yutuq! Havolani bosing"'
+  +'  → Bank nomi bilan SMS'
+  +'VISHING — telefon phishing'
+  +'  → "Biz bank xodimiyмiz, kartangiz..."</div>'
+  +'<h4>Zararli dasturlar (Malware) turlari</h4>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🦠 Virus</div><div class="ti-d">O\'zini ko\'paytiradi, fayllarga yopishadi. Elektrоn pochta orqali tarqaladi</div><span class="ti-t tdanger">Xavfli</span></div>'
+  +'  <div class="ti"><div class="ti-n">🔒 Ransomware</div><div class="ti-d">Fayllaringizni shifrlaydi, pul so\'raydi. Ta\'lim muassasalari asosiy nishon!</div><span class="ti-t tdanger">Juda xavfli</span></div>'
+  +'  <div class="ti"><div class="ti-n">👁 Spyware</div><div class="ti-d">Klaviatura bosilishlarini yozadi, parollarni o\'g\'irlaydi</div><span class="ti-t tdanger">Xavfli</span></div>'
+  +'  <div class="ti"><div class="ti-n">📢 Adware</div><div class="ti-d">Keraksiz reklama chiqaradi. Odatda bepul dasturlar bilan keladi</div><span class="ti-t twarn">Bezovta</span></div>'
+  +'</div>'
+  +'<h4>Himoya qilish qoidalari</h4>'
+  +'<div class="code">TEXNIK HIMOYA:'
+  +'  ✓ Antivirus: Windows Defender (bepul, yetarli)'
+  +'  ✓ Brauzer: Chrome/Firefox — avtomatik yangilanadi'
+  +'  ✓ OS: Windows yangilanishlarini o\'chirmang'
+  +'  ✓ Backup: muhim fayllar Google Drive/OneDrive da'
+  +'  ✓ VPN: jamoat Wi-Fi da majburiy (Proton VPN bepul)'
+  +'XATTI-HARAKAT:'
+  +'  ✓ Noma\'lum havolani bosmasdan oldin hover qiling'
+  +'  ✓ URL ni diqqat bilan o\'qing (g00gle ≠ google)'
+  +'  ✓ Noma\'lum yuborilgan faylni ochmang (.exe, .zip)'
+  +'  ✓ Shubhali xabar → o\'chirish yoki IT ga murojaat'
+  +'  ✓ Agar phishing bo\'lsa → reportphishing@google.com</div>',
   tasks:[
     {
       num:'01', title:"Phishing emailni aniqlash mashqi",
@@ -435,53 +454,44 @@ XATTI-HARAKAT:
     desc:"GDPR va ma'lumotlarni himoya qilish qonuni o'qituvchilar uchun tushuntiriladi. Maktab muhitida qanday qoidalarga rioya qilish kerak — animatsion ko'rsatma. Yuz yo'q.",
     dur:'~12 daqiqa', lang:'Inglizcha (CC)', lang2:''
   },
-  text:`
-<h4>Nima uchun o'qituvchi PDPA/GDPR ni bilishi kerak?</h4>
-<p>O'qituvchi har kuni talabalar haqida ma'lumot bilan ishlaydi: ism, familiya, baho, sog'liq holati, oilaviy vaziyat. Bu ma'lumotlarning noto'g'ri tarqalishi qonuniy javobgarlikka sabab bo'ladi. <span class="term">DigCompEdu 6.4</span> frameworki o'qituvchilarning ma'lumotlar himoyasi sohasidagi malakasini alohida kompetentlik sifatida belgilaydi.</p>
-<p>O'zbekistonda <span class="term">Shaxsga doir ma'lumotlar to'g'risida</span>gi qonun (2019) mavjud bo'lib, u xalqaro GDPR standartlariga asoslangan. Xalqaro platformalar (Google, Microsoft) ishlatilganda GDPR qoidalari ham amal qiladi.</p>
-
-<div class="note"><b>📌 DigCompEdu 6.4 — Ma'lumotlarni himoya qilish</b>Bu kompetentlik o'qituvchidan talab qiladi: (1) ta'limda ishlatilayotgan platformalar qanday ma'lumot to'plashini tushunish, (2) talabalar ma'lumotlarini himoya qilish choralarini ko'rish, (3) talabalar va ota-onalarga ma'lumot huquqlarini tushuntirish.</div>
-
-<h4>Maktab muhitida GDPR asoslari</h4>
-<div class="code">ASOSIY TAMOYILLAR:
-  Maqsad chegaralash:
-    → Ma'lumotni faqat ta'lim maqsadida ishlating
-    → Ota-ona roziligi bo'lmasa — surat/video olish mumkin emas
-    
-  Minimallashtirish:
-    → Faqat zaruriy ma'lumotni to'plang
-    → Talaba telefon raqami — zarurmi?
-    
-  Xavfsizlik:
-    → Google Classroom — EU serverlarida, GDPR mos
-    → Telegram — GDPR muammoli, rasmiy dars uchun mos emas
-    → WhatsApp — shaxsiy ma'lumot to'playdi
-
-  Shaffoflik:
-    → Talabalar qanday ma'lumot saqlanishini bilishi kerak
-    → Ota-onalar so'rasa — ma'lumotni ko'rsating</div>
-
-<h4>O'qituvchi qanday platforma tanlashi kerak?</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">✅ Google Classroom</div><div class="ti-d">GDPR mos, FERPA mos, EU serverlar. Ta'lim uchun rasmiy tavsiya etiladi</div><span class="ti-t tok">Xavfsiz</span></div>
-  <div class="ti"><div class="ti-n">✅ Microsoft Teams Edu</div><div class="ti-d">GDPR mos, ISO 27001 sertifikatlangan, FERPA mos</div><span class="ti-t tok">Xavfsiz</span></div>
-  <div class="ti"><div class="ti-n">⚠️ Telegram</div><div class="ti-d">GDPR muammoli, shaxsiy ma'lumot to'playdi, rasmiy ta'lim uchun mos emas</div><span class="ti-t twarn">Ehtiyot</span></div>
-  <div class="ti"><div class="ti-n">❌ TikTok</div><div class="ti-d">Ko'plab davlatlar maktablarda ta'qiqlagan. 18 yoshgacha talabalar uchun mos emas</div><span class="ti-t tdanger">Mos emas</span></div>
-</div>
-
-<h4>Talabalar ma'lumotlari — amaliy qoidalar</h4>
-<div class="code">QILISH KERAK:
-  ✓ Baholar → faqat yopiq tizimda (Classroom, Moodle)
-  ✓ Rasm/video → ota-ona yozma ruxsati
-  ✓ Guruh chati → Telegram o'rniga Classroom Stream
-  ✓ Test natijalari → umumiy e'lon qilmang (ism bilan)
-  ✓ Kuzatish mos asboblar: faqat ta'lim sertifikatlangan
-
-QILMASLIK KERAK:
-  ✗ Talaba ismini va bahosini ochiq Telegram da e'lon qilish
-  ✗ Talaba suratini ijtimoiy tarmoqda ruxsatsiz joylashtirish
-  ✗ Baholar ro'yxatini email bilan ommaviy yuborish
-  ✗ Talabalar haqida malumoтni uchinchi shaxsga berish</div>`,
+  text:'<h4>Nima uchun o\'qituvchi PDPA/GDPR ni bilishi kerak?</h4>'
+  +'<p>O\'qituvchi har kuni talabalar haqida ma\'lumot bilan ishlaydi: ism, familiya, baho, sog\'liq holati, oilaviy vaziyat. Bu ma\'lumotlarning noto\'g\'ri tarqalishi qonuniy javobgarlikka sabab bo\'ladi. <span class="term">DigCompEdu 6.4</span> frameworki o\'qituvchilarning ma\'lumotlar himoyasi sohasidagi malakasini alohida kompetentlik sifatida belgilaydi.</p>'
+  +'<p>O\'zbekistonda <span class="term">Shaxsga doir ma\'lumotlar to\'g\'risida</span>gi qonun (2019) mavjud bo\'lib, u xalqaro GDPR standartlariga asoslangan. Xalqaro platformalar (Google, Microsoft) ishlatilganda GDPR qoidalari ham amal qiladi.</p>'
+  +'<div class="note"><b>📌 DigCompEdu 6.4 — Ma\'lumotlarni himoya qilish</b>Bu kompetentlik o\'qituvchidan talab qiladi: (1) ta\'limda ishlatilayotgan platformalar qanday ma\'lumot to\'plashini tushunish, (2) talabalar ma\'lumotlarini himoya qilish choralarini ko\'rish, (3) talabalar va ota-onalarga ma\'lumot huquqlarini tushuntirish.</div>'
+  +'<h4>Maktab muhitida GDPR asoslari</h4>'
+  +'<div class="code">ASOSIY TAMOYILLAR:'
+  +'  Maqsad chegaralash:'
+  +'    → Ma\'lumotni faqat ta\'lim maqsadida ishlating'
+  +'    → Ota-ona roziligi bo\'lmasa — surat/video olish mumkin emas'
+  +'  Minimallashtirish:'
+  +'    → Faqat zaruriy ma\'lumotni to\'plang'
+  +'    → Talaba telefon raqami — zarurmi?'
+  +'  Xavfsizlik:'
+  +'    → Google Classroom — EU serverlarida, GDPR mos'
+  +'    → Telegram — GDPR muammoli, rasmiy dars uchun mos emas'
+  +'    → WhatsApp — shaxsiy ma\'lumot to\'playdi'
+  +'  Shaffoflik:'
+  +'    → Talabalar qanday ma\'lumot saqlanishini bilishi kerak'
+  +'    → Ota-onalar so\'rasa — ma\'lumotni ko\'rsating</div>'
+  +'<h4>O\'qituvchi qanday platforma tanlashi kerak?</h4>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">✅ Google Classroom</div><div class="ti-d">GDPR mos, FERPA mos, EU serverlar. Ta\'lim uchun rasmiy tavsiya etiladi</div><span class="ti-t tok">Xavfsiz</span></div>'
+  +'  <div class="ti"><div class="ti-n">✅ Microsoft Teams Edu</div><div class="ti-d">GDPR mos, ISO 27001 sertifikatlangan, FERPA mos</div><span class="ti-t tok">Xavfsiz</span></div>'
+  +'  <div class="ti"><div class="ti-n">⚠️ Telegram</div><div class="ti-d">GDPR muammoli, shaxsiy ma\'lumot to\'playdi, rasmiy ta\'lim uchun mos emas</div><span class="ti-t twarn">Ehtiyot</span></div>'
+  +'  <div class="ti"><div class="ti-n">❌ TikTok</div><div class="ti-d">Ko\'plab davlatlar maktablarda ta\'qiqlagan. 18 yoshgacha talabalar uchun mos emas</div><span class="ti-t tdanger">Mos emas</span></div>'
+  +'</div>'
+  +'<h4>Talabalar ma\'lumotlari — amaliy qoidalar</h4>'
+  +'<div class="code">QILISH KERAK:'
+  +'  ✓ Baholar → faqat yopiq tizimda (Classroom, Moodle)'
+  +'  ✓ Rasm/video → ota-ona yozma ruxsati'
+  +'  ✓ Guruh chati → Telegram o\'rniga Classroom Stream'
+  +'  ✓ Test natijalari → umumiy e\'lon qilmang (ism bilan)'
+  +'  ✓ Kuzatish mos asboblar: faqat ta\'lim sertifikatlangan'
+  +'QILMASLIK KERAK:'
+  +'  ✗ Talaba ismini va bahosini ochiq Telegram da e\'lon qilish'
+  +'  ✗ Talaba suratini ijtimoiy tarmoqda ruxsatsiz joylashtirish'
+  +'  ✗ Baholar ro\'yxatini email bilan ommaviy yuborish'
+  +'  ✗ Talabalar haqida malumoтni uchinchi shaxsga berish</div>',
   tasks:[
     {
       num:'01', title:"Platformalarni GDPR nuqtai nazaridan baholang",
@@ -518,65 +528,52 @@ QILMASLIK KERAK:
     desc:"O'qituvchilar uchun raqamli identitet va kiberxavfsizlik. Maktab tarmoqlari, bulut xotira xavfsizligi va professional online mavjudlik. Faqat ekran ko'rsatmasi.",
     dur:'~15 daqiqa', lang:'Inglizcha (CC)', lang2:''
   },
-  text:`
-<h4>Raqamli identitet — o'qituvchi uchun</h4>
-<p><span class="term">Raqamli identitet</span> — internetda siz haqingizda mavjud bo'lgan barcha ma'lumotlar yig'indisi. Bu o'z-o'zidan shakllanadi yoki ongli ravishda boshqariladi. O'qituvchi sifatida professional raqamli identitetingizni boshqarish — bu DigCompEdu ning muhim qismi.</p>
-
-<div class="note"><b>📌 Google o'zingizni</b>Ismingizni Google da qidiring. Nima chiqadi? Professionallarga yarasha ma'lumot bormi? Nojo'ya kontent bormi? Bu — sizning raqamli izingiz.</div>
-
-<h4>Professional raqamli identitet qurish</h4>
-<div class="code">PROFESSIONAL MAVJUDLIK:
-  LinkedIn:
-    → CV, malaka va sertifikatlar
-    → Professional maqolalar
-    → Kasbdoshlar bilan aloqa
-
-  Academia.edu / ResearchGate:
-    → Ilmiy maqolalar, tadqiqotlar
-    → Dissertatsiya uchun zarur!
-
-  ORCID (orcid.org):
-    → Ilmiy tadqiqotchi ID raqami
-    → Xalqaro bazalarda aniqlash uchun
-    → Bepul, 5 daqiqada ro'yxatdan
-
-  Moodle/Classroom profili:
-    → Rasmiy foto (professional)
-    → Qisqa kasbiy tavsif</div>
-
-<h4>Ta'lim muassasasi tarmoq xavfsizligi</h4>
-<p>Maktab/universitet tarmog'i korporativ xavfsizlik talablariga javob berishi kerak. <span class="term">Zero Trust</span> modeli — hech kimga ishonma, hamma narsani tekshir — zamonaviy ta'lim tarmog'ining asosi.</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🔒 Tarmoq segmentatsiyasi</div><div class="ti-d">Talabalar va o'qituvchilar tarmog'i alohida. Admin tizimiga umumiy kirish yo'q</div><span class="ti-t tok">Muhim</span></div>
-  <div class="ti"><div class="ti-n">📡 WPA3 Wi-Fi</div><div class="ti-d">WPA2 dan yangi, kuchli shifrlash. Maktab Wi-Fi da WPA3 bo'lishi kerak</div><span class="ti-t tok">Standart</span></div>
-  <div class="ti"><div class="ti-n">🖥️ MDM tizimi</div><div class="ti-d">Mobile Device Management — maktab qurilmalarini markazdan boshqarish</div><span class="ti-t twarn">Katta maktablar</span></div>
-  <div class="ti"><div class="ti-n">📋 Audit jurnali</div><div class="ti-d">Kim, qachon, nimaga kirgan — barcha faoliyat qayd etiladi</div><span class="ti-t tok">Majburiy</span></div>
-</div>
-
-<h4>Xavfsizlik hodisasi bo'lganda nima qilish kerak?</h4>
-<div class="code">HODISA BOSHQARUV ALGORITMI (Incident Response):
-
-  1. ANIQLASH (Identify):
-     → "Nima bo'ldi?" — aniq belgilang
-     → Qaysi tizim, qaysi ma'lumot ta'sirlandi?
-
-  2. TO'XTATISH (Contain):
-     → Tarmoqdan uzib qo'ying (ethernet kabeli)
-     → Hisobni bloklang (admin ga xabar)
-     → Boshqa qurilmalarga o'tkazilmasin
-
-  3. BARTARAF ETISH (Eradicate):
-     → IT xizmat bilan ishlang
-     → Antivirus skan qiling
-     → Parollarni almashtiring
-
-  4. TIKLASH (Recover):
-     → Backup dan tiklang
-     → Tizimni qayta tekshiring
-
-  5. SABOQ (Lessons Learned):
-     → Nima xato bo'ldi?
-     → Keyingi safar qanday oldini olish?</div>`,
+  text:'<h4>Raqamli identitet — o\'qituvchi uchun</h4>'
+  +'<p><span class="term">Raqamli identitet</span> — internetda siz haqingizda mavjud bo\'lgan barcha ma\'lumotlar yig\'indisi. Bu o\'z-o\'zidan shakllanadi yoki ongli ravishda boshqariladi. O\'qituvchi sifatida professional raqamli identitetingizni boshqarish — bu DigCompEdu ning muhim qismi.</p>'
+  +'<div class="note"><b>📌 Google o\'zingizni</b>Ismingizni Google da qidiring. Nima chiqadi? Professionallarga yarasha ma\'lumot bormi? Nojo\'ya kontent bormi? Bu — sizning raqamli izingiz.</div>'
+  +'<h4>Professional raqamli identitet qurish</h4>'
+  +'<div class="code">PROFESSIONAL MAVJUDLIK:'
+  +'  LinkedIn:'
+  +'    → CV, malaka va sertifikatlar'
+  +'    → Professional maqolalar'
+  +'    → Kasbdoshlar bilan aloqa'
+  +'  Academia.edu / ResearchGate:'
+  +'    → Ilmiy maqolalar, tadqiqotlar'
+  +'    → Dissertatsiya uchun zarur!'
+  +'  ORCID (orcid.org):'
+  +'    → Ilmiy tadqiqotchi ID raqami'
+  +'    → Xalqaro bazalarda aniqlash uchun'
+  +'    → Bepul, 5 daqiqada ro\'yxatdan'
+  +'  Moodle/Classroom profili:'
+  +'    → Rasmiy foto (professional)'
+  +'    → Qisqa kasbiy tavsif</div>'
+  +'<h4>Ta\'lim muassasasi tarmoq xavfsizligi</h4>'
+  +'<p>Maktab/universitet tarmog\'i korporativ xavfsizlik talablariga javob berishi kerak. <span class="term">Zero Trust</span> modeli — hech kimga ishonma, hamma narsani tekshir — zamonaviy ta\'lim tarmog\'ining asosi.</p>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🔒 Tarmoq segmentatsiyasi</div><div class="ti-d">Talabalar va o\'qituvchilar tarmog\'i alohida. Admin tizimiga umumiy kirish yo\'q</div><span class="ti-t tok">Muhim</span></div>'
+  +'  <div class="ti"><div class="ti-n">📡 WPA3 Wi-Fi</div><div class="ti-d">WPA2 dan yangi, kuchli shifrlash. Maktab Wi-Fi da WPA3 bo\'lishi kerak</div><span class="ti-t tok">Standart</span></div>'
+  +'  <div class="ti"><div class="ti-n">🖥️ MDM tizimi</div><div class="ti-d">Mobile Device Management — maktab qurilmalarini markazdan boshqarish</div><span class="ti-t twarn">Katta maktablar</span></div>'
+  +'  <div class="ti"><div class="ti-n">📋 Audit jurnali</div><div class="ti-d">Kim, qachon, nimaga kirgan — barcha faoliyat qayd etiladi</div><span class="ti-t tok">Majburiy</span></div>'
+  +'</div>'
+  +'<h4>Xavfsizlik hodisasi bo\'lganda nima qilish kerak?</h4>'
+  +'<div class="code">HODISA BOSHQARUV ALGORITMI (Incident Response):'
+  +'  1. ANIQLASH (Identify):'
+  +'     → "Nima bo\'ldi?" — aniq belgilang'
+  +'     → Qaysi tizim, qaysi ma\'lumot ta\'sirlandi?'
+  +'  2. TO\'XTATISH (Contain):'
+  +'     → Tarmoqdan uzib qo\'ying (ethernet kabeli)'
+  +'     → Hisobni bloklang (admin ga xabar)'
+  +'     → Boshqa qurilmalarga o\'tkazilmasin'
+  +'  3. BARTARAF ETISH (Eradicate):'
+  +'     → IT xizmat bilan ishlang'
+  +'     → Antivirus skan qiling'
+  +'     → Parollarni almashtiring'
+  +'  4. TIKLASH (Recover):'
+  +'     → Backup dan tiklang'
+  +'     → Tizimni qayta tekshiring'
+  +'  5. SABOQ (Lessons Learned):'
+  +'     → Nima xato bo\'ldi?'
+  +'     → Keyingi safar qanday oldini olish?</div>',
   tasks:[
     {
       num:'01', title:"ORCID va professional profil yarating",
@@ -657,18 +654,16 @@ function renderSidebar() {
 
 function lockedMsg(i) { showToast('🔒 Avval ' + LESSONS[i-1].level + ' quizini 70%+ bilan o\'ting'); }
 
-function showLesson(idx) {
-  if(idx > userLevel && !isUnlocked(idx)) { lockedMsg(idx); return; }
-  currentLesson = idx; quizAns = []; quizDone = false;
+function showLesson(idx){
+  if(idx>userLevel&&!isUnlocked(idx)){lockedClick(idx);return;}
+  currentLesson=idx;quizAns=[];quizDone=false;
   renderSidebar();
-  const L = LESSONS[idx];
-  const lvBadge = ['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
-  document.getElementById('mainContent').innerHTML = `
+  const L=LESSONS[idx];
+  const lb=['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
+  document.getElementById('mainContent').innerHTML=`
     <div class="lh au">
-      <div class="lh-level">
-        <span class="lv-badge ${lvBadge}">${L.level}</span>
-        <span style="font-size:12px;color:var(--text3)">daraja</span>
-      </div>
+      <div class="lh-level"><span class="lv-badge ${lb}">${L.level}</span>
+      <span style="font-size:12px;color:var(--text3)">daraja</span></div>
       <div class="lh-icon">${L.icon}</div>
       <div class="lh-title">${L.title}</div>
       <div class="lh-sub">${L.subtitle}</div>
@@ -692,14 +687,23 @@ function showLesson(idx) {
     <div id="tc-quiz"  class="tc">${renderQuiz(L,idx)}</div>
     <div class="navbtns">
       ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
-      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`:`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`
+             :`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function renderVideo(L) {
-  const v = L.video;
-  const badge = `<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 ${(v.lang||'').toUpperCase()}</span>`;
+// ──────────────────────────────────────────
+// RENDER HELPERS
+// ──────────────────────────────────────────
+
+function renderVideo(L){
+  const v=L.video;
+  const isUz=v.lang&&v.lang.includes("O'zbekcha");
+  const hasAlt=v.url2&&v.url2.length>0;
+  const badge=isUz
+    ?'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1.5px solid rgba(16,185,129,.25);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🇺🇿 O\'ZBEKCHA</span>'
+    :'<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 '+(v.lang||'INGLIZCHA').toUpperCase()+'</span>';
   return `<div class="vcard">
     <div class="vthumb" onclick="window.open('${v.url}','_blank')">
       <div class="pbtn">▶</div>
@@ -712,22 +716,24 @@ function renderVideo(L) {
       <div class="vt">${v.title}</div>
       <div class="vd">${v.desc}</div>
       <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
-      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
+      <div style="margin-top:12px">
         <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
-        ${v.url2?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
+        ${hasAlt?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
       </div>
-      <div class="cc-note">💡 <b>Subtitle:</b> YouTube da <b>CC</b> tugmasini bosing → O'zbek yoki Rus tilini tanlang</div>
+      ${!isUz?'<div class="cc-note">💡 <b>CC tugmasi</b> → O\'zbek yoki Rus subtitlni yoqing</div>':''}
     </div>
   </div>
-  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button></div>`;
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName(\'matn\')">Matnni o\'qish →</button></div>`;
 }
 
-function renderMatn(L) {
+
+function renderMatn(L){
   return `<div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);padding:22px;box-shadow:var(--shadow-sm)">
     <div class="lt">${L.text}</div>
   </div>
   <div style="text-align:right;margin-top:10px"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga →</button></div>`;
 }
+
 
 function renderAmaliy(L,idx) {
   return L.tasks.map((t,i) => `
@@ -738,6 +744,8 @@ function renderAmaliy(L,idx) {
       <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
       <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
       <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Bajarildi! Quizga o'ting.</div>
+      <button class="aifb-btn" id="aifb_${idx}_${i}" onclick="aiFeedback(${idx},${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0eeff;border:1.5px solid #c0b0ff;color:#6c5ce7;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit">🤖 AI baholash</button>
+      <div class="aifb-res" id="aifbr_${idx}_${i}" style="display:none;margin-top:8px;padding:10px 13px;background:#f8f6ff;border:1.5px solid #d0c8ff;border-radius:10px;font-size:12px;line-height:1.7;color:#333"></div>
     </div>`).join('') +
   `<div style="text-align:right;margin-top:8px"><button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button></div>`;
 }
@@ -745,7 +753,12 @@ function renderAmaliy(L,idx) {
 function renderQuiz(L,idx) {
   const saved = quizScores[idx];
   if(saved !== undefined) {
-    return `<div class="qres" style="display:block">
+    return `<div style="background:#f8f6ff;border:1.5px dashed #c0b0ff;border-radius:12px;padding:14px;margin-bottom:14px">
+      <p style="font-weight:700;font-size:13px;color:#6c5ce7;margin:0 0 6px">✨ AI Quiz Generator</p>
+      <button id="aiqb_${idx}" onclick="aiGenQuiz(${idx})" style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">✨ AI savollar yaratish</button>
+      <div id="aiqr_${idx}" style="display:none;margin-top:10px"></div>
+    </div>
+    <div class="qres" style="display:block">
       <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
       <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
       <div class="qrm">${saved>=70?'✅ O\'tdingiz!':'⚠️ 70% kerak.'}</div>
@@ -949,4 +962,130 @@ showLesson(userLevel);
 loadNews();
 </script>
 </body>
+
+
+<div class="ai-wrap">
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-ph">
+      <div class="ai-ph-av">🤖</div>
+      <div class="ai-ph-t"><b>AI Yordamchi</b><small>Faol</small></div>
+      <button onclick="aiToggle()">✕</button>
+    </div>
+    <div class="ai-sugs" id="aiSugs">
+      <button class="ai-sug" onclick="aiQuick('Bu dars haqida tushuntir')">📖 Dars haqida</button>
+      <button class="ai-sug" onclick="aiQuick('Muhim terminlarni tushuntir')">📝 Terminlar</button>
+      <button class="ai-sug" onclick="aiQuick('Amaliy misol ber')">💡 Misol</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg b">Salom! 👋 Savol bering — yordam beraman!</div>
+    </div>
+    <div class="ai-ft">
+      <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Savol yozing..."
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){{event.preventDefault();aiSend()}}"></textarea>
+      <button class="ai-send" onclick="aiSend()">➤</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="ai-tip" id="aiTip">💬 Savol bormi? So'rang!</div>
+    <button class="ai-btn" id="aiBtn" onclick="aiToggle()">🤖<span class="ai-badge">?</span></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb';
+  var history=[];
+
+  setTimeout(function(){var t=document.getElementById('aiTip');if(t)t.style.display='none';},4000);
+
+  window.aiToggle=function(){
+    var p=document.getElementById('aiPanel');
+    var b=document.getElementById('aiBtn');
+    var t=document.getElementById('aiTip');
+    var open=p.classList.contains('on');
+    p.classList.toggle('on');b.classList.toggle('on');
+    if(t)t.style.display='none';
+    if(!open)setTimeout(function(){var i=document.getElementById('aiInp');if(i)i.focus();},200);
+  };
+
+  window.aiQuick=function(q){
+    document.getElementById('aiInp').value=q;
+    var s=document.getElementById('aiSugs');if(s)s.style.display='none';
+    aiSend();
+  };
+
+  window.aiSend=function(){
+    var inp=document.getElementById('aiInp');
+    var msg=(inp.value||'').trim();if(!msg)return;
+    inp.value='';addMsg(msg,'u');
+    var lid='lid'+Date.now();addMsg('⟳ Javob...','b ld',lid);
+    var ch=history.map(function(h){return {role:h.role,message:h.message};}); 
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:msg,preamble:'Sen DigiComp M4 AI yordamchisisаn. Mavzu: Xavfsizlik va maxfiylik. Uzbek tilida qisqa javob ber.',chat_history:ch})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById(lid);if(el)el.remove();
+      if(d.text){addMsg(d.text,'b');history.push({role:'USER',message:msg});history.push({role:'CHATBOT',message:d.text});if(history.length>16)history=history.slice(-16);}
+      else addMsg('Xatolik: '+(d.message||'nomalum'),'b');
+    }).catch(function(e){var el=document.getElementById(lid);if(el)el.remove();addMsg('Xatolik: '+e.message,'b');});
+  };
+
+  window.aiFeedback=function(li,ti){
+    var L=LESSONS[li];var task=L.tasks[ti];
+    var inp=document.getElementById('ta_'+li+'_'+ti);
+    var val=inp?(inp.value||'').trim():'';
+    if(val.length<10){showToast('Avval javobingizni yozing!');return;}
+    var btn=document.getElementById('aifb_'+li+'_'+ti);
+    var res=document.getElementById('aifbr_'+li+'_'+ti);
+    btn.disabled=true;btn.textContent='⟳ Baholanmoqda...';
+    res.style.display='block';res.textContent='🤖 AI baholamoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:'Topshiriq: '+task.title+'. Talaba javobi: '+val+'. Baho: A/B/C/D va izoh.',preamble:'Sen ta\'lim AI baholovchisisаn. Uzbek tilida qisqa baho ber.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text)res.innerHTML='<b style="color:var(--mc)">🤖 AI Baholash:</b><br>'+d.text;
+      else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='🤖 AI baholash';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='🤖 AI baholash';});
+  };
+
+  window.aiGenQuiz=function(idx){
+    var L=LESSONS[idx];
+    var btn=document.getElementById('aiqb_'+idx);
+    var res=document.getElementById('aiqr_'+idx);
+    btn.disabled=true;btn.textContent='⟳ Yaratilmoqda...';
+    res.style.display='block';res.textContent='🤖 Savollar yaratilmoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:L.title+' mavzusida 4 ta test savol. JSON: [{"q":"?","o":["A","B","C","D"],"a":0}]',preamble:'Faqat JSON qaytarasan, boshqa matn yozma.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text){
+        try{
+          var raw=d.text.replace(/```json|```|`/g,'').trim();
+          var m=raw.match(/\[.*\]/s);if(m)raw=m[0];
+          var qs=JSON.parse(raw);
+          res.innerHTML=qs.map(function(q,i){
+            return '<div style="background:#fff;border:1px solid #e0d8ff;border-radius:9px;padding:11px;margin-bottom:8px">'+
+              '<div style="font-size:12px;font-weight:700;color:#333;margin-bottom:7px">'+(i+1)+'. '+q.q+'</div>'+
+              q.o.map(function(o,j){var ok=j===q.a;return '<div style="font-size:11px;padding:4px 9px;border-radius:6px;margin-bottom:3px;background:'+(ok?'#dcfce7':'#f5f5f5')+';color:'+(ok?'#16a34a':'#555')+';font-weight:'+(ok?'700':'400')+'">'+'ABCD'[j]+'. '+o+(ok?' ✓':'')+'</div>';}).join('')+'</div>';
+          }).join('');
+        }catch(e){res.textContent=d.text;}
+      }else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='✨ Yangi savollar';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='✨ AI savollar';});
+  };
+
+  function addMsg(t,cls,id){
+    var box=document.getElementById('aiMsgs');if(!box)return;
+    var el=document.createElement('div');el.className='ai-msg '+cls;el.textContent=t;
+    if(id)el.id=id;box.appendChild(el);box.scrollTop=box.scrollHeight;
+  }
+})();
+</script>
 </html>

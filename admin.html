@@ -145,6 +145,39 @@ tr:hover td{background:var(--bg3)}
 </head>
 <body>
 
+<div id="loginOverlay" style="position:fixed;inset:0;background:linear-gradient(135deg,#0f0c29,#302b63);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:380px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+    <div style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);padding:28px;text-align:center">
+      <div style="width:52px;height:52px;background:rgba(255,255,255,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px">🛡️</div>
+      <div style="font-size:20px;font-weight:800;color:#fff;font-family:sans-serif">Admin Panel</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.65);margin-top:4px;font-family:sans-serif">DigiComp Platform</div>
+    </div>
+    <div style="padding:24px 28px">
+      <div style="margin-bottom:13px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#5a5f8a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-family:sans-serif">Login</label>
+        <input id="adLogin" type="text" placeholder="adminfr"
+          style="width:100%;padding:11px 14px;border:1.5px solid #e4e0f8;border-radius:10px;font-size:14px;color:#1a1d3a;outline:none;font-family:sans-serif;box-sizing:border-box"
+          onkeydown="if(event.key==='Enter')document.getElementById('adPass').focus()">
+      </div>
+      <div style="margin-bottom:18px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#5a5f8a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;font-family:sans-serif">Parol</label>
+        <input id="adPass" type="password" placeholder="••••••••"
+          style="width:100%;padding:11px 14px;border:1.5px solid #e4e0f8;border-radius:10px;font-size:14px;color:#1a1d3a;outline:none;font-family:sans-serif;box-sizing:border-box"
+          onkeydown="if(event.key==='Enter')checkAdmin()">
+      </div>
+      <div id="adErr" style="display:none;background:#fff5f5;border:1.5px solid #fed7d7;border-radius:8px;padding:9px 13px;font-size:12px;color:#e53e3e;margin-bottom:12px;text-align:center;font-family:sans-serif"></div>
+      <button onclick="checkAdmin()"
+        style="width:100%;padding:13px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:sans-serif">
+        Kirish →
+      </button>
+      <div style="text-align:center;margin-top:14px">
+        <a href="index.html" style="font-size:12px;color:#9699bb;text-decoration:none;font-family:sans-serif">← Platformaga qaytish</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <nav class="nav">
   <div class="nav-brand">
     <div class="nav-logo">🛡</div>
@@ -289,7 +322,21 @@ tr:hover td{background:var(--bg3)}
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+
+function checkAdmin(){
+  var login=document.getElementById('adLogin').value.trim();
+  var pass=document.getElementById('adPass').value.trim();
+  var err=document.getElementById('adErr');
+  if(login==='adminfr' && pass==='fer1996@'){
+    document.getElementById('loginOverlay').style.display='none';
+  } else {
+    err.textContent='Login: adminfr | Parol: fer1996@';
+    err.style.display='block';
+    setTimeout(function(){err.style.display='none';},3000);
+  }
+}
+
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec';
 const MOD_COLORS={M1:'#3b82f6',M2:'#10b981',M3:'#f97316',M4:'#8b5cf6',M5:'#f59e0b'};
 const MOD_BG={M1:'#eff6ff',M2:'#f0fdf4',M3:'#fff7ed',M4:'#faf5ff',M5:'#fffbeb'};
 

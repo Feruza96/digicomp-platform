@@ -189,6 +189,40 @@ textarea::placeholder{color:var(--text3)}
 
 .toast{position:fixed;bottom:22px;right:22px;background:var(--mc);color:#fff;padding:11px 18px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 6px 24px rgba(59,130,246,.4)}
 .toast.show{transform:translateY(0)}
+
+/* AI */
+.ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;background:linear-gradient(135deg,var(--mc),var(--mc2));border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:800;transition:.3s}
+.ai-fab:hover{transform:scale(1.1)}
+.ai-dot{position:absolute;top:2px;right:2px;width:10px;height:10px;background:#10b981;border-radius:50%;border:2px solid #fff}
+.ai-panel{position:fixed;bottom:84px;right:24px;width:300px;max-height:440px;background:#fff;border:1.5px solid #ddd;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);z-index:800;display:none;flex-direction:column;overflow:hidden}
+.ai-panel.show{display:flex}
+.ai-ph{background:linear-gradient(135deg,var(--mc),var(--mc2));padding:11px 15px;display:flex;align-items:center;justify-content:space-between}
+.ai-ph span{font-size:13px;font-weight:700;color:#fff}
+.ai-ph button{background:rgba(255,255,255,.2);border:none;color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px}
+.ai-msgs{flex:1;overflow-y:auto;padding:11px;display:flex;flex-direction:column;gap:7px;min-height:150px}
+.ai-msg{max-width:90%;padding:8px 11px;border-radius:10px;font-size:12px;line-height:1.6}
+.ai-msg.u{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;align-self:flex-end}
+.ai-msg.b{background:#f5f5f5;color:#333;align-self:flex-start}
+.ai-msg.ld{color:#999;font-style:italic;align-self:flex-start}
+.ai-ft{padding:8px;border-top:1px solid #eee;display:flex;gap:6px}
+.ai-inp{flex:1;padding:7px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:12px;outline:none;resize:none;font-family:inherit}
+.ai-snd{width:32px;height:32px;background:linear-gradient(135deg,var(--mc),var(--mc2));border:none;border-radius:7px;color:#fff;cursor:pointer;font-size:14px}
+.aifb-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;background:#f0f0ff;border:1.5px solid #c0c0ff;color:var(--mc);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px}
+.aifb-btn:disabled{opacity:.5;cursor:not-allowed}
+.aifb-res{display:none;margin-top:7px;padding:9px 12px;background:#f8f8ff;border:1.5px solid #ddd;border-radius:8px;font-size:12px;line-height:1.7}
+.aiq-wrap{background:#f8f8f8;border:1.5px dashed #ccc;border-radius:11px;padding:12px;margin-bottom:12px}
+.aiq-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.aiq-btn:disabled{opacity:.5;cursor:not-allowed}
+.aiq-res{display:none;margin-top:8px}
+.aiq-q{background:#fff;border:1px solid #eee;border-radius:7px;padding:10px;margin-bottom:6px}
+.aiq-qt{font-size:12px;font-weight:600;margin-bottom:6px}
+.aiq-opt{font-size:11px;padding:3px 7px;border-radius:4px;margin-bottom:2px;color:#555}
+.aiq-opt.ok{background:#e8faf0;color:#10b981;font-weight:700}
+
+/* Cert overlay fix */
+#certOverlay { position:fixed !important; inset:0 !important; z-index:9000 !important; background:rgba(0,0,0,0.85) !important; display:none !important; align-items:center !important; justify-content:center !important; }
+#certOverlay.show { display:flex !important; }
+
 </style>
 </head>
 <body>
@@ -243,7 +277,7 @@ textarea::placeholder{color:var(--text3)}
 </div>
 
 <!-- CERT OVERLAY -->
-<div class="cert-overlay" id="certOverlay">
+<div class="cert-overlay" id="certOverlay" style="display:none">
   <div class="cert-box">
     <div class="cert-inner">
       <div class="cert-top">DigiComp Platform · Qo'qon Davlat Universiteti</div>
@@ -275,7 +309,7 @@ textarea::placeholder{color:var(--text3)}
 <script>
 
 // ═══════ DigiComp API ═══════
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec';
 async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
 async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
 async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
@@ -298,41 +332,40 @@ const LESSONS = [
     desc:'Google qidiruv operatorlari: qo\'shtirnoq, site:, filetype:, minus (-) operatorlari va ilg\'or qidiruv usullarini amaliy ko\'rsatma bilan o\'rganamiz. O\'qituvchilar uchun ta\'lim resurslarini topishda juda foydali.',
     dur:'~15 daqiqa', lang:'Inglizcha'
   },
-  text:`
-<h4>Internet va qidiruv tizimlari (Search Engines)</h4>
-<p>Internet — dunyodagi milliardlab kompyuterlar, serverlar va qurilmalarning o'zaro bog'liq tarmog'i. <span class="term">Search Engine</span> — bu tarmaqda kerakli ma'lumotni topuvchi maxsus dastur bo'lib, u veb-sahifalarni indekslab, foydalanuvchi so'roviga mos natijalar ko'rsatadi.</p>
-<p>Zamonaviy o'qituvchi har kuni o'nlab ma'lumot qidiradi: dars materiallari, ilmiy maqolalar, rasm va video resurslar. Qidiruv tizimlaridan samarali foydalanish — bu vaqtni tejash va sifatli material topish demak.</p>
-<div class="note"><b>📌 Dunyo qidiruv tizimlar bozori (2024)</b>Google — 91.6% · Bing — 3.5% · Yahoo — 1.4% · DuckDuckGo — 0.8% (xavfsizlik uchun) · Yandex — 0.9%</div>
-<h4>Google qidiruv operatorlari</h4>
-<p>Oddiy so'z yozib qidirish faqat keng natija beradi. Quyidagi <span class="term">Search Operators</span> orqali aniq va sifatli natijalar oling:</p>
-<div class="code">OPERATOR         MISOL                          NATIJA
-"aniq ibora"     "raqamli ta'lim"               Faqat bu so'z birikmasini qidiradi
-site:domain.uz   site:edu.uz informatika         Faqat shu domen ichida qidiradi
-filetype:pdf     DigComp filetype:pdf            Faqat PDF fayllar
--so'z            Apple -meva                    Bu so'zni natijadan chiqaradi
-*                "raqamli * ta'lim"             * o'rniga istalgan so'z
-OR               Python OR JavaScript           Ikkalasidan birini qidiradi
-..               kamera $100..$300              Narx oralig'i qidiradi</div>
-<h4>CRAAP Test — ma'lumot ishonchliligi</h4>
-<p>Internetda topilgan har bir ma'lumot ishonchli emas. <span class="term">CRAAP Test</span> — California State University tomonidan ishlab chiqilgan baholash usuli:</p>
-<div class="code">C — Currency    (Dolzarblik): Qachon yozilgan? Yangilanganmi?
-R — Relevance   (Aloqadorlik): Mening savolimga javob beradimi?
-A — Authority   (Muallif): Kim yozgan? Ixtisos bormi?
-A — Accuracy    (Aniqlik): Dalil va manbalar ko'rsatilganmi?
-P — Purpose     (Maqsad): Nima maqsadda yozilgan?</div>
-<div class="tg">
-  <div class="ti"><div class="ti-n">✅ Ishonchli manba</div><div class="ti-d">Muallif ismi, sana, manba ko'rsatilgan. .gov, .edu domenlar</div><span class="ti-t tedu">Tavsiya etiladi</span></div>
-  <div class="ti"><div class="ti-n">⚠️ Shubhali manba</div><div class="ti-d">Muallif yo'q, sana yo'q, hissiyotga asoslangan</div><span class="ti-t tpaid">Ehtiyot bo'ling</span></div>
-  <div class="ti"><div class="ti-n">🔍 scholar.google.com</div><div class="ti-d">Ilmiy maqolalar, ta'lim tadqiqotlari uchun</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📚 uz.wikipedia.org</div><div class="ti-d">Umumiy ma'lumot. Birlamchi manba sifatida emas</div><span class="ti-t tfree">Foydalaning</span></div>
-</div>
-<h4>Bulut xotira (Cloud Storage) asoslari</h4>
-<p><span class="term">Cloud Storage</span> — ma'lumotlarni internet orqali masofaviy serverda saqlash texnologiyasi. Har qanday qurilmadan kirish mumkin, yo'qotib bo'lmaydi.</p>
-<div class="code">Bepul bulut xotiralari (ta'lim uchun):
-  Google Drive  — 15 GB bepul (Gmail bilan)
-  OneDrive      — 5 GB bepul (Microsoft)
-  Dropbox       — 2 GB bepul
-  Yandex Disk   — 10 GB bepul</div>`,
+  text:"<h4>Internet va qidiruv tizimlari (Search Engines)</h4>"
+  +"<p>Internet — dunyodagi milliardlab kompyuterlar, serverlar va qurilmalarning o'zaro bog'liq tarmog'i. <span class=\"term\">Search Engine</span> — bu tarmaqda kerakli ma'lumotni topuvchi maxsus dastur bo'lib, u veb-sahifalarni indekslab, foydalanuvchi so'roviga mos natijalar ko'rsatadi.</p>"
+  +"<p>Zamonaviy o'qituvchi har kuni o'nlab ma'lumot qidiradi: dars materiallari, ilmiy maqolalar, rasm va video resurslar. Qidiruv tizimlaridan samarali foydalanish — bu vaqtni tejash va sifatli material topish demak.</p>"
+  +"<div class=\"note\"><b>📌 Dunyo qidiruv tizimlar bozori (2024)</b>Google — 91.6% · Bing — 3.5% · Yahoo — 1.4% · DuckDuckGo — 0.8% (xavfsizlik uchun) · Yandex — 0.9%</div>"
+  +"<h4>Google qidiruv operatorlari</h4>"
+  +"<p>Oddiy so'z yozib qidirish faqat keng natija beradi. Quyidagi <span class=\"term\">Search Operators</span> orqali aniq va sifatli natijalar oling:</p>"
+  +"<div class=\"code\">OPERATOR         MISOL                          NATIJA"
+  +"\"aniq ibora\"     \"raqamli ta'lim\"               Faqat bu so'z birikmasini qidiradi"
+  +"site:domain.uz   site:edu.uz informatika         Faqat shu domen ichida qidiradi"
+  +"filetype:pdf     DigComp filetype:pdf            Faqat PDF fayllar"
+  +"-so'z            Apple -meva                    Bu so'zni natijadan chiqaradi"
+  +"*                \"raqamli * ta'lim\"             * o'rniga istalgan so'z"
+  +"OR               Python OR JavaScript           Ikkalasidan birini qidiradi"
+  +"..               kamera $100..$300              Narx oralig'i qidiradi</div>"
+  +"<h4>CRAAP Test — ma'lumot ishonchliligi</h4>"
+  +"<p>Internetda topilgan har bir ma'lumot ishonchli emas. <span class=\"term\">CRAAP Test</span> — California State University tomonidan ishlab chiqilgan baholash usuli:</p>"
+  +"<div class=\"code\">C — Currency    (Dolzarblik): Qachon yozilgan? Yangilanganmi?"
+  +"R — Relevance   (Aloqadorlik): Mening savolimga javob beradimi?"
+  +"A — Authority   (Muallif): Kim yozgan? Ixtisos bormi?"
+  +"A — Accuracy    (Aniqlik): Dalil va manbalar ko'rsatilganmi?"
+  +"P — Purpose     (Maqsad): Nima maqsadda yozilgan?</div>"
+  +"<div class=\"tg\">"
+  +"  <div class=\"ti\"><div class=\"ti-n\">✅ Ishonchli manba</div><div class=\"ti-d\">Muallif ismi, sana, manba ko'rsatilgan. .gov, .edu domenlar</div><span class=\"ti-t tedu\">Tavsiya etiladi</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">⚠️ Shubhali manba</div><div class=\"ti-d\">Muallif yo'q, sana yo'q, hissiyotga asoslangan</div><span class=\"ti-t tpaid\">Ehtiyot bo'ling</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🔍 scholar.google.com</div><div class=\"ti-d\">Ilmiy maqolalar, ta'lim tadqiqotlari uchun</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📚 uz.wikipedia.org</div><div class=\"ti-d\">Umumiy ma'lumot. Birlamchi manba sifatida emas</div><span class=\"ti-t tfree\">Foydalaning</span></div>"
+  +"</div>"
+  +"<h4>Bulut xotira (Cloud Storage) asoslari</h4>"
+  +"<p><span class=\"term\">Cloud Storage</span> — ma'lumotlarni internet orqali masofaviy serverda saqlash texnologiyasi. Har qanday qurilmadan kirish mumkin, yo'qotib bo'lmaydi.</p>"
+  +"<div class=\"code\">Bepul bulut xotiralari (ta'lim uchun):"
+  +"  Google Drive  — 15 GB bepul (Gmail bilan)"
+  +"  OneDrive      — 5 GB bepul (Microsoft)"
+  +"  Dropbox       — 2 GB bepul"
+  +"  Yandex Disk   — 10 GB bepul</div>",
   tasks:[
     {num:'01',title:'Google operatorlarini amalda sinang',
      desc:'Quyidagi 4 ta qidiruvni bajaring va har birining natijasini (topilgan ma\'lumot, nechta natija) qisqacha yozing.',
@@ -363,34 +396,31 @@ P — Purpose     (Maqsad): Nima maqsadda yozilgan?</div>
     desc:'Soxta yangiliklar va disinformatsiyani qanday aniqlash mumkin? Lateral reading, teskari rasm qidiruvi va fact-checking saytlaridan foydalanish usullari. O\'qituvchilar talabalariga bu ko\'nikmani o\'rgatishi kerak.',
     dur:'~12 daqiqa', lang:'Inglizcha'
   },
-  text:`
-<h4>Media savodxonligi — raqamli asrning asosiy ko'nikmasi</h4>
-<p><span class="term">Media Literacy</span> — turli media manbalaridan olingan axborotga tanqidiy yondashuv, uni tahlil qilish va ishonchliligini baholash ko'nikmasi. Bu ko'nikma bugungi kunda matematika yoki ona tilidan kam muhim emas.</p>
-<p>MIT Media Lab tadqiqoti (Vosoughi, 2018): Soxta yangiliklar haqiqiy yangiliklardan <b>6 marta tezroq</b> tarqaladi va <b>70% ko'proq</b> ulashiladi. Chunki soxta yangiliklar hissiyotga ta'sir qiladi.</p>
-<div class="note"><b>📌 O'zbekistonda ahvol</b>MediaLiteracyLab.uz ma'lumotlariga ko'ra, o'zbek respondentlarining 67% internet yangiliklar ishonchliligini tekshirib ko'rmasdan ulashadi. Bu ko'nikma bo'lajak o'qituvchilar uchun ayniqsa muhim.</div>
-<h4>Lateral Reading — eng samarali tekshiruv usuli</h4>
-<p><span class="term">Lateral Reading</span> — Stanford History Education Group (2019) tomonidan ilmiy asoslangan usul. Bitta saytga ishonib o'tirmasdan, bir vaqtda bir nechta mustaqil manbani tekshirish.</p>
-<div class="code">NOTO'G'RI: Bir saytni chuqur o'qish (Vertical Reading)
-  → Sayt o'zini yaxshi ko'rsatishi mumkin
-
-TO'G'RI: Sayt haqida boshqa manbalardan o'qish (Lateral Reading)
-  → Kim bu sayt? Boshqalar nima deydi?
-  
-Amaliy: Google da "site.com review" yoki "who is site.com" deb qidiring</div>
-<h4>Fact-Checking vositalari</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🔍 snopes.com</div><div class="ti-d">Eng katta inglizcha fact-check bazasi. Rasm va video ham tekshiradi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📰 factcheck.org</div><div class="ti-d">AQSh siyosiy bayonotlarini tekshiradi. Annenberg Public Policy Center</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🔎 Google Images</div><div class="ti-d">Teskari rasm qidiruvi — rasm qayerda, qachon chiqganini aniqlaydi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📡 InVID/WeVerify</div><div class="ti-d">Video tekshirish Chrome extension. Jurnalistlar ishlatadi</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-<h4>Soxta yangilik belgilari (Red Flags)</h4>
-<div class="code">1. SARLAVHA — Hissiyotga ta'sir, undov belgisi ko'p, shoshiltiruv
-2. URL      — goggle.com (Google emas), noto'g'ri domain
-3. SANA     — Eski voqea yangi sifatida taqdim etilgan
-4. MUALLIF  — Noma'lum, anonim, yoki soxta ism
-5. MANBALAR — Havola yo'q, yoki noto'g'ri havola
-6. RASMLAR  — Boshqa kontekstdan olingan yoki ChatGPT rasmi</div>`,
+  text:"<h4>Media savodxonligi — raqamli asrning asosiy ko'nikmasi</h4>"
+  +"<p><span class=\"term\">Media Literacy</span> — turli media manbalaridan olingan axborotga tanqidiy yondashuv, uni tahlil qilish va ishonchliligini baholash ko'nikmasi. Bu ko'nikma bugungi kunda matematika yoki ona tilidan kam muhim emas.</p>"
+  +"<p>MIT Media Lab tadqiqoti (Vosoughi, 2018): Soxta yangiliklar haqiqiy yangiliklardan <b>6 marta tezroq</b> tarqaladi va <b>70% ko'proq</b> ulashiladi. Chunki soxta yangiliklar hissiyotga ta'sir qiladi.</p>"
+  +"<div class=\"note\"><b>📌 O'zbekistonda ahvol</b>MediaLiteracyLab.uz ma'lumotlariga ko'ra, o'zbek respondentlarining 67% internet yangiliklar ishonchliligini tekshirib ko'rmasdan ulashadi. Bu ko'nikma bo'lajak o'qituvchilar uchun ayniqsa muhim.</div>"
+  +"<h4>Lateral Reading — eng samarali tekshiruv usuli</h4>"
+  +"<p><span class=\"term\">Lateral Reading</span> — Stanford History Education Group (2019) tomonidan ilmiy asoslangan usul. Bitta saytga ishonib o'tirmasdan, bir vaqtda bir nechta mustaqil manbani tekshirish.</p>"
+  +"<div class=\"code\">NOTO'G'RI: Bir saytni chuqur o'qish (Vertical Reading)"
+  +"  → Sayt o'zini yaxshi ko'rsatishi mumkin"
+  +"TO'G'RI: Sayt haqida boshqa manbalardan o'qish (Lateral Reading)"
+  +"  → Kim bu sayt? Boshqalar nima deydi?"
+  +"Amaliy: Google da \"site.com review\" yoki \"who is site.com\" deb qidiring</div>"
+  +"<h4>Fact-Checking vositalari</h4>"
+  +"<div class=\"tg\">"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🔍 snopes.com</div><div class=\"ti-d\">Eng katta inglizcha fact-check bazasi. Rasm va video ham tekshiradi</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📰 factcheck.org</div><div class=\"ti-d\">AQSh siyosiy bayonotlarini tekshiradi. Annenberg Public Policy Center</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🔎 Google Images</div><div class=\"ti-d\">Teskari rasm qidiruvi — rasm qayerda, qachon chiqganini aniqlaydi</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📡 InVID/WeVerify</div><div class=\"ti-d\">Video tekshirish Chrome extension. Jurnalistlar ishlatadi</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"</div>"
+  +"<h4>Soxta yangilik belgilari (Red Flags)</h4>"
+  +"<div class=\"code\">1. SARLAVHA — Hissiyotga ta'sir, undov belgisi ko'p, shoshiltiruv"
+  +"2. URL      — goggle.com (Google emas), noto'g'ri domain"
+  +"3. SANA     — Eski voqea yangi sifatida taqdim etilgan"
+  +"4. MUALLIF  — Noma'lum, anonim, yoki soxta ism"
+  +"5. MANBALAR — Havola yo'q, yoki noto'g'ri havola"
+  +"6. RASMLAR  — Boshqa kontekstdan olingan yoki ChatGPT rasmi</div>",
   tasks:[
     {num:'01',title:'Soxta yangilikni aniqlang',
      desc:'Ijtimoiy tarmoqda (Telegram, Facebook, Instagram) ko\'rgan yoki quyidagi berilgan yangilikni fact-checking usuli bilan tekshiring: "NASA olimlari 2024 yilda Marsda suv topdi — insonlar 2030 yilga borib yashay oladi"',
@@ -421,46 +451,41 @@ Amaliy: Google da "site.com review" yoki "who is site.com" deb qidiring</div>
     desc:'Google Scholar dan professional foydalanish: ilmiy maqola qidirish, sitata soni, "Cited by" funksiyasi, va to\'liq matnni bepul topish usullari. Ilmiy tadqiqot va dissertatsiya yozish uchun zaruriy ko\'nikma.',
     dur:'~10 daqiqa', lang:'Inglizcha'
   },
-  text:`
-<h4>Ilmiy ma\'lumotlar bazalari — nega zarur?</h4>
-<p>Ilmiy tadqiqot uchun oddiy Google yetarli emas. <span class="term">Academic Database</span> — maxsus ilmiy maqolalar, dissertatsiyalar, kitoblar va konferensiya materiallarini jamlagan indekslangan ma'lumotlar to'plami. Bu bazalarda peer-review (tengdoshlar tomonidan ko'rib chiqilgan) maqolalar joylashtiriladi.</p>
-<p>Informatika o'qituvchisi uchun ilmiy baza bilimi muhim: dissertatsiya yozish, dars materialini yangilab turish, va o'z amaliyotini ilmiy asoslash uchun.</p>
-<div class="note"><b>📌 Open Access harakati</b>2024 yilga kelib dunyo bo'yicha ilmiy maqolalarning 50%dan ko'prog'i Open Access (bepul, ochiq kirish) formatida taqdim etilmoqda. UNESCO va Yevropa Ittifoqi bu yo'nalishni faol qo'llab-quvvatlaydi.</div>
-<h4>Asosiy ilmiy bazalar taqqoslamasi</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🎓 Google Scholar</div><div class="ti-d">Eng keng qamrovli. Bepul. Barcha fanlar. scholar.google.com</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🔬 JSTOR</div><div class="ti-d">Gumanitar va ijtimoiy fanlar. Arxiv. jstor.org (cheklangan bepul)</div><span class="ti-t tedu">Qisman bepul</span></div>
-  <div class="ti"><div class="ti-n">🌐 ResearchGate</div><div class="ti-d">Mualliflar to'g'ridan-to'g'ri maqolalarini yuklaydi. So'rov yuborish mumkin</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📖 ERIC</div><div class="ti-d">Ta'lim sohasiga ixtisoslashgan. eric.ed.gov — O'qituvchilar uchun ideal</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-<h4>Google Scholar — ilg'or qidiruv strategiyalari</h4>
-<div class="code">ASOSIY:
-  scholar.google.com da qidirish — oddiy Google kabi
-
-ILMIY OPERATORLAR:
-  author:Karimov         — muallif bo'yicha
-  "digital competence"   — aniq ibora
-  DigComp 2022..2024     — yil oralig'i
-  intitle:informatika    — sarlavhada mavjud
-
-SIFAT MEZONLARI (cited by):
-  Sitata soni > 50  — yuqori ta'sir
-  Sitata soni > 200 — juda ta'sirli
-  
-BEPUL MATN TOPISH:
-  [PDF] belgisi     — to'g'ridan-to'g'ri PDF
-  "All versions"    — boshqa nusxalar
-  Sci-Hub           — (oxirgi chora, qonuniy masala bor)</div>
-<h4>Bibliografiya va manbalarni boshqarish</h4>
-<p>Ilmiy ish yozganda manbalarni to'g'ri rasmiylashtirish shart. <span class="term">Reference Manager</span> dasturlar bu jarayonni avtomatlashtiradi:</p>
-<div class="code">Bepul reference manager dasturlari:
-  Zotero     — zotero.org (eng mashhur, bepul)
-  Mendeley   — mendeley.com (PDF annotatsiya ham)
-  EndNote    — murakkabroq, professional
-
-APA 7 formati (O'zbekiston ta'limida ko'p ishlatiladigan):
-  Muallif, A. (Yil). Maqola nomi. Jurnal nomi, X(Y), sahifalar.
-  Misol: Karimov, A. (2023). Raqamli kompetentlik. Ta'lim va Fan, 5(2), 45-58.</div>`,
+  text:"<h4>Ilmiy ma\\'lumotlar bazalari — nega zarur?</h4>"
+  +"<p>Ilmiy tadqiqot uchun oddiy Google yetarli emas. <span class=\"term\">Academic Database</span> — maxsus ilmiy maqolalar, dissertatsiyalar, kitoblar va konferensiya materiallarini jamlagan indekslangan ma'lumotlar to'plami. Bu bazalarda peer-review (tengdoshlar tomonidan ko'rib chiqilgan) maqolalar joylashtiriladi.</p>"
+  +"<p>Informatika o'qituvchisi uchun ilmiy baza bilimi muhim: dissertatsiya yozish, dars materialini yangilab turish, va o'z amaliyotini ilmiy asoslash uchun.</p>"
+  +"<div class=\"note\"><b>📌 Open Access harakati</b>2024 yilga kelib dunyo bo'yicha ilmiy maqolalarning 50%dan ko'prog'i Open Access (bepul, ochiq kirish) formatida taqdim etilmoqda. UNESCO va Yevropa Ittifoqi bu yo'nalishni faol qo'llab-quvvatlaydi.</div>"
+  +"<h4>Asosiy ilmiy bazalar taqqoslamasi</h4>"
+  +"<div class=\"tg\">"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🎓 Google Scholar</div><div class=\"ti-d\">Eng keng qamrovli. Bepul. Barcha fanlar. scholar.google.com</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🔬 JSTOR</div><div class=\"ti-d\">Gumanitar va ijtimoiy fanlar. Arxiv. jstor.org (cheklangan bepul)</div><span class=\"ti-t tedu\">Qisman bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🌐 ResearchGate</div><div class=\"ti-d\">Mualliflar to'g'ridan-to'g'ri maqolalarini yuklaydi. So'rov yuborish mumkin</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📖 ERIC</div><div class=\"ti-d\">Ta'lim sohasiga ixtisoslashgan. eric.ed.gov — O'qituvchilar uchun ideal</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"</div>"
+  +"<h4>Google Scholar — ilg'or qidiruv strategiyalari</h4>"
+  +"<div class=\"code\">ASOSIY:"
+  +"  scholar.google.com da qidirish — oddiy Google kabi"
+  +"ILMIY OPERATORLAR:"
+  +"  author:Karimov         — muallif bo'yicha"
+  +"  \"digital competence\"   — aniq ibora"
+  +"  DigComp 2022..2024     — yil oralig'i"
+  +"  intitle:informatika    — sarlavhada mavjud"
+  +"SIFAT MEZONLARI (cited by):"
+  +"  Sitata soni > 50  — yuqori ta'sir"
+  +"  Sitata soni > 200 — juda ta'sirli"
+  +"BEPUL MATN TOPISH:"
+  +"  [PDF] belgisi     — to'g'ridan-to'g'ri PDF"
+  +"  \"All versions\"    — boshqa nusxalar"
+  +"  Sci-Hub           — (oxirgi chora, qonuniy masala bor)</div>"
+  +"<h4>Bibliografiya va manbalarni boshqarish</h4>"
+  +"<p>Ilmiy ish yozganda manbalarni to'g'ri rasmiylashtirish shart. <span class=\"term\">Reference Manager</span> dasturlar bu jarayonni avtomatlashtiradi:</p>"
+  +"<div class=\"code\">Bepul reference manager dasturlari:"
+  +"  Zotero     — zotero.org (eng mashhur, bepul)"
+  +"  Mendeley   — mendeley.com (PDF annotatsiya ham)"
+  +"  EndNote    — murakkabroq, professional"
+  +"APA 7 formati (O'zbekiston ta'limida ko'p ishlatiladigan):"
+  +"  Muallif, A. (Yil). Maqola nomi. Jurnal nomi, X(Y), sahifalar."
+  +"  Misol: Karimov, A. (2023). Raqamli kompetentlik. Ta'lim va Fan, 5(2), 45-58.</div>",
   tasks:[
     {num:'01',title:'Google Scholar da tadqiqot o\'tkazing',
      desc:'"digital competence teachers" yoki "raqamli kompetentlik o\'qituvchi" mavzusida scholar.google.com da qidiruv o\'tkazing. 2020-2024 yillar oralig\'ida 3 ta maqola toping.',
@@ -491,42 +516,40 @@ APA 7 formati (O'zbekiston ta'limida ko'p ishlatiladigan):
     desc:'Big Data asoslari, ma\'lumotlarni vizualizatsiya qilish va ta\'lim analitikasi (Learning Analytics) haqida. O\'qituvchilar o\'z talabalarining natijalarini qanday tahlil qilishi va qarorlar qabul qilishi mumkin.',
     dur:'~18 daqiqa', lang:'Inglizcha'
   },
-  text:`
-<h4>Big Data — ta\'lim sohasida yangi imkoniyatlar</h4>
-<p><span class="term">Big Data</span> — hajmi, tezligi va xilma-xilligi shunchalik kattaki, an'anaviy usullar bilan qayta ishlash qiyin bo'lgan ma'lumotlar to'plami. Ta'lim sohasida: millionlab talabalarning o'quv natijalari, platforma loglar, davomati, topshiriq vaqtlari.</p>
-<p><span class="term">Learning Analytics</span> — ta'lim jarayonida to'plangan ma'lumotlarni tahlil qilib, o'qituvchi va tashkilotlarga qaror qabul qilishda yordam beruvchi soha. Moodle, Google Classroom, Canvas — barchasi analitika beradi.</p>
-<div class="note"><b>📌 3V + 2V qoidasi (2024)</b>Volume (hajm) · Velocity (tezlik) · Variety (xilma-xillik) — klassik 3V. Zamonaviy qo'shilma: Veracity (ishonchlilik) · Value (qiymat). Ta'limda asosiysi — VALUE: ma'lumot o'quv jarayonini yaxshilashga xizmat qilsinmi?</div>
-<h4>Sun\'iy intellekt — ma\'lumot izlash va tahlilda</h4>
-<p>2024 yilga kelib <span class="term">Generative AI</span> vositalari ma'lumot qidirish jarayonini tubdan o'zgartirdi. Oddiy qidiruv o'rniga AI bilan suhbatlashib javob olish mumkin — lekin tanqidiy baholash shart.</p>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🤖 ChatGPT / Gemini</div><div class="ti-d">Savolga javob, matn yozish, xulosa chiqarish. Lekin — manba tekshirish shart!</div><span class="ti-t tfree">Bepul (asosiy)</span></div>
-  <div class="ti"><div class="ti-n">🔬 Perplexity AI</div><div class="ti-d">AI + real veb-qidiruv. Manbalarni ko'rsatadi. Ilmiy qidiruv uchun yaxshi</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📊 Google Data Studio</div><div class="ti-d">Ma'lumotlarni vizualizatsiya. Maktab natijalari uchun chiroyli grafik</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📈 Google Sheets</div><div class="ti-d">Talabalar natijalari tahlili. Chart, pivot table. O'qituvchilar uchun qulay</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-<h4>Ma\'lumotlarni vizualizatsiya qilish tamoyillari</h4>
-<div class="code">DIAGRAMMA TANLASH:
-  Taqqoslash         → Ustunli diagramma (Bar Chart)
-  O'zgarish (vaqt)   → Chiziqli diagramma (Line Chart)
-  Nisbat             → Doira diagramma (Pie Chart, max 5 bo'lak)
-  Taqsimlanish       → Gistogramma (Histogram)
-  Bog'liqlik         → Nuqtali diagramma (Scatter Plot)
-
-YAXSHI VIZUALIZATSIYA QOIDALARI:
-  ✓ Sarlavha — nima ko'rsatilayotgani aniq
-  ✓ O'q nomlari — birlik ko'rsatilsin
-  ✓ Rang — max 5 rang, colorblind-friendly
-  ✓ Manba — ma'lumot qayerdan
-  ✗ 3D diagrammalar — aldamchi ko'rsatadi
-  ✗ Noldan boshlanmagan o'q — yolg'on taassurot</div>
-<h4>Ta\'lim analitikasi — amaliy qo\'llash</h4>
-<p>Google Classroom, Moodle va boshqa LMS tizimlar analitika beradi: qaysi talaba qaysi topshiriqni bajarmagan, o'rtacha ball, vaqt sarfi. Bu ma'lumotlarni to'g'ri o'qish — individual yondashuv uchun asos.</p>
-<div class="code">Amaliy: Google Sheets da talabalar natijalari tahlili
-  1. Natijalarni Sheet ga kiriting
-  2. AVERAGE(), MAX(), MIN() formulalar
-  3. Shartli formatlash (qizil < 50%, yashil > 80%)
-  4. Chart yarating (ustunli)
-  5. Xulosa: Kim qo'shimcha yordam kerak?</div>`,
+  text:"<h4>Big Data — ta\\'lim sohasida yangi imkoniyatlar</h4>"
+  +"<p><span class=\"term\">Big Data</span> — hajmi, tezligi va xilma-xilligi shunchalik kattaki, an'anaviy usullar bilan qayta ishlash qiyin bo'lgan ma'lumotlar to'plami. Ta'lim sohasida: millionlab talabalarning o'quv natijalari, platforma loglar, davomati, topshiriq vaqtlari.</p>"
+  +"<p><span class=\"term\">Learning Analytics</span> — ta'lim jarayonida to'plangan ma'lumotlarni tahlil qilib, o'qituvchi va tashkilotlarga qaror qabul qilishda yordam beruvchi soha. Moodle, Google Classroom, Canvas — barchasi analitika beradi.</p>"
+  +"<div class=\"note\"><b>📌 3V + 2V qoidasi (2024)</b>Volume (hajm) · Velocity (tezlik) · Variety (xilma-xillik) — klassik 3V. Zamonaviy qo'shilma: Veracity (ishonchlilik) · Value (qiymat). Ta'limda asosiysi — VALUE: ma'lumot o'quv jarayonini yaxshilashga xizmat qilsinmi?</div>"
+  +"<h4>Sun\\'iy intellekt — ma\\'lumot izlash va tahlilda</h4>"
+  +"<p>2024 yilga kelib <span class=\"term\">Generative AI</span> vositalari ma'lumot qidirish jarayonini tubdan o'zgartirdi. Oddiy qidiruv o'rniga AI bilan suhbatlashib javob olish mumkin — lekin tanqidiy baholash shart.</p>"
+  +"<div class=\"tg\">"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🤖 ChatGPT / Gemini</div><div class=\"ti-d\">Savolga javob, matn yozish, xulosa chiqarish. Lekin — manba tekshirish shart!</div><span class=\"ti-t tfree\">Bepul (asosiy)</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">🔬 Perplexity AI</div><div class=\"ti-d\">AI + real veb-qidiruv. Manbalarni ko'rsatadi. Ilmiy qidiruv uchun yaxshi</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📊 Google Data Studio</div><div class=\"ti-d\">Ma'lumotlarni vizualizatsiya. Maktab natijalari uchun chiroyli grafik</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"  <div class=\"ti\"><div class=\"ti-n\">📈 Google Sheets</div><div class=\"ti-d\">Talabalar natijalari tahlili. Chart, pivot table. O'qituvchilar uchun qulay</div><span class=\"ti-t tfree\">Bepul</span></div>"
+  +"</div>"
+  +"<h4>Ma\\'lumotlarni vizualizatsiya qilish tamoyillari</h4>"
+  +"<div class=\"code\">DIAGRAMMA TANLASH:"
+  +"  Taqqoslash         → Ustunli diagramma (Bar Chart)"
+  +"  O'zgarish (vaqt)   → Chiziqli diagramma (Line Chart)"
+  +"  Nisbat             → Doira diagramma (Pie Chart, max 5 bo'lak)"
+  +"  Taqsimlanish       → Gistogramma (Histogram)"
+  +"  Bog'liqlik         → Nuqtali diagramma (Scatter Plot)"
+  +"YAXSHI VIZUALIZATSIYA QOIDALARI:"
+  +"  ✓ Sarlavha — nima ko'rsatilayotgani aniq"
+  +"  ✓ O'q nomlari — birlik ko'rsatilsin"
+  +"  ✓ Rang — max 5 rang, colorblind-friendly"
+  +"  ✓ Manba — ma'lumot qayerdan"
+  +"  ✗ 3D diagrammalar — aldamchi ko'rsatadi"
+  +"  ✗ Noldan boshlanmagan o'q — yolg'on taassurot</div>"
+  +"<h4>Ta\\'lim analitikasi — amaliy qo\\'llash</h4>"
+  +"<p>Google Classroom, Moodle va boshqa LMS tizimlar analitika beradi: qaysi talaba qaysi topshiriqni bajarmagan, o'rtacha ball, vaqt sarfi. Bu ma'lumotlarni to'g'ri o'qish — individual yondashuv uchun asos.</p>"
+  +"<div class=\"code\">Amaliy: Google Sheets da talabalar natijalari tahlili"
+  +"  1. Natijalarni Sheet ga kiriting"
+  +"  2. AVERAGE(), MAX(), MIN() formulalar"
+  +"  3. Shartli formatlash (qizil < 50%, yashil > 80%)"
+  +"  4. Chart yarating (ustunli)"
+  +"  5. Xulosa: Kim qo'shimcha yordam kerak?</div>",
   tasks:[
     {num:'01',title:'Google Sheets da talabalar natijalari tahlili',
      desc:'Google Sheets da 10 ta xayoliy talabaning 3 ta fandan natijalari jadvalini tuzing. Formulalar va diagramma bilan tahlil qiling.',
@@ -618,26 +641,25 @@ function lockedClick(idx) {
 }
 
 // ═══════════════════════════ MAIN RENDER ═══════════════════════════
-function showLesson(idx) {
-  if (idx > userLevel && !isUnlocked(idx)) { lockedClick(idx); return; }
-  currentLesson = idx;
-  quizAns = []; quizDone = false;
+function showLesson(idx){
+  if(idx>userLevel&&!isUnlocked(idx)){lockedClick(idx);return;}
+  currentLesson=idx;quizAns=[];quizDone=false;
   renderSidebar();
-  const L = LESSONS[idx];
-  const lvCls = ['lv-a1','lv-a2','lv-b1','lv-b2'];
-  const mc = document.getElementById('mainContent');
-  mc.innerHTML = `
-    <div class="lh">
-      <div class="lh-level"><span class="lv-badge ${lvCls[idx]}">${L.level}</span><span style="font-size:11px;color:var(--text3)"> daraja</span></div>
+  const L=LESSONS[idx];
+  const lb=['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
+  document.getElementById('mainContent').innerHTML=`
+    <div class="lh au">
+      <div class="lh-level"><span class="lv-badge ${lb}">${L.level}</span>
+      <span style="font-size:12px;color:var(--text3)">daraja</span></div>
       <div class="lh-icon">${L.icon}</div>
       <div class="lh-title">${L.title}</div>
       <div class="lh-sub">${L.subtitle}</div>
       <div class="lh-meta">
         <span class="lh-chip">⏱ ${L.dur}</span>
         <span class="lh-chip">🛠 ${L.taskCount} amaliy</span>
-        <span class="lh-chip">❓ ${L.quizCount} quiz savol</span>
+        <span class="lh-chip">❓ ${L.quizCount} quiz</span>
         ${completedLessons.includes(idx)?'<span class="lh-chip" style="color:var(--ok);border-color:var(--ok-b)">✅ Yakunlangan</span>':''}
-        ${quizScores[idx]!==undefined?`<span class="lh-chip" style="color:var(--m1c)">Quiz: ${quizScores[idx]}%</span>`:''}
+        ${quizScores[idx]!==undefined?'<span class="lh-chip" style="color:var(--mc)">Quiz: '+quizScores[idx]+'%</span>':''}
       </div>
     </div>
     <div class="tabs">
@@ -647,36 +669,58 @@ function showLesson(idx) {
       <div class="tab" onclick="stab(this,'quiz')">✅ Quiz</div>
     </div>
     <div id="tc-video" class="tc active">${renderVideo(L)}</div>
-    <div id="tc-matn" class="tc">${renderMatn(L)}</div>
+    <div id="tc-matn"  class="tc">${renderMatn(L)}</div>
     <div id="tc-amaliy" class="tc">${renderAmaliy(L,idx)}</div>
-    <div id="tc-quiz" class="tc">${renderQuiz(L,idx)}</div>
+    <div id="tc-quiz"  class="tc">${renderQuiz(L,idx)}</div>
     <div class="navbtns">
       ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
-      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`:`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat</button>`}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`
+             :`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function renderVideo(L) {
+// ──────────────────────────────────────────
+// RENDER HELPERS
+// ──────────────────────────────────────────
+
+function renderVideo(L){
+  const v=L.video;
+  const isUz=v.lang&&v.lang.includes("O'zbekcha");
+  const hasAlt=v.url2&&v.url2.length>0;
+  const badge=isUz
+    ?'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1.5px solid rgba(16,185,129,.25);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🇺🇿 O\'ZBEKCHA</span>'
+    :'<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 '+(v.lang||'INGLIZCHA').toUpperCase()+'</span>';
   return `<div class="vcard">
-    <div class="vthumb" onclick="window.open('${L.video.url}','_blank')">
+    <div class="vthumb" onclick="window.open('${v.url}','_blank')">
       <div class="pbtn">▶</div>
-      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1"><div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.7)">${L.video.title}</div></div>
+      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1">
+        <div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.8)">${v.title}</div>
+      </div>
     </div>
     <div class="vinfo">
-      <div class="vt">${L.video.title}</div>
-      <div class="vd">${L.video.desc}</div>
-      <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${L.video.dur}</span><span class="vchip">🌐 ${L.video.lang}</span></div>
-      <button class="vbtn" onclick="window.open('${L.video.url}','_blank')">▶ Videoni ko'rish →</button>
+      <div style="margin-bottom:10px">${badge}</div>
+      <div class="vt">${v.title}</div>
+      <div class="vd">${v.desc}</div>
+      <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
+      <div style="margin-top:12px">
+        <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
+        ${hasAlt?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
+      </div>
+      ${!isUz?'<div class="cc-note">💡 <b>CC tugmasi</b> → O\'zbek yoki Rus subtitlni yoqing</div>':''}
     </div>
   </div>
-  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button></div>`;
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName(\'matn\')">Matnni o\'qish →</button></div>`;
 }
 
-function renderMatn(L) {
-  return `<div class="card"><div class="card-title">📄 Dars matni</div><div class="lt">${L.text}</div></div>
-  <div style="text-align:right"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliy →</button></div>`;
+
+function renderMatn(L){
+  return `<div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);padding:22px;box-shadow:var(--shadow-sm)">
+    <div class="lt">${L.text}</div>
+  </div>
+  <div style="text-align:right;margin-top:10px"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga →</button></div>`;
 }
+
 
 function renderAmaliy(L, idx) {
   return L.tasks.map((t,i)=>`
@@ -687,6 +731,9 @@ function renderAmaliy(L, idx) {
       <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
       <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
       <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Bajarildi! Quizga o'ting.</div>
+      <button class="aifb-btn" id="aifb_${idx}_${i}" onclick="aiFeedback(${idx},${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0eeff;border:1.5px solid #c0b0ff;color:#6c5ce7;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit">🤖 AI baholash</button>
+      <div class="aifb-res" id="aifbr_${idx}_${i}" style="display:none;margin-top:8px;padding:10px 13px;background:#f8f6ff;border:1.5px solid #d0c8ff;border-radius:10px;font-size:12px;line-height:1.7;color:#333"></div>
+      <button class="aifb-btn" id="aifb_${idx}_${i}" onclick="aiFb(${idx},${i})">AI baholash</button><div class="aifb-res" id="aifbr_${idx}_${i}"></div>
     </div>`).join('')+
   `<div style="text-align:right;margin-top:8px"><button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button></div>`;
 }
@@ -696,7 +743,7 @@ function renderQuiz(L, idx) {
   if (saved !== undefined) {
     const nextIdx = idx + 1;
     const nextUnlocked = nextIdx <= 3 && isUnlocked(nextIdx);
-    return `<div class="qres" style="display:block">
+    return `<div class="aiq-wrap"><p style="font-weight:700;font-size:12px;margin:0 0 6px">AI Quiz</p><button class="aiq-btn" id="aiqb_${idx}" onclick="aiGenQ(${idx})">AI savollar</button><div class="aiq-res" id="aiqr_${idx}"></div></div><div class="qres" style="display:block">
       <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
       <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
       <div class="qrm">${saved>=70?'✅ O\'tildi! Keyingi daraja '+( nextIdx<=3?'ochildi 🔓':'yo\'q, modul yakunlandi 🎓'):'⚠️ 70% chegara. Qayta urinib ko\'ring.'}</div>
@@ -705,7 +752,13 @@ function renderQuiz(L, idx) {
     ${nextIdx<=3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showLesson(${nextIdx})">Keyingi daraja →</button>`:''}
     ${idx===3&&saved>=70?`<button class="btn-next" style="display:block" onclick="showCert()">🏆 Sertifikat olish</button>`:''}`;
   }
-  return `<div class="qres" id="qres_${idx}"></div>
+  return `<div style="background:#f8f6ff;border:1.5px dashed #c0b0ff;border-radius:12px;padding:14px;margin-bottom:14px">
+      <p style="font-weight:700;font-size:13px;color:#6c5ce7;margin:0 0 6px">✨ AI Quiz Generator</p>
+      <p style="font-size:11px;color:#888;margin:0 0 10px">Mavzu bo'yicha yangi savollar yaratish</p>
+      <button id="aiqb_${idx}" onclick="aiGenQuiz(${idx})" style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">✨ AI savollar yaratish</button>
+      <div id="aiqr_${idx}" style="display:none;margin-top:10px"></div>
+    </div>
+    <div class="qres" id="qres_${idx}"></div>
     <div class="qfail-msg" id="qfail_${idx}"><p>⚠️ Natija 70% dan past. Matnni qayta ko'rib, <b>Qayta topshirish</b> tugmasini bosing.</p></div>
     ${L.quiz.map((q,qi)=>`
       <div class="qq">
@@ -902,6 +955,17 @@ hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}
   <br>
   <button class="print-btn" onclick="window.print()">🖨 Chop etish / PDF saqlash</button>
 </div>
+
+<button class="ai-fab" onclick="aiOpen()">&#x1F916;<span class="ai-dot"></span></button>
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-ph"><span>&#x1F916; AI Yordamchi</span><button onclick="aiOpen()">x</button></div>
+  <div class="ai-msgs" id="aiMsgs"><div class="ai-msg b">Salom! Savol bering.</div></div>
+  <div class="ai-ft">
+    <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Savol..."
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea>
+    <button class="ai-snd" onclick="aiSend()">&#x27A4;</button>
+  </div>
+</div>
 </body>
 </html>`;
 
@@ -1034,9 +1098,252 @@ function filterNews(tag, el) {
 }
 
 // ═══════════════════════════ INIT ═══════════════════════════
+
+var _AM='claude-sonnet-4-20250514';var _ah=[];
+function _ctx(){var L=LESSONS[currentLesson];return 'Sen DigiComp AI yordamchisisаn. Dars: '+L.level+' - '+L.title+'. Faqat uzbek tilida, qisqa.';}
+function aiOpen(){var p=document.getElementById('aiPanel');p.classList.toggle('show');if(p.classList.contains('show'))setTimeout(function(){var i=document.getElementById('aiInp');if(i)i.focus();},100);}
+function aiSend(){var i=document.getElementById('aiInp');var msg=(i.value||'').trim();if(!msg)return;i.value='';_aiA(msg,'u');_ah.push({role:'user',content:msg});var lid='l'+Date.now();_aiA('Javob...','b ld',lid);fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:_AM,max_tokens:600,system:_ctx(),messages:_ah.slice(-8)})}).then(function(r){return r.json();}).then(function(d){var el=document.getElementById(lid);if(el)el.remove();_aiA(d.content[0].text,'b');_ah.push({role:'assistant',content:d.content[0].text});}).catch(function(){var el=document.getElementById(lid);if(el)el.remove();_aiA('Xatolik.','b');});}
+function _aiA(t,c,id){var b=document.getElementById('aiMsgs');if(!b)return;var el=document.createElement('div');el.className='ai-msg '+c;el.textContent=t;if(id)el.id=id;b.appendChild(el);b.scrollTop=b.scrollHeight;}
+function aiFb(li,ti){var L=LESSONS[li];var task=L.tasks[ti];var inp=document.getElementById('ta_'+li+'_'+ti);var v=inp?(inp.value||'').trim():'';if(v.length<10){showToast('Avval javob yozing!');return;}var btn=document.getElementById('aifb_'+li+'_'+ti);var res=document.getElementById('aifbr_'+li+'_'+ti);btn.disabled=true;res.style.display='block';res.textContent='AI baholamoqda...';fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:_AM,max_tokens:400,messages:[{role:'user',content:'Uzbek tilida baholang. Topshiriq: '+task.title+'. Javob: '+v+'. Baho A/B/C/D.'}]})}).then(function(r){return r.json();}).then(function(d){res.innerHTML='<b>AI:</b><br>'+d.content[0].text;btn.disabled=false;btn.textContent='AI baholash';}).catch(function(){res.textContent='Xatolik.';btn.disabled=false;btn.textContent='AI baholash';});}
+function aiGenQ(idx){var L=LESSONS[idx];var btn=document.getElementById('aiqb_'+idx);var res=document.getElementById('aiqr_'+idx);btn.disabled=true;res.style.display='block';res.textContent='Savollar...';fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:_AM,max_tokens:800,messages:[{role:'user',content:'Mavzu: '+L.title+'. Uzbek tilida 4 ta savol. FAQAT JSON: [{"q":"?","o":["A","B","C","D"],"a":0}]'}]})}).then(function(r){return r.json();}).then(function(d){var raw=d.content[0].text.replace(/```json|```/g,'').trim();var qs=JSON.parse(raw);res.innerHTML=qs.map(function(q,i){return '<div class="aiq-q"><div class="aiq-qt">'+(i+1)+'. '+q.q+'</div>'+q.o.map(function(o,j){return '<div class="aiq-opt'+(j===q.a?' ok':'')+'">'+'ABCD'[j]+'. '+o+'</div>';}).join('')+'</div>';}).join('');btn.disabled=false;btn.textContent='Yangi savollar';}).catch(function(){res.textContent='Xatolik.';btn.disabled=false;btn.textContent='Yangi savollar';});}
 renderSidebar();
 showLesson(userLevel); // start at user's level
 loadNews(); // Ta'lim yangiliklari panelini yuklash
 </script>
 </body>
+
+
+<style>
+@keyframes ai-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 14px rgba(239,68,68,.0)}}
+@keyframes ai-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ai-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai-wrap{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ai-tip{background:#1a1d3a;color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;position:relative}
+.ai-tip::after{content:'';position:absolute;bottom:-5px;right:20px;border:5px solid transparent;border-top-color:#1a1d3a}
+.ai-btn{width:56px;height:56px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:50%;border:none;cursor:pointer;font-size:26px;animation:ai-pulse 2s infinite,ai-bounce 3s ease-in-out infinite;position:relative;display:flex;align-items:center;justify-content:center}
+.ai-btn.on{background:linear-gradient(135deg,var(--mc),var(--mc2));animation:none}
+.ai-badge{position:absolute;top:-1px;right:-1px;width:18px;height:18px;background:#fff;border-radius:50%;border:2px solid #ef4444;font-size:10px;font-weight:800;color:#ef4444;display:flex;align-items:center;justify-content:center}
+.ai-panel{width:310px;background:#fff;border:1.5px solid #e0e0e0;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;max-height:480px;animation:ai-fade .25s ease}
+.ai-panel.on{display:flex}
+.ai-ph{background:linear-gradient(135deg,var(--mc),var(--mc2));padding:12px 14px;display:flex;align-items:center;gap:10px}
+.ai-ph-av{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ai-ph-t{flex:1}
+.ai-ph-t b{font-size:13px;color:#fff;display:block}
+.ai-ph-t small{font-size:10px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:3px}
+.ai-ph-t small::before{content:'';width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block}
+.ai-ph button{background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px}
+.ai-sugs{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+.ai-sug{padding:4px 10px;background:#f0eeff;border:1px solid #d0c8ff;border-radius:20px;font-size:11px;color:#6c5ce7;cursor:pointer}
+.ai-sug:hover{background:#6c5ce7;color:#fff}
+.ai-msgs{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;min-height:140px;max-height:240px}
+.ai-msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.6}
+.ai-msg.u{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;align-self:flex-end;border-radius:12px 12px 2px 12px}
+.ai-msg.b{background:#f5f5f5;color:#333;align-self:flex-start;border-radius:12px 12px 12px 2px}
+.ai-msg.ld{background:#f5f5f5;color:#aaa;font-style:italic;align-self:flex-start}
+.ai-ft{padding:9px;border-top:1px solid #eee;display:flex;gap:6px}
+.ai-inp{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:12.5px;outline:none;resize:none;font-family:inherit}
+.ai-inp:focus{border-color:var(--mc)}
+.ai-send{width:36px;height:36px;min-width:36px;background:linear-gradient(135deg,var(--mc),var(--mc2));border:none;border-radius:9px;color:#fff;cursor:pointer;font-size:16px}
+</style>
+
+<div class="ai-wrap">
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-ph">
+      <div class="ai-ph-av">🤖</div>
+      <div class="ai-ph-t">
+        <b>AI Yordamchi</b>
+        <small>Faol</small>
+      </div>
+      <button onclick="aiToggle()">✕</button>
+    </div>
+    <div class="ai-sugs" id="aiSugs">
+      <button class="ai-sug" onclick="aiQuick('Bu dars haqida tushuntir')">📖 Dars haqida</button>
+      <button class="ai-sug" onclick="aiQuick('Muhim terminlarni tushuntir')">📝 Terminlar</button>
+      <button class="ai-sug" onclick="aiQuick('Amaliy misol ber')">💡 Misol</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg b">Salom! 👋 Savol bering — yordam beraman!</div>
+    </div>
+    <div class="ai-ft">
+      <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Savol yozing..."
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea>
+      <button class="ai-send" onclick="aiSend()">➤</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="ai-tip" id="aiTip">💬 Savol bormi? So'rang!</div>
+    <button class="ai-btn" id="aiBtn" onclick="aiToggle()">🤖<span class="ai-badge">?</span></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb';
+  var history=[];
+
+  setTimeout(function(){
+    var t=document.getElementById('aiTip');
+    if(t)t.style.display='none';
+  },4000);
+
+  window.aiToggle=function(){
+    var p=document.getElementById('aiPanel');
+    var b=document.getElementById('aiBtn');
+    var t=document.getElementById('aiTip');
+    var open=p.classList.contains('on');
+    p.classList.toggle('on');
+    b.classList.toggle('on');
+    if(t)t.style.display='none';
+    if(!open)setTimeout(function(){
+      var i=document.getElementById('aiInp');if(i)i.focus();
+    },200);
+  };
+
+  window.aiQuick=function(q){
+    document.getElementById('aiInp').value=q;
+    var s=document.getElementById('aiSugs');
+    if(s)s.style.display='none';
+    aiSend();
+  };
+
+  window.aiSend=function(){
+    var inp=document.getElementById('aiInp');
+    var msg=(inp.value||'').trim();
+    if(!msg)return;
+    inp.value='';
+    addMsg(msg,'u');
+    var lid='lid'+Date.now();
+    addMsg('⟳ Javob tayyorlanmoqda...','b ld',lid);
+
+    var chatHistory=history.map(function(h){
+      return {role:h.role,message:h.message};
+    });
+
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+KEY
+      },
+      body:JSON.stringify({
+        model:'command-r-08-2024',
+        message:msg,
+        preamble:'Sen DigiComp M1 moduli AI yordamchisisаn. Mavzu: Malumot va axborot savodxonligi. Faqat uzbek tilida, qisqa va aniq javob ber.',
+        chat_history:chatHistory
+      })
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById(lid);if(el)el.remove();
+      if(d.text){
+        addMsg(d.text,'b');
+        history.push({role:'USER',message:msg});
+        history.push({role:'CHATBOT',message:d.text});
+        if(history.length>16)history=history.slice(-16);
+      } else if(d.message){
+        addMsg('Xatolik: '+d.message,'b');
+      } else {
+        addMsg('Xatolik yuz berdi.','b');
+      }
+    })
+    .catch(function(e){
+      var el=document.getElementById(lid);if(el)el.remove();
+      addMsg('Xatolik: '+e.message,'b');
+    });
+  };
+
+
+  // AI Baholash
+  window.aiFeedback=function(li,ti){
+    var L=LESSONS[li];
+    var task=L.tasks[ti];
+    var inp=document.getElementById('ta_'+li+'_'+ti);
+    var val=inp?(inp.value||'').trim():'';
+    if(val.length<10){showToast('Avval javobingizni yozing!');return;}
+    var btn=document.getElementById('aifb_'+li+'_'+ti);
+    var res=document.getElementById('aifbr_'+li+'_'+ti);
+    btn.disabled=true;btn.textContent='⟳ Baholanmoqda...';
+    res.style.display='block';res.textContent='🤖 AI baholamoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb'},
+      body:JSON.stringify({
+        model:'command-r-08-2024',
+        message:'Uzbek tilida baholang. Topshiriq: '+task.title+'. Talaba javobi: '+val+'. Baho bering: A (ajoyib), B (yaxshi), C (qoniqarli), D (qayta ishlash kerak) va qisqa izoh.',
+        preamble:'Sen ta\'lim platformasi AI baholovchisisаn. Uzbek tilida aniq va qisqa javob ber.'
+      })
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text){
+        res.innerHTML='<b style="color:var(--mc)">🤖 AI Baholash:</b><br>'+d.text;
+      }else{
+        res.textContent='Xatolik yuz berdi.';
+      }
+      btn.disabled=false;btn.textContent='🤖 AI baholash';
+    })
+    .catch(function(e){
+      res.textContent='Xatolik: '+e.message;
+      btn.disabled=false;btn.textContent='🤖 AI baholash';
+    });
+  };
+
+  // AI Quiz Generator
+  window.aiGenQuiz=function(idx){
+    var L=LESSONS[idx];
+    var btn=document.getElementById('aiqb_'+idx);
+    var res=document.getElementById('aiqr_'+idx);
+    btn.disabled=true;btn.textContent='⟳ Yaratilmoqda...';
+    res.style.display='block';res.textContent='🤖 Savollar yaratilmoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb'},
+      body:JSON.stringify({
+        model:'command-r-08-2024',
+        message:'Mavzu: '+L.title+'. 4 ta test savol. JSON format: [{"q":"savol?","o":["A","B","C","D"],"a":0}]. Faqat JSON, boshqa matn yozma.',
+        preamble:'Sen test yaratuvchi AI sаn. Faqat JSON format qaytarasan, boshqa hech narsa emas.'
+      })
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text){
+        try{
+          var raw=d.text.replace(/```json|```|`/g,'').trim();
+          // JSON ni topamiz
+          var jsonMatch=raw.match(/\[.*\]/s);
+          if(jsonMatch)raw=jsonMatch[0];
+          var qs=JSON.parse(raw);
+          res.innerHTML=qs.map(function(q,i){
+            return '<div style="background:#fff;border:1px solid #e0d8ff;border-radius:9px;padding:11px;margin-bottom:8px">'+
+              '<div style="font-size:12px;font-weight:700;color:#333;margin-bottom:7px">'+(i+1)+'. '+q.q+'</div>'+
+              q.o.map(function(o,j){
+                var isOk=j===q.a;
+                return '<div style="font-size:11px;padding:4px 9px;border-radius:6px;margin-bottom:3px;background:'+(isOk?'#dcfce7':'#f5f5f5')+';color:'+(isOk?'#16a34a':'#555')+';font-weight:'+(isOk?'700':'400')+'">'+'ABCD'[j]+'. '+o+(isOk?' ✓':'')+'</div>';
+              }).join('')+
+            '</div>';
+          }).join('');
+        }catch(e){
+          res.textContent=d.text;
+        }
+      }else{
+        res.textContent='Xatolik yuz berdi.';
+      }
+      btn.disabled=false;btn.textContent='✨ Yangi savollar';
+    })
+    .catch(function(e){
+      res.textContent='Xatolik: '+e.message;
+      btn.disabled=false;btn.textContent='✨ AI savollar yaratish';
+    });
+  };
+  function addMsg(t,cls,id){
+    var box=document.getElementById('aiMsgs');if(!box)return;
+    var el=document.createElement('div');
+    el.className='ai-msg '+cls;
+    el.textContent=t;
+    if(id)el.id=id;
+    box.appendChild(el);
+    box.scrollTop=box.scrollHeight;
+  }
+})();
+</script>
 </html>

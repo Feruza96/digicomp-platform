@@ -8,10 +8,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#080c14;--bg2:#0d1220;--bg3:#111827;
-  --surface:#161e2e;--surface2:#1c2840;
-  --border:#ffffff0f;--border2:#ffffff18;
-  --text:#f0f4ff;--text2:#8899bb;--text3:#4a5a7a;
+  --bg:#f0fdf4;--bg2:#ffffff;--bg3:#f0fdf4;
+  --surface:#ffffff;--surface2:#f0fdf4;
+  --border:#d1fae5;--border2:#a7f3d0;
+  --text:#1a3a2a;--text2:#3a6a4a;--text3:#6a9a7a;
   --mc:#2dd4a0;--mcg:rgba(45,212,160,.1);--mcb:rgba(45,212,160,.2);
   --ok:#2dd4a0;--ok-g:rgba(45,212,160,.1);--ok-b:rgba(45,212,160,.2);
   --warn:#fbbf24;--danger:#ff5757;--accent:#4f8bff;
@@ -168,6 +168,42 @@ textarea::placeholder{color:var(--text3)}
 .cert-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
 .toast{position:fixed;bottom:22px;right:22px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 16px;border-radius:9px;font-size:12px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .toast.show{transform:translateY(0)}
+
+/* Cert overlay fix */
+#certOverlay{position:fixed !important;inset:0 !important;z-index:9000 !important;background:rgba(0,0,0,0.85) !important;display:none !important;align-items:center !important;justify-content:center !important;}
+#certOverlay.show{display:flex !important;}
+
+/* AI */
+@keyframes ai-pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%{box-shadow:0 0 0 14px rgba(239,68,68,.0)}}
+@keyframes ai-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ai-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai-wrap{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ai-tip{background:#1a1d3a;color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;position:relative}
+.ai-tip::after{content:'';position:absolute;bottom:-5px;right:20px;border:5px solid transparent;border-top-color:#1a1d3a}
+.ai-btn{width:56px;height:56px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:50%;border:none;cursor:pointer;font-size:26px;animation:ai-pulse 2s infinite,ai-bounce 3s ease-in-out infinite;position:relative;display:flex;align-items:center;justify-content:center}
+.ai-btn.on{background:linear-gradient(135deg,var(--mc),var(--mc2));animation:none}
+.ai-badge{position:absolute;top:-1px;right:-1px;width:18px;height:18px;background:#fff;border-radius:50%;border:2px solid #ef4444;font-size:10px;font-weight:800;color:#ef4444;display:flex;align-items:center;justify-content:center}
+.ai-panel{width:310px;background:#fff;border:1.5px solid #e0e0e0;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.15);display:none;flex-direction:column;overflow:hidden;max-height:480px;animation:ai-fade .25s ease}
+.ai-panel.on{display:flex}
+.ai-ph{background:linear-gradient(135deg,var(--mc),var(--mc2));padding:12px 14px;display:flex;align-items:center;gap:10px}
+.ai-ph-av{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ai-ph-t{flex:1}
+.ai-ph-t b{font-size:13px;color:#fff;display:block}
+.ai-ph-t small{font-size:10px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:3px}
+.ai-ph-t small::before{content:'';width:6px;height:6px;background:#4ade80;border-radius:50%;display:inline-block}
+.ai-ph button{background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px}
+.ai-sugs{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px}
+.ai-sug{padding:4px 10px;background:#f0eeff;border:1px solid #d0c8ff;border-radius:20px;font-size:11px;color:#6c5ce7;cursor:pointer}
+.ai-sug:hover{background:#6c5ce7;color:#fff}
+.ai-msgs{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;min-height:140px;max-height:240px}
+.ai-msg{max-width:88%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.6}
+.ai-msg.u{background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;align-self:flex-end;border-radius:12px 12px 2px 12px}
+.ai-msg.b{background:#f5f5f5;color:#333;align-self:flex-start;border-radius:12px 12px 12px 2px}
+.ai-msg.ld{background:#f5f5f5;color:#aaa;font-style:italic;align-self:flex-start}
+.ai-ft{padding:9px;border-top:1px solid #eee;display:flex;gap:6px}
+.ai-inp{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:12.5px;outline:none;resize:none;font-family:inherit}
+.ai-inp:focus{border-color:var(--mc)}
+.ai-send{width:36px;height:36px;min-width:36px;background:linear-gradient(135deg,var(--mc),var(--mc2));border:none;border-radius:9px;color:#fff;cursor:pointer;font-size:16px}
 </style>
 </head>
 <body>
@@ -223,7 +259,7 @@ textarea::placeholder{color:var(--text3)}
 <script>
 
 // ═══════ DigiComp API ═══════
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbzNs3x_xHN5581XvAjZKRL-Vn6VbWpHuTYn8PUBU_rXM1PSKA83Y13Hgd91Pdfz06zDiw/exec';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec';
 async function apiPost(d){try{const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(d),headers:{'Content-Type':'text/plain'}});return await r.json();}catch(e){return{status:'error'};}}
 async function syncTalaba(u){if(!u)return;const sc=u.diagScores||{};const tot=Object.keys(sc).length?Math.round(Object.values(sc).reduce((a,b)=>a+b,0)/Object.keys(sc).length):0;const lv=tot>=75?'B2':tot>=50?'B1':tot>=25?'A2':'A1';const cm=Object.values(u.levels||{}).filter(Boolean).length;await apiPost({action:'saveTalaba',id:u.email,name:u.name,email:u.email,diagScore:tot,level:lv,completedMods:cm});}
 async function syncNatija(u,mod,dar,ball,tog,jam,ur){if(!u)return;await apiPost({action:'saveNatija',talabId:u.email,name:u.name,modul:mod,daraja:dar,ball,togri:tog,jami:jam,urinish:ur||1});}
@@ -247,48 +283,39 @@ const LESSONS=[
     desc:'Internetdan to\'g\'ri foydalanish, raqamli muloqot va email yozish asoslariga oid o\'zbekcha qo\'llanma. Email etiketi, professional yozishuv qoidalari tushuntiriladi.',
     dur:'~15 daqiqa',lang:"O'zbekcha",lang2:'Inglizcha (CC subtitle)'
   },
-  text:`
-<h4>Raqamli kommunikatsiya — zamonaviy o'qituvchi uchun asosiy ko'nikma</h4>
-<p>Raqamli kommunikatsiya <span class="term">Digital Communication</span> — elektron vositalar orqali axborot almashish jarayoni. Bugungi o'qituvchi uchun bu nafaqat email yozish, balki turli platformalarda professional tarzda muloqot olib borish demak.</p>
-<p>Tadqiqotlar ko'rsatadiki (McKinsey, 2024), ishchi vaqtining 28% i email o'qish va yozishga sarflanadi. Shuning uchun email savodxonligi — vaqtni tejash va professional obro' qozonishning muhim omili.</p>
-
-<div class="note"><b>📌 Raqamli kommunikatsiya turlari</b>Sinxron (real vaqt): Video qo'ng'iroq, chat · Asinxron (har vaqt): Email, Telegram xabar, forum · Rasmiy: Email, rasmiy xat · Norasmiy: Telegram, WhatsApp</div>
-
-<h4>Professional email anatomiyasi</h4>
-<p>Yaxshi email — bu to'g'ri tuzilgan, qisqa va maqsadga yo'naltirilgan xabar. Har bir qism ma'lum vazifani bajaradi:</p>
-<div class="code">SUBJECT (Mavzu):   Qisqa, aniq, axborotli
-                   ✓ "Informatika — 5B sinf, 3-chorak natijasi"
-                   ✗ "Salom" / bo'sh / "Muhim!!!"
-
-SALOM:             Rasmiy: "Hurmatli Aziz Karimov"
-                   Yarim rasmiy: "Hurmatli Aziz"
-                   ✗ "Salom!", "Hey"
-
-ASOSIY MATN:       1-abzats: Maqsad
-                   2-abzats: Tafsilotlar
-                   3-abzats: Talab/so'rov/keyingi qadam
-
-XULOSA:            "Hurmat bilan," / "Iltifot bilan,"
-
-IMZO:              Ism, lavozim, kontakt</div>
-
-<h4>CC, BCC, Reply All — to'g'ri ishlatish</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">📨 TO (Kimga)</div><div class="ti-d">Asosiy qabul qiluvchi — javob kutiladi</div></div>
-  <div class="ti"><div class="ti-n">📋 CC (Nusxa)</div><div class="ti-d">Xabardor qilish uchun — javob shart emas</div></div>
-  <div class="ti"><div class="ti-n">🔒 BCC (Yashirin nusxa)</div><div class="ti-d">Boshqalar ko'rmasin — maxfiy nusxa</div></div>
-  <div class="ti"><div class="ti-n">⚠️ Reply All (Barchaga javob)</div><div class="ti-d">Faqat barcha ko'rishi kerak bo'lsa ishlatiladi</div></div>
-</div>
-
-<h4>Telegram va WhatsApp — ish muloqotida</h4>
-<p>O'zbekiston ta'lim muhitida Telegram — asosiy muloqot vositasiga aylandi. Lekin professional Telegram-muloqot qoidalari ham mavjud:</p>
-<div class="code">✓ Salom bilan boshlash va o'zingizni tanishtirish
-✓ Qisqa va aniq yozish (email emas, xabar)
-✓ Audio xabar — faqat ruxsat so'rab
-✓ Kech vaqtda yozmaslik (22:00 dan keyin)
-✓ Guruhda shaxsiy masalani ko'tarmaslik
-✗ "???" yoki "alo" yozmaslik
-✗ Ko'p undov belgisi (!!!!) qo'ymaslik</div>`,
+  text:'<h4>Raqamli kommunikatsiya — zamonaviy o\'qituvchi uchun asosiy ko\'nikma</h4>'
+  +'<p>Raqamli kommunikatsiya <span class="term">Digital Communication</span> — elektron vositalar orqali axborot almashish jarayoni. Bugungi o\'qituvchi uchun bu nafaqat email yozish, balki turli platformalarda professional tarzda muloqot olib borish demak.</p>'
+  +'<p>Tadqiqotlar ko\'rsatadiki (McKinsey, 2024), ishchi vaqtining 28% i email o\'qish va yozishga sarflanadi. Shuning uchun email savodxonligi — vaqtni tejash va professional obro\' qozonishning muhim omili.</p>'
+  +'<div class="note"><b>📌 Raqamli kommunikatsiya turlari</b>Sinxron (real vaqt): Video qo\'ng\'iroq, chat · Asinxron (har vaqt): Email, Telegram xabar, forum · Rasmiy: Email, rasmiy xat · Norasmiy: Telegram, WhatsApp</div>'
+  +'<h4>Professional email anatomiyasi</h4>'
+  +'<p>Yaxshi email — bu to\'g\'ri tuzilgan, qisqa va maqsadga yo\'naltirilgan xabar. Har bir qism ma\'lum vazifani bajaradi:</p>'
+  +'<div class="code">SUBJECT (Mavzu):   Qisqa, aniq, axborotli'
+  +'                   ✓ "Informatika — 5B sinf, 3-chorak natijasi"'
+  +'                   ✗ "Salom" / bo\'sh / "Muhim!!!"'
+  +'SALOM:             Rasmiy: "Hurmatli Aziz Karimov"'
+  +'                   Yarim rasmiy: "Hurmatli Aziz"'
+  +'                   ✗ "Salom!", "Hey"'
+  +'ASOSIY MATN:       1-abzats: Maqsad'
+  +'                   2-abzats: Tafsilotlar'
+  +'                   3-abzats: Talab/so\'rov/keyingi qadam'
+  +'XULOSA:            "Hurmat bilan," / "Iltifot bilan,"'
+  +'IMZO:              Ism, lavozim, kontakt</div>'
+  +'<h4>CC, BCC, Reply All — to\'g\'ri ishlatish</h4>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">📨 TO (Kimga)</div><div class="ti-d">Asosiy qabul qiluvchi — javob kutiladi</div></div>'
+  +'  <div class="ti"><div class="ti-n">📋 CC (Nusxa)</div><div class="ti-d">Xabardor qilish uchun — javob shart emas</div></div>'
+  +'  <div class="ti"><div class="ti-n">🔒 BCC (Yashirin nusxa)</div><div class="ti-d">Boshqalar ko\'rmasin — maxfiy nusxa</div></div>'
+  +'  <div class="ti"><div class="ti-n">⚠️ Reply All (Barchaga javob)</div><div class="ti-d">Faqat barcha ko\'rishi kerak bo\'lsa ishlatiladi</div></div>'
+  +'</div>'
+  +'<h4>Telegram va WhatsApp — ish muloqotida</h4>'
+  +'<p>O\'zbekiston ta\'lim muhitida Telegram — asosiy muloqot vositasiga aylandi. Lekin professional Telegram-muloqot qoidalari ham mavjud:</p>'
+  +'<div class="code">✓ Salom bilan boshlash va o\'zingizni tanishtirish'
+  +'✓ Qisqa va aniq yozish (email emas, xabar)'
+  +'✓ Audio xabar — faqat ruxsat so\'rab'
+  +'✓ Kech vaqtda yozmaslik (22:00 dan keyin)'
+  +'✓ Guruhda shaxsiy masalani ko\'tarmaslik'
+  +'✗ "???" yoki "alo" yozmaslik'
+  +'✗ Ko\'p undov belgisi (!!!!) qo\'ymaslik</div>',
   tasks:[
     {num:'01',title:'Professional email yozing',
      desc:'Quyidagi vaziyat uchun to\'liq professional email tuzing: Siz informatika o\'qituvchisisiz. Maktab direktoriga kelgusi oy o\'tkaziladigan "Raqamli savodxonlik kuni" tadbirini tashkil etish uchun ruxsat so\'rayapsiz.',
@@ -321,55 +348,45 @@ IMZO:              Ism, lavozim, kontakt</div>
     desc:'Google Classroom ni o\'qituvchilar uchun boshlang\'ichdan o\'rganish. Sinf yaratish, vazifa berish, baholash va talabalar bilan ishlash — barchasi ekran ko\'rsatmasi orqali tushuntiriladi. Yuz ko\'rinmaydi, faqat ekran.',
     dur:'~20 daqiqa',lang:'Inglizcha (CC)',lang2:''
   },
-  text:`
-<h4>Google Workspace for Education — nima va nima uchun?</h4>
-<p><span class="term">Google Workspace for Education</span> — maktab va universitetlar uchun Google tomonidan bepul taqdim etiladigan bulut asosidagi dasturlar to'plami. 2024 yil holatiga ko'ra dunyo bo'yicha 170 milliondan ortiq talaba va o'qituvchi foydalanadi.</p>
-<p>O'zbekistonda edu.uz domeniga ega maktab va universitetlar bepul Google Workspace Education olishi mumkin. Bu Gmail, Drive, Docs, Sheets, Slides, Meet, Classroom va boshqalarni o'z ichiga oladi.</p>
-
-<div class="note"><b>📌 Asosiy afzalliklar</b>Bepul (ta'lim uchun) · Qurilmadan mustaqil (istalgan joyda) · Hamkorlikda ishlash (bir vaqtda) · Google Classroom bilan integratsiya · Offline rejim ham mavjud</div>
-
-<h4>Google Classroom — ta'lim boshqaruvi markazi</h4>
-<p>Google Classroom — <span class="term">Learning Management System (LMS)</span> ning sodda va bepul varianti. Asosiy funksiyalar:</p>
-<div class="code">SINF YARATISH:
-  classroom.google.com → "+" → Create class
-  Sinf nomi, fan, bo'lim, xona nomini kiriting
-
-TALABALAR QO'SHISH:
-  Usul 1: Invitation code — talabalar o'zlari qo'shiladi
-  Usul 2: Email orqali taklif yuborish
-  Usul 3: Google Admin orqali ommaviy
-
-VAZIFA BERISH:
-  Classwork → Create → Assignment
-  Google Docs, Sheets, Slides, yoki har qanday fayl
-  Deadline belgilash · Rubric qo'shish
-
-BAHOLASH:
-  Streamlined grading — to'g'ridan Classroom ichida
-  Google Forms — avtomatik tekshirish (quiz)</div>
-
-<h4>Google Meet — onlayn dars o'tkazish</h4>
-<div class="tg">
-  <div class="ti"><div class="ti-n">🎥 Video dars</div><div class="ti-d">HD video, avtomatik shovqin kamaytirish, 100 ta ishtirokchi (bepul)</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">🖥 Ekranni ulashish</div><div class="ti-d">"Present now" — butun ekran yoki oyna tanlash mumkin</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">✍️ Whiteboard</div><div class="ti-d">Jamboard integratsiyasi — birgalikda chizish va yozish</div><span class="ti-t tfree">Bepul</span></div>
-  <div class="ti"><div class="ti-n">📊 So'rovnoma</div><div class="ti-d">Meet ichida to'g'ridan Polls (so'rovnoma) o'tkazish</div><span class="ti-t tfree">Bepul</span></div>
-</div>
-
-<h4>Google Drive — fayl boshqaruvi va ulashish</h4>
-<p>Google Drive — bulut xotira va fayl almashish tizimi. 15 GB bepul. Ta'lim uchun cheksiz xotira (Education asosida).</p>
-<div class="code">Ulashish huquqlari:
-  Viewer    — faqat ko'radi
-  Commenter — izoh qoldiradi
-  Editor    — tahrirlaydi
-
-Ommaviy ulashish:
-  "Anyone with the link" → View
-  Bu o'quv materiallarini tarqatish uchun ideal
-
-Classroom integratsiyasi:
-  Drive dagi fayl → Classroom ga to'g'ridan biriktirish
-  Talabalar nusxasi avtomatik yaratiladi</div>`,
+  text:'<h4>Google Workspace for Education — nima va nima uchun?</h4>'
+  +'<p><span class="term">Google Workspace for Education</span> — maktab va universitetlar uchun Google tomonidan bepul taqdim etiladigan bulut asosidagi dasturlar to\'plami. 2024 yil holatiga ko\'ra dunyo bo\'yicha 170 milliondan ortiq talaba va o\'qituvchi foydalanadi.</p>'
+  +'<p>O\'zbekistonda edu.uz domeniga ega maktab va universitetlar bepul Google Workspace Education olishi mumkin. Bu Gmail, Drive, Docs, Sheets, Slides, Meet, Classroom va boshqalarni o\'z ichiga oladi.</p>'
+  +'<div class="note"><b>📌 Asosiy afzalliklar</b>Bepul (ta\'lim uchun) · Qurilmadan mustaqil (istalgan joyda) · Hamkorlikda ishlash (bir vaqtda) · Google Classroom bilan integratsiya · Offline rejim ham mavjud</div>'
+  +'<h4>Google Classroom — ta\'lim boshqaruvi markazi</h4>'
+  +'<p>Google Classroom — <span class="term">Learning Management System (LMS)</span> ning sodda va bepul varianti. Asosiy funksiyalar:</p>'
+  +'<div class="code">SINF YARATISH:'
+  +'  classroom.google.com → "+" → Create class'
+  +'  Sinf nomi, fan, bo\'lim, xona nomini kiriting'
+  +'TALABALAR QO\'SHISH:'
+  +'  Usul 1: Invitation code — talabalar o\'zlari qo\'shiladi'
+  +'  Usul 2: Email orqali taklif yuborish'
+  +'  Usul 3: Google Admin orqali ommaviy'
+  +'VAZIFA BERISH:'
+  +'  Classwork → Create → Assignment'
+  +'  Google Docs, Sheets, Slides, yoki har qanday fayl'
+  +'  Deadline belgilash · Rubric qo\'shish'
+  +'BAHOLASH:'
+  +'  Streamlined grading — to\'g\'ridan Classroom ichida'
+  +'  Google Forms — avtomatik tekshirish (quiz)</div>'
+  +'<h4>Google Meet — onlayn dars o\'tkazish</h4>'
+  +'<div class="tg">'
+  +'  <div class="ti"><div class="ti-n">🎥 Video dars</div><div class="ti-d">HD video, avtomatik shovqin kamaytirish, 100 ta ishtirokchi (bepul)</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">🖥 Ekranni ulashish</div><div class="ti-d">"Present now" — butun ekran yoki oyna tanlash mumkin</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">✍️ Whiteboard</div><div class="ti-d">Jamboard integratsiyasi — birgalikda chizish va yozish</div><span class="ti-t tfree">Bepul</span></div>'
+  +'  <div class="ti"><div class="ti-n">📊 So\'rovnoma</div><div class="ti-d">Meet ichida to\'g\'ridan Polls (so\'rovnoma) o\'tkazish</div><span class="ti-t tfree">Bepul</span></div>'
+  +'</div>'
+  +'<h4>Google Drive — fayl boshqaruvi va ulashish</h4>'
+  +'<p>Google Drive — bulut xotira va fayl almashish tizimi. 15 GB bepul. Ta\'lim uchun cheksiz xotira (Education asosida).</p>'
+  +'<div class="code">Ulashish huquqlari:'
+  +'  Viewer    — faqat ko\'radi'
+  +'  Commenter — izoh qoldiradi'
+  +'  Editor    — tahrirlaydi'
+  +'Ommaviy ulashish:'
+  +'  "Anyone with the link" → View'
+  +'  Bu o\'quv materiallarini tarqatish uchun ideal'
+  +'Classroom integratsiyasi:'
+  +'  Drive dagi fayl → Classroom ga to\'g\'ridan biriktirish'
+  +'  Talabalar nusxasi avtomatik yaratiladi</div>',
   tasks:[
     {num:'01',title:'Google Classroom sinfi yarating',
      desc:'classroom.google.com da yangi sinf yarating va bir ta vazifa joylashtiring. Hamma narsani o\'zbekcha to\'ldiring.',
@@ -402,46 +419,38 @@ Classroom integratsiyasi:
     desc:'Google Classroom 2024 yangiliklari: Practice Sets, yangi funksiyalar va onlayn hamkorlik imkoniyatlari haqida ekran ko\'rsatmasi. Yuz ko\'rinmaydi.',
     dur:'~10 daqiqa',lang:'Inglizcha (CC)',lang2:'Inglizcha (CC)'
   },
-  text:`
-<h4>Onlayn hamkorlik platformalarini tanlash</h4>
-<p>Zamonaviy ta'limda onlayn hamkorlik — bu talabalar va o'qituvchilar bir joyda bo'lmasa ham birgalikda ishlashi demak. To'g'ri platformani tanlash o'quv samaradorligini sezilarli oshiradi.</p>
-<p><span class="term">Synchronous (sinxron)</span> — real vaqtda hamkorlik: Google Meet, Zoom, MS Teams. <span class="term">Asynchronous (asinxron)</span> — har vaqt: Moodle, Google Classroom, Telegram.</p>
-
-<div class="note"><b>📌 O'zbekiston uchun eng mos platformalar</b>Google Classroom — eng keng tarqalgan, bepul · Moodle — universitetlar uchun kuchli · Telegram — tezkor muloqot · Zoom — video darslar</div>
-
-<h4>Platformalar batafsil taqqoslamasi</h4>
-<div class="code">GOOGLE CLASSROOM
-  Afzalliklari:  Bepul, qulay, Gmail bilan integratsiya
-  Kamchiliklari: Cheklangan funksiyalar, Analytics kam
-  Kimga mos:     Maktab va kichik universitetlar
-
-MOODLE
-  Afzalliklari:  Kuchli LMS, H5P, ochiq kod, Analytics
-  Kamchiliklari: O'rganish qiyin, server kerak
-  Kimga mos:     Universitetlar, professional kurslar
-
-MICROSOFT TEAMS
-  Afzalliklari:  Office 365 integratsiya, video+chat+fayl
-  Kamchiliklari: Murakkab interfeys
-  Kimga mos:     MS ekotizimida ishlovchilar
-
-TELEGRAM (ta'lim uchun)
-  Afzalliklari:  O'zbekistonda hammada bor, tezkor
-  Kamchiliklari: Rasmiy LMS emas, nazorat yetarli emas
-  Kimga mos:     Tezkor muloqot, material ulashish</div>
-
-<h4>Padlet — interaktiv hamkorlik doskasi</h4>
-<p><span class="term">Padlet</span> — onlayn interaktiv doska. Talabalar birgalikda matn, rasm, video, havola qo'sha oladi. Brainstorming, galeriya, timeline formatlarida ishlaydi.</p>
-<div class="code">Padlet turlari:
-  Wall       — erkin joylashish (brainstorming)
-  Canvas     — bog'langan elementlar (mind map)
-  Stream     — chronologik oqim (blog)
-  Grid       — tartibli to'r
-  Timeline   — vaqt chizig'i
-  Map        — geografik xarita
-  Shelf      — kategorialar bo'yicha
-
-Bepul: 3 ta padlet, ulashish cheksiz</div>`,
+  text:'<h4>Onlayn hamkorlik platformalarini tanlash</h4>'
+  +'<p>Zamonaviy ta\'limda onlayn hamkorlik — bu talabalar va o\'qituvchilar bir joyda bo\'lmasa ham birgalikda ishlashi demak. To\'g\'ri platformani tanlash o\'quv samaradorligini sezilarli oshiradi.</p>'
+  +'<p><span class="term">Synchronous (sinxron)</span> — real vaqtda hamkorlik: Google Meet, Zoom, MS Teams. <span class="term">Asynchronous (asinxron)</span> — har vaqt: Moodle, Google Classroom, Telegram.</p>'
+  +'<div class="note"><b>📌 O\'zbekiston uchun eng mos platformalar</b>Google Classroom — eng keng tarqalgan, bepul · Moodle — universitetlar uchun kuchli · Telegram — tezkor muloqot · Zoom — video darslar</div>'
+  +'<h4>Platformalar batafsil taqqoslamasi</h4>'
+  +'<div class="code">GOOGLE CLASSROOM'
+  +'  Afzalliklari:  Bepul, qulay, Gmail bilan integratsiya'
+  +'  Kamchiliklari: Cheklangan funksiyalar, Analytics kam'
+  +'  Kimga mos:     Maktab va kichik universitetlar'
+  +'MOODLE'
+  +'  Afzalliklari:  Kuchli LMS, H5P, ochiq kod, Analytics'
+  +'  Kamchiliklari: O\'rganish qiyin, server kerak'
+  +'  Kimga mos:     Universitetlar, professional kurslar'
+  +'MICROSOFT TEAMS'
+  +'  Afzalliklari:  Office 365 integratsiya, video+chat+fayl'
+  +'  Kamchiliklari: Murakkab interfeys'
+  +'  Kimga mos:     MS ekotizimida ishlovchilar'
+  +'TELEGRAM (ta\'lim uchun)'
+  +'  Afzalliklari:  O\'zbekistonda hammada bor, tezkor'
+  +'  Kamchiliklari: Rasmiy LMS emas, nazorat yetarli emas'
+  +'  Kimga mos:     Tezkor muloqot, material ulashish</div>'
+  +'<h4>Padlet — interaktiv hamkorlik doskasi</h4>'
+  +'<p><span class="term">Padlet</span> — onlayn interaktiv doska. Talabalar birgalikda matn, rasm, video, havola qo\'sha oladi. Brainstorming, galeriya, timeline formatlarida ishlaydi.</p>'
+  +'<div class="code">Padlet turlari:'
+  +'  Wall       — erkin joylashish (brainstorming)'
+  +'  Canvas     — bog\'langan elementlar (mind map)'
+  +'  Stream     — chronologik oqim (blog)'
+  +'  Grid       — tartibli to\'r'
+  +'  Timeline   — vaqt chizig\'i'
+  +'  Map        — geografik xarita'
+  +'  Shelf      — kategorialar bo\'yicha'
+  +'Bepul: 3 ta padlet, ulashish cheksiz</div>',
   tasks:[
     {num:'01',title:'Platformalar taqqoslamasi jadval',
      desc:'Google Classroom, Moodle va Telegram ni quyidagi 5 ta mezon bo\'yicha solishtiring va sizning maktabingiz uchun qaysi biri mos ekanini asoslang.',
@@ -474,45 +483,38 @@ Bepul: 3 ta padlet, ulashish cheksiz</div>`,
     desc:'Google Screencast vositasi orqali o\'qituvchilar dars yozib olishi, AI yordamida tahrirlashi va talabalar bilan ulashishi mumkin. Yuz ko\'rinmaydi, faqat ekran ko\'rsatmasi.',
     dur:'~15 daqiqa',lang:'Inglizcha (CC)',lang2:''
   },
-  text:`
-<h4>Professional raqamli hamkorlik — kelajak ko'nikmasi</h4>
-<p>2024 yil McKinsey hisobotiga ko'ra, qachonki asinxron hamkorlik yaxshi yo'lga qo'yilsa, jamoalar 20-25% samaraliroq ishlaydi. Ta'limda bu: o'qituvchilar birgalikda dars materiallari yaratishi, virtualresurs kutubxonasi qurishi, loyiha boshqaruvi tizimlari ishlatishi demak.</p>
-
-<div class="note"><b>📌 Remote Teaching (Masofaviy o'qitish) best practices</b>Aniq maqsad va kutilmalar belgilash · Asinxron materiallar tayyorlash · Regular feedback mexanizmi · Texnik muammolarga tayyor bo'lish · Talabalar faolligini kuzatish</div>
-
-<h4>Notion — ta'lim va hamkorlik uchun universal vosita</h4>
-<p><span class="term">Notion</span> — matn, jadval, veritabase, kalender va loyiha boshqaruvini birlashtirgan platforma. Ta'lim uchun bepul versiyasi mavjud.</p>
-<div class="code">Notion ta'limda qanday ishlatiladi:
-  • Kurs rejasi va syllabus
-  • Talabalar kuzatish jadvali
-  • Dars materiallar kutubxonasi
-  • Jamoa loyiha boshqaruvi
-  • O'qituvchilar metodik portfeli
-
-Bepul: Cheksiz sahifalar, 10 MB fayl
-Ta'lim: notion.so/education — ko'proq imkoniyat</div>
-
-<h4>Trello — vizual loyiha boshqaruvi</h4>
-<p><span class="term">Trello</span> — Kanban usulida ishlovchi vizual loyiha boshqaruvi. Kartalar va ustunlar orqali vazifalar holati ko'rsatiladi.</p>
-<div class="code">Trello ta'limda:
-  Ustun 1: "Reja"      — bajarilishi kerak
-  Ustun 2: "Jarayonda" — hozir bajarilmoqda
-  Ustun 3: "Tekshiruvda"
-  Ustun 4: "Tayyor"    — yakunlangan
-
-O'qituvchi uchun misol:
-  Karta: "5B sinf test materiallari"
-  → Checklist: [x] Savol tuzish [ ] Tekshirish [ ] Joylashtirish
-  → Deadline: 15-yanvar
-  → Mas'ul: Aziz muallim</div>
-
-<h4>Asinxron ta'lim — texnologiya va pedagogika</h4>
-<p>Eng samarali asinxron ta'lim modeli <span class="term">5E modeli</span> bo'lib, u Engage → Explore → Explain → Elaborate → Evaluate bosqichlaridan iborat. Har bosqich uchun raqamli vosita tanlash mumkin.</p>
-<div class="code">Engage:    Padlet, Mentimeter (qiziqtirish)
-Explore:   Google Drive materiallar, video
-Explain:   Screencast, Google Slides
-Elaborate: Google Docs birgalikda yozish
-Evaluate:  Google Forms, quiz</div>`,
+  text:'<h4>Professional raqamli hamkorlik — kelajak ko\'nikmasi</h4>'
+  +'<p>2024 yil McKinsey hisobotiga ko\'ra, qachonki asinxron hamkorlik yaxshi yo\'lga qo\'yilsa, jamoalar 20-25% samaraliroq ishlaydi. Ta\'limda bu: o\'qituvchilar birgalikda dars materiallari yaratishi, virtualresurs kutubxonasi qurishi, loyiha boshqaruvi tizimlari ishlatishi demak.</p>'
+  +'<div class="note"><b>📌 Remote Teaching (Masofaviy o\'qitish) best practices</b>Aniq maqsad va kutilmalar belgilash · Asinxron materiallar tayyorlash · Regular feedback mexanizmi · Texnik muammolarga tayyor bo\'lish · Talabalar faolligini kuzatish</div>'
+  +'<h4>Notion — ta\'lim va hamkorlik uchun universal vosita</h4>'
+  +'<p><span class="term">Notion</span> — matn, jadval, veritabase, kalender va loyiha boshqaruvini birlashtirgan platforma. Ta\'lim uchun bepul versiyasi mavjud.</p>'
+  +'<div class="code">Notion ta\'limda qanday ishlatiladi:'
+  +'  • Kurs rejasi va syllabus'
+  +'  • Talabalar kuzatish jadvali'
+  +'  • Dars materiallar kutubxonasi'
+  +'  • Jamoa loyiha boshqaruvi'
+  +'  • O\'qituvchilar metodik portfeli'
+  +'Bepul: Cheksiz sahifalar, 10 MB fayl'
+  +'Ta\'lim: notion.so/education — ko\'proq imkoniyat</div>'
+  +'<h4>Trello — vizual loyiha boshqaruvi</h4>'
+  +'<p><span class="term">Trello</span> — Kanban usulida ishlovchi vizual loyiha boshqaruvi. Kartalar va ustunlar orqali vazifalar holati ko\'rsatiladi.</p>'
+  +'<div class="code">Trello ta\'limda:'
+  +'  Ustun 1: "Reja"      — bajarilishi kerak'
+  +'  Ustun 2: "Jarayonda" — hozir bajarilmoqda'
+  +'  Ustun 3: "Tekshiruvda"'
+  +'  Ustun 4: "Tayyor"    — yakunlangan'
+  +'O\'qituvchi uchun misol:'
+  +'  Karta: "5B sinf test materiallari"'
+  +'  → Checklist: [x] Savol tuzish [ ] Tekshirish [ ] Joylashtirish'
+  +'  → Deadline: 15-yanvar'
+  +'  → Mas\'ul: Aziz muallim</div>'
+  +'<h4>Asinxron ta\'lim — texnologiya va pedagogika</h4>'
+  +'<p>Eng samarali asinxron ta\'lim modeli <span class="term">5E modeli</span> bo\'lib, u Engage → Explore → Explain → Elaborate → Evaluate bosqichlaridan iborat. Har bosqich uchun raqamli vosita tanlash mumkin.</p>'
+  +'<div class="code">Engage:    Padlet, Mentimeter (qiziqtirish)'
+  +'Explore:   Google Drive materiallar, video'
+  +'Explain:   Screencast, Google Slides'
+  +'Elaborate: Google Docs birgalikda yozish'
+  +'Evaluate:  Google Forms, quiz</div>',
   tasks:[
     {num:'01',title:'Notion da kurs rejasi sahifasi yarating',
      desc:'notion.so/education da bepul akkaunt oching va "Informatika fani — I yarim yillik" uchun kurs rejasi sahifasini yarating. Kamida: mavzular jadvali, resurslar, baholash mezonlari bo\'lsin.',
@@ -592,10 +594,11 @@ function showLesson(idx){
   currentLesson=idx;quizAns=[];quizDone=false;
   renderSidebar();
   const L=LESSONS[idx];
-  const lvCls=['lv-a1','lv-a2','lv-b1','lv-b2'];
+  const lb=['lv-a1','lv-a2','lv-b1','lv-b2'][idx];
   document.getElementById('mainContent').innerHTML=`
-    <div class="lh">
-      <div class="lh-level"><span class="lv-badge ${lvCls[idx]}">${L.level}</span><span style="font-size:11px;color:var(--text3)"> daraja</span></div>
+    <div class="lh au">
+      <div class="lh-level"><span class="lv-badge ${lb}">${L.level}</span>
+      <span style="font-size:12px;color:var(--text3)">daraja</span></div>
       <div class="lh-icon">${L.icon}</div>
       <div class="lh-title">${L.title}</div>
       <div class="lh-sub">${L.subtitle}</div>
@@ -614,45 +617,58 @@ function showLesson(idx){
       <div class="tab" onclick="stab(this,'quiz')">✅ Quiz</div>
     </div>
     <div id="tc-video" class="tc active">${renderVideo(L)}</div>
-    <div id="tc-matn" class="tc">${renderMatn(L)}</div>
+    <div id="tc-matn"  class="tc">${renderMatn(L)}</div>
     <div id="tc-amaliy" class="tc">${renderAmaliy(L,idx)}</div>
-    <div id="tc-quiz" class="tc">${renderQuiz(L,idx)}</div>
+    <div id="tc-quiz"  class="tc">${renderQuiz(L,idx)}</div>
     <div class="navbtns">
       ${idx>0?`<button class="navbtn" onclick="showLesson(${idx-1})">← Oldingi</button>`:'<div></div>'}
-      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`:`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat</button>`}
+      ${idx<3?`<button class="navbtn pri" onclick="showLesson(${idx+1})">Keyingi →</button>`
+             :`<button class="navbtn pri" onclick="showCert()">🏆 Sertifikat →</button>`}
     </div>`;
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// ──────────────────────────────────────────
+// RENDER HELPERS
+// ──────────────────────────────────────────
+
 function renderVideo(L){
   const v=L.video;
   const isUz=v.lang&&v.lang.includes("O'zbekcha");
-  const hasSecond=v.url2&&v.url2.length>0;
-  const badge=isUz?`<span style="background:rgba(45,212,160,.12);color:var(--ok);border:1px solid var(--ok-b);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">🇺🇿 O'ZBEKCHA</span>`:`<span style="background:var(--mcg);color:var(--mc);border:1px solid var(--mcb);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">🌐 ${(v.lang||'INGLIZCHA').toUpperCase()}</span>`;
+  const hasAlt=v.url2&&v.url2.length>0;
+  const badge=isUz
+    ?'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1.5px solid rgba(16,185,129,.25);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🇺🇿 O\'ZBEKCHA</span>'
+    :'<span style="background:var(--mcg);color:var(--mc);border:1.5px solid var(--mcb);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700">🌐 '+(v.lang||'INGLIZCHA').toUpperCase()+'</span>';
   return `<div class="vcard">
     <div class="vthumb" onclick="window.open('${v.url}','_blank')">
       <div class="pbtn">▶</div>
-      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1"><div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.7)">${v.title}</div></div>
+      <div style="position:absolute;bottom:14px;left:16px;right:16px;z-index:1">
+        <div style="font-size:13px;font-weight:700;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.8)">${v.title}</div>
+      </div>
     </div>
     <div class="vinfo">
-      <div style="margin-bottom:8px">${badge}</div>
+      <div style="margin-bottom:10px">${badge}</div>
       <div class="vt">${v.title}</div>
       <div class="vd">${v.desc}</div>
       <div class="vmeta"><span class="vchip">🎬 YouTube</span><span class="vchip">⏱ ${v.dur}</span><span class="vchip">🌐 ${v.lang}</span></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <div style="margin-top:12px">
         <button class="vbtn" onclick="window.open('${v.url}','_blank')">▶ Ko'rish →</button>
-        ${hasSecond?`<button class="vbtn" style="background:var(--surface2);border-color:var(--border2);color:var(--text2)" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2} →</button>`:''}
+        ${hasAlt?`<button class="vbtn alt" onclick="window.open('${v.url2}','_blank')">▶ ${v.title2||'Alternativ'} →</button>`:''}
       </div>
-      ${!isUz?`<div style="margin-top:10px;padding:9px 12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:8px;font-size:11px;color:#fbbf24">💡 CC tugmasini bosing → O'zbek yoki Rus subtitlni yoqing</div>`:''}
+      ${!isUz?'<div class="cc-note">💡 <b>CC tugmasi</b> → O\'zbek yoki Rus subtitlni yoqing</div>':''}
     </div>
   </div>
-  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName('matn')">Matnni o'qish →</button></div>`;
+  <div style="text-align:right;margin-top:6px"><button class="navbtn pri" onclick="stabName(\'matn\')">Matnni o\'qish →</button></div>`;
 }
 
+
 function renderMatn(L){
-  return `<div class="card"><div class="lt">${L.text}</div></div>
-  <div style="text-align:right"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliy →</button></div>`;
+  return `<div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--rad-xl);padding:22px;box-shadow:var(--shadow-sm)">
+    <div class="lt">${L.text}</div>
+  </div>
+  <div style="text-align:right;margin-top:10px"><button class="navbtn pri" onclick="stabName('amaliy')">Amaliyga →</button></div>`;
 }
+
 
 function renderAmaliy(L,idx){
   return L.tasks.map((t,i)=>`
@@ -663,6 +679,8 @@ function renderAmaliy(L,idx){
       <textarea id="ta_${idx}_${i}" placeholder="${t.ph}"></textarea>
       <button class="tbtn" onclick="chkTask(${idx},${i})">✓ Bajarildi</button>
       <div class="tfb fbok" id="tfb_${idx}_${i}">✅ Bajarildi! Quizga o'ting.</div>
+      <button class="aifb-btn" id="aifb_${idx}_${i}" onclick="aiFeedback(${idx},${i})" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#f0eeff;border:1.5px solid #c0b0ff;color:#6c5ce7;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit">🤖 AI baholash</button>
+      <div class="aifb-res" id="aifbr_${idx}_${i}" style="display:none;margin-top:8px;padding:10px 13px;background:#f8f6ff;border:1.5px solid #d0c8ff;border-radius:10px;font-size:12px;line-height:1.7;color:#333"></div>
     </div>`).join('')+
   `<div style="text-align:right;margin-top:8px"><button class="navbtn pri" onclick="stabName('quiz')">Quizga →</button></div>`;
 }
@@ -670,7 +688,12 @@ function renderAmaliy(L,idx){
 function renderQuiz(L,idx){
   const saved=quizScores[idx];
   if(saved!==undefined){
-    return `<div class="qres" style="display:block">
+    return `<div style="background:#f8f6ff;border:1.5px dashed #c0b0ff;border-radius:12px;padding:14px;margin-bottom:14px">
+      <p style="font-weight:700;font-size:13px;color:#6c5ce7;margin:0 0 6px">✨ AI Quiz Generator</p>
+      <button id="aiqb_${idx}" onclick="aiGenQuiz(${idx})" style="display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:linear-gradient(135deg,var(--mc),var(--mc2));color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">✨ AI savollar yaratish</button>
+      <div id="aiqr_${idx}" style="display:none;margin-top:10px"></div>
+    </div>
+    <div class="qres" style="display:block">
       <div class="qrs" style="color:${saved>=70?'var(--ok)':'var(--warn)'}">${saved}%</div>
       <div class="qrl">${L.quiz.length} savoldan ${Math.round(saved/100*L.quiz.length)} ta to'g'ri</div>
       <div class="qrm">${saved>=70?'✅ O\'tdingiz!':'⚠️ 70% kerak. Qayta urining.'}</div>
@@ -867,4 +890,130 @@ showLesson(userLevel);
 loadNews();
 </script>
 </body>
+
+
+<div class="ai-wrap">
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-ph">
+      <div class="ai-ph-av">🤖</div>
+      <div class="ai-ph-t"><b>AI Yordamchi</b><small>Faol</small></div>
+      <button onclick="aiToggle()">✕</button>
+    </div>
+    <div class="ai-sugs" id="aiSugs">
+      <button class="ai-sug" onclick="aiQuick('Bu dars haqida tushuntir')">📖 Dars haqida</button>
+      <button class="ai-sug" onclick="aiQuick('Muhim terminlarni tushuntir')">📝 Terminlar</button>
+      <button class="ai-sug" onclick="aiQuick('Amaliy misol ber')">💡 Misol</button>
+    </div>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg b">Salom! 👋 Savol bering — yordam beraman!</div>
+    </div>
+    <div class="ai-ft">
+      <textarea class="ai-inp" id="aiInp" rows="1" placeholder="Savol yozing..."
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){{event.preventDefault();aiSend()}}"></textarea>
+      <button class="ai-send" onclick="aiSend()">➤</button>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="ai-tip" id="aiTip">💬 Savol bormi? So'rang!</div>
+    <button class="ai-btn" id="aiBtn" onclick="aiToggle()">🤖<span class="ai-badge">?</span></button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='g5yYxFH8Ickp9VBBmtwjX6xPdj4eWX4R64hZstJb';
+  var history=[];
+
+  setTimeout(function(){var t=document.getElementById('aiTip');if(t)t.style.display='none';},4000);
+
+  window.aiToggle=function(){
+    var p=document.getElementById('aiPanel');
+    var b=document.getElementById('aiBtn');
+    var t=document.getElementById('aiTip');
+    var open=p.classList.contains('on');
+    p.classList.toggle('on');b.classList.toggle('on');
+    if(t)t.style.display='none';
+    if(!open)setTimeout(function(){var i=document.getElementById('aiInp');if(i)i.focus();},200);
+  };
+
+  window.aiQuick=function(q){
+    document.getElementById('aiInp').value=q;
+    var s=document.getElementById('aiSugs');if(s)s.style.display='none';
+    aiSend();
+  };
+
+  window.aiSend=function(){
+    var inp=document.getElementById('aiInp');
+    var msg=(inp.value||'').trim();if(!msg)return;
+    inp.value='';addMsg(msg,'u');
+    var lid='lid'+Date.now();addMsg('⟳ Javob...','b ld',lid);
+    var ch=history.map(function(h){return {role:h.role,message:h.message};}); 
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:msg,preamble:'Sen DigiComp M2 AI yordamchisisаn. Mavzu: Kommunikatsiya va hamkorlik. Uzbek tilida qisqa javob ber.',chat_history:ch})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById(lid);if(el)el.remove();
+      if(d.text){addMsg(d.text,'b');history.push({role:'USER',message:msg});history.push({role:'CHATBOT',message:d.text});if(history.length>16)history=history.slice(-16);}
+      else addMsg('Xatolik: '+(d.message||'nomalum'),'b');
+    }).catch(function(e){var el=document.getElementById(lid);if(el)el.remove();addMsg('Xatolik: '+e.message,'b');});
+  };
+
+  window.aiFeedback=function(li,ti){
+    var L=LESSONS[li];var task=L.tasks[ti];
+    var inp=document.getElementById('ta_'+li+'_'+ti);
+    var val=inp?(inp.value||'').trim():'';
+    if(val.length<10){showToast('Avval javobingizni yozing!');return;}
+    var btn=document.getElementById('aifb_'+li+'_'+ti);
+    var res=document.getElementById('aifbr_'+li+'_'+ti);
+    btn.disabled=true;btn.textContent='⟳ Baholanmoqda...';
+    res.style.display='block';res.textContent='🤖 AI baholamoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:'Topshiriq: '+task.title+'. Talaba javobi: '+val+'. Baho: A/B/C/D va izoh.',preamble:'Sen ta\'lim AI baholovchisisаn. Uzbek tilida qisqa baho ber.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text)res.innerHTML='<b style="color:var(--mc)">🤖 AI Baholash:</b><br>'+d.text;
+      else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='🤖 AI baholash';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='🤖 AI baholash';});
+  };
+
+  window.aiGenQuiz=function(idx){
+    var L=LESSONS[idx];
+    var btn=document.getElementById('aiqb_'+idx);
+    var res=document.getElementById('aiqr_'+idx);
+    btn.disabled=true;btn.textContent='⟳ Yaratilmoqda...';
+    res.style.display='block';res.textContent='🤖 Savollar yaratilmoqda...';
+    fetch('https://api.cohere.com/v1/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+KEY},
+      body:JSON.stringify({model:'command-r-08-2024',message:L.title+' mavzusida 4 ta test savol. JSON: [{"q":"?","o":["A","B","C","D"],"a":0}]',preamble:'Faqat JSON qaytarasan, boshqa matn yozma.'})
+    }).then(function(r){return r.json();})
+    .then(function(d){
+      if(d.text){
+        try{
+          var raw=d.text.replace(/```json|```|`/g,'').trim();
+          var m=raw.match(/\[.*\]/s);if(m)raw=m[0];
+          var qs=JSON.parse(raw);
+          res.innerHTML=qs.map(function(q,i){
+            return '<div style="background:#fff;border:1px solid #e0d8ff;border-radius:9px;padding:11px;margin-bottom:8px">'+
+              '<div style="font-size:12px;font-weight:700;color:#333;margin-bottom:7px">'+(i+1)+'. '+q.q+'</div>'+
+              q.o.map(function(o,j){var ok=j===q.a;return '<div style="font-size:11px;padding:4px 9px;border-radius:6px;margin-bottom:3px;background:'+(ok?'#dcfce7':'#f5f5f5')+';color:'+(ok?'#16a34a':'#555')+';font-weight:'+(ok?'700':'400')+'">'+'ABCD'[j]+'. '+o+(ok?' ✓':'')+'</div>';}).join('')+'</div>';
+          }).join('');
+        }catch(e){res.textContent=d.text;}
+      }else res.textContent='Xatolik.';
+      btn.disabled=false;btn.textContent='✨ Yangi savollar';
+    }).catch(function(e){res.textContent='Xatolik: '+e.message;btn.disabled=false;btn.textContent='✨ AI savollar';});
+  };
+
+  function addMsg(t,cls,id){
+    var box=document.getElementById('aiMsgs');if(!box)return;
+    var el=document.createElement('div');el.className='ai-msg '+cls;el.textContent=t;
+    if(id)el.id=id;box.appendChild(el);box.scrollTop=box.scrollHeight;
+  }
+})();
+</script>
 </html>
