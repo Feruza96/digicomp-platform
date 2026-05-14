@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_22.html -->
+<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_24.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -338,7 +338,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .mob-tab-item .ti{font-size:22px;line-height:1}
 </style>
 </head>
-<body>
+<body style="overflow: hidden;">
 
 <!-- ══ HERO ══ -->
 <div id="heroWrap" class="hidden">
@@ -496,7 +496,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
               <span class="cc-title">📊 Modul taraqqiyoti</span>
               <span class="cc-badge" id="chartBadge">Kirish testi natijalari</span>
             </div>
-            <canvas id="progChart" height="606" style="display: block; box-sizing: border-box; height: 484.8px; width: 809.6px;" width="1012"></canvas>
+            <canvas id="progChart" height="610" style="display: block; box-sizing: border-box; height: 488px; width: 814.4px;" width="1018"></canvas>
             <div id="chartEmpty" style="text-align:center;padding:40px;color:var(--text3);display:none">
               <div style="font-size:36px;margin-bottom:8px">📊</div>
               <div style="font-size:14px;font-weight:600">Kirish testini topshiring</div>
@@ -593,7 +593,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <!-- DIAG OVERLAY -->
-<div class="diag-overlay" id="diagOverlay">
+<div class="diag-overlay" id="diagOverlay" style="display: flex;">
   <div class="diag-box">
     <div class="db-top">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -605,10 +605,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
       <div class="db-prog-row">
         <div class="db-pb"><div class="db-pf" id="dbPf" style="width:0%"></div></div>
-        <span class="db-pn" id="dbPn">0/20</span>
+        <span class="db-pn" id="dbPn">1/20</span>
       </div>
     </div>
-    <div class="db-body" id="dbBody"></div>
+    <div class="db-body" id="dbBody">
+    <div class="dq-mod" style="background:#ede9ff;color:#6c5ce7">🔍 Ma'lumot va axborot savodxonligi</div>
+    <div class="dq-num">Savol 1</div>
+    <div class="dq-txt">Google'da aniq ibora qidirish uchun qaysi belgi?</div>
+    <div class="d-opts"><div class="d-opt" onclick="dqSel(0)"><div class="d-k">A</div><span>Yulduzcha *</span></div><div class="d-opt" onclick="dqSel(1)"><div class="d-k">B</div><span>Qo'shtirnoq ""</span></div><div class="d-opt" onclick="dqSel(2)"><div class="d-k">C</div><span>Savol ?</span></div><div class="d-opt" onclick="dqSel(3)"><div class="d-k">D</div><span>Tire -</span></div></div>
+    <div class="d-btns">
+      
+      <button class="btn-dp" onclick="dqNext()">Keyingi →</button>
+    </div></div>
   </div>
 </div>
 
