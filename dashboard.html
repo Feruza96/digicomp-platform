@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_24.html -->
+<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_25.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -244,8 +244,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .f5{background:linear-gradient(90deg,#fdcb6e,#ffeaa7)}
 
 /* DIAG OVERLAY */
-.diag-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:12px;overflow:hidden}
-.diag-box{background:#fff;border-radius:16px;padding:0;max-width:600px;width:100%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(108,92,231,.25);overflow:hidden}
+.diag-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;overflow:hidden}
+.diag-box{background:#fff;border-radius:var(--rad-xl);padding:0;max-width:600px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(108,92,231,.25);overflow:hidden}
 .db-top{background:linear-gradient(135deg,#7c6df5,#6c5ce7);padding:24px 28px;color:#fff}
 .db-top h3{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;margin-bottom:5px}
 .db-top p{font-size:13px;opacity:.8;line-height:1.6}
@@ -253,7 +253,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .db-pb{flex:1;height:6px;background:rgba(255,255,255,.2);border-radius:100px;overflow:hidden}
 .db-pf{height:100%;background:#fff;border-radius:100px;transition:width .4s}
 .db-pn{font-size:12px;opacity:.8;white-space:nowrap;font-family:'JetBrains Mono',monospace}
-.db-body{padding:16px 20px 0;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.db-body{padding:20px 28px 0;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .dq-mod{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:10px}
 .dq-num{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
 .dq-txt{font-size:15px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:16px}
@@ -295,7 +295,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 .toast{position:fixed;bottom:22px;right:22px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow-lg)}
 .toast.show{transform:translateY(0)}
-.d-btns{padding:12px 20px 16px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;display:flex;justify-content:space-between;gap:10px}
 
 /* ══ MOBILE ══ */
 @media(max-width:768px){
@@ -318,14 +317,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   #heroWrap .hc-btn-p,#heroWrap .hc-btn-s{width:100%!important;justify-content:center!important}
   #heroWrap .hero-nav{padding:0 12px!important;height:52px!important}
   .lb-table th,.lb-table td{padding:7px!important;font-size:11px!important}
-  .diag-overlay{padding:12px!important;align-items:center!important}
-  .diag-box{border-radius:16px!important;max-height:82vh!important;width:100%!important;max-width:100%!important}
-  .db-top{padding:14px 16px!important;flex-shrink:0}
-  .db-body{padding:12px 14px 0!important}
-  .d-opts{gap:7px!important}
-  .d-opt{padding:11px 13px!important;font-size:13px!important;border-radius:11px!important}
-  .d-btns{padding:10px 14px 16px!important}
-  .btn-dp,.btn-ds{padding:12px 16px!important;font-size:13px!important;border-radius:11px!important;flex:1}
+  /* Diag */
+  .diag-overlay{padding:12px!important;align-items:center!important;overflow:hidden!important}
+  .diag-box{border-radius:16px!important;max-height:82vh!important;width:100%!important;max-width:100%!important;display:flex!important;flex-direction:column!important}
+  .db-top{padding:14px 16px!important;flex-shrink:0!important}
+  .db-body{padding:12px 14px 0!important;flex:1!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+  .d-btns{padding:10px 14px 16px!important;border-top:1px solid #f0f0f0!important;background:#fff!important;flex-shrink:0!important}
+  .btn-dp,.btn-ds{padding:12px 16px!important;font-size:13px!important;flex:1!important}
   .mob-tab-bar{display:flex!important}
 }
 @media(max-width:480px){
@@ -336,9 +334,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .mob-tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:#9ca3af;font-size:10px;font-weight:600;font-family:inherit;padding:6px 0;transition:color .2s}
 .mob-tab-item.on{color:var(--primary,#6c5ce7)}
 .mob-tab-item .ti{font-size:22px;line-height:1}
+.d-btns{padding:12px 28px 20px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;display:flex;justify-content:space-between;gap:10px}
 </style>
 </head>
-<body style="overflow: hidden;">
+<body>
 
 <!-- ══ HERO ══ -->
 <div id="heroWrap" class="hidden">
@@ -496,7 +495,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
               <span class="cc-title">📊 Modul taraqqiyoti</span>
               <span class="cc-badge" id="chartBadge">Kirish testi natijalari</span>
             </div>
-            <canvas id="progChart" height="610" style="display: block; box-sizing: border-box; height: 488px; width: 814.4px;" width="1018"></canvas>
+            <canvas id="progChart" height="606" style="display: block; box-sizing: border-box; height: 484.8px; width: 809.6px;" width="1012"></canvas>
             <div id="chartEmpty" style="text-align:center;padding:40px;color:var(--text3);display:none">
               <div style="font-size:36px;margin-bottom:8px">📊</div>
               <div style="font-size:14px;font-weight:600">Kirish testini topshiring</div>
@@ -593,7 +592,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <!-- DIAG OVERLAY -->
-<div class="diag-overlay" id="diagOverlay" style="display: flex;">
+<div class="diag-overlay" id="diagOverlay">
   <div class="diag-box">
     <div class="db-top">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -605,18 +604,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
       <div class="db-prog-row">
         <div class="db-pb"><div class="db-pf" id="dbPf" style="width:0%"></div></div>
-        <span class="db-pn" id="dbPn">1/20</span>
+        <span class="db-pn" id="dbPn">0/20</span>
       </div>
     </div>
-    <div class="db-body" id="dbBody">
-    <div class="dq-mod" style="background:#ede9ff;color:#6c5ce7">🔍 Ma'lumot va axborot savodxonligi</div>
-    <div class="dq-num">Savol 1</div>
-    <div class="dq-txt">Google'da aniq ibora qidirish uchun qaysi belgi?</div>
-    <div class="d-opts"><div class="d-opt" onclick="dqSel(0)"><div class="d-k">A</div><span>Yulduzcha *</span></div><div class="d-opt" onclick="dqSel(1)"><div class="d-k">B</div><span>Qo'shtirnoq ""</span></div><div class="d-opt" onclick="dqSel(2)"><div class="d-k">C</div><span>Savol ?</span></div><div class="d-opt" onclick="dqSel(3)"><div class="d-k">D</div><span>Tire -</span></div></div>
-    <div class="d-btns">
-      
-      <button class="btn-dp" onclick="dqNext()">Keyingi →</button>
-    </div></div>
+    <div class="db-body" id="dbBody"></div>
   </div>
 </div>
 
@@ -661,7 +652,23 @@ let progChart=null;
 function getUs(){return JSON.parse(localStorage.getItem('dc2_users')||'[]')}
 function saveUs(u){localStorage.setItem('dc2_users',JSON.stringify(u))}
 function saveCur(){localStorage.setItem('dc2_cur',JSON.stringify(user))}
-function pushUser(){let us=getUs();let i=us.findIndex(u2=>u2.email===user.email);if(i>=0)us[i]=user;else us.push(user);saveUs(us);saveCur();}
+function pushUser(){
+  let us=getUs();
+  let i=us.findIndex(u2=>u2.email===user.email);
+  if(i>=0)us[i]=user;else us.push(user);
+  saveUs(us);
+  saveCur();
+  // Google Sheets ga ham saqlaymiz
+  syncToSheets();
+}
+function syncToSheets(){
+  if(!user||!user.email)return;
+  fetch('https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec',{
+    method:'POST',
+    body:JSON.stringify({action:'updateUser',user:user}),
+    headers:{'Content-Type':'text/plain'}
+  }).catch(function(){});
+}
 
 // ═══════════════ INIT ═══════════════
 (function(){
@@ -671,8 +678,22 @@ function pushUser(){let us=getUs();let i=us.findIndex(u2=>u2.email===user.email)
     saveUs(us);
   }
   const saved=localStorage.getItem('dc2_cur');
-  if(saved){user=JSON.parse(saved);enterApp();}
-  else{renderHeroCard();renderHeroGrid();}
+  if(saved){
+    user=JSON.parse(saved);
+    // Google Sheets dan diagDone ni tekshiramiz
+    fetch('https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec?action=getByEmail&email='+encodeURIComponent(user.email))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(d.status==='ok'&&d.user&&d.user.diagDone){
+          user.diagDone=d.user.diagDone;
+          user.diagScores=d.user.diagScores||user.diagScores;
+          user.levels=d.user.levels||user.levels;
+          saveCur();
+        }
+        enterApp();
+      }).catch(function(){enterApp();});
+  }
+  else{window.location.href='index.html';}
 })();
 
 // ═══════════════ HERO ═══════════════
@@ -976,7 +997,7 @@ setTimeout(()=>{document.querySelectorAll('.ring-fill').forEach(el=>{el.style.an
 setTimeout(()=>{document.querySelectorAll('.mp-fill,.av-bar-fill').forEach(el=>{if(el.dataset.w)el.style.width=el.dataset.w+'%';});},600);
 </script>
 
-<div class="mob-tab-bar" id="mobTabBar">
+<div class="mob-tab-bar">
   <button class="mob-tab-item on" id="mt-dashboard" onclick="mobNav(&#39;dashboard&#39;,this)"><span class="ti">🏠</span><span>Bosh</span></button>
   <button class="mob-tab-item" id="mt-modules" onclick="mobNav(&#39;modules&#39;,this)"><span class="ti">📚</span><span>Modullar</span></button>
   <button class="mob-tab-item" id="mt-progress" onclick="mobNav(&#39;progress&#39;,this)"><span class="ti">📈</span><span>Progress</span></button>
@@ -987,7 +1008,6 @@ setTimeout(()=>{document.querySelectorAll('.mp-fill,.av-bar-fill').forEach(el=>{
 function mobNav(page,el){
   document.querySelectorAll('.mob-tab-item').forEach(function(b){b.classList.remove('on')});
   if(el)el.classList.add('on');
-  // nav() ni to'g'ridan chaqiramiz
   nav(page);
   window.scrollTo({top:0,behavior:'smooth'});
 }
