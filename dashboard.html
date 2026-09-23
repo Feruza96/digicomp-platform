@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_25.html -->
+<!-- saved from url=(0050)file:///C:/Users/admin/Downloads/dashboard_24.html -->
 <html lang="uz"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -244,8 +244,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .f5{background:linear-gradient(90deg,#fdcb6e,#ffeaa7)}
 
 /* DIAG OVERLAY */
-.diag-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;overflow:hidden}
-.diag-box{background:#fff;border-radius:var(--rad-xl);padding:0;max-width:600px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(108,92,231,.25);overflow:hidden}
+.diag-overlay{position:fixed;inset:0;background:rgba(26,29,58,.6);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:12px;overflow:hidden}
+.diag-box{background:#fff;border-radius:16px;padding:0;max-width:600px;width:100%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(108,92,231,.25);overflow:hidden}
 .db-top{background:linear-gradient(135deg,#7c6df5,#6c5ce7);padding:24px 28px;color:#fff}
 .db-top h3{font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700;margin-bottom:5px}
 .db-top p{font-size:13px;opacity:.8;line-height:1.6}
@@ -253,7 +253,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .db-pb{flex:1;height:6px;background:rgba(255,255,255,.2);border-radius:100px;overflow:hidden}
 .db-pf{height:100%;background:#fff;border-radius:100px;transition:width .4s}
 .db-pn{font-size:12px;opacity:.8;white-space:nowrap;font-family:'JetBrains Mono',monospace}
-.db-body{padding:20px 28px 0;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.db-body{padding:16px 20px 0;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .dq-mod{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:10px}
 .dq-num{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
 .dq-txt{font-size:15px;font-weight:600;color:var(--text);line-height:1.6;margin-bottom:16px}
@@ -295,6 +295,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 .toast{position:fixed;bottom:22px;right:22px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(70px);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--shadow-lg)}
 .toast.show{transform:translateY(0)}
+.d-btns{padding:12px 20px 16px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;display:flex;justify-content:space-between;gap:10px}
 
 /* ══ MOBILE ══ */
 @media(max-width:768px){
@@ -317,13 +318,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   #heroWrap .hc-btn-p,#heroWrap .hc-btn-s{width:100%!important;justify-content:center!important}
   #heroWrap .hero-nav{padding:0 12px!important;height:52px!important}
   .lb-table th,.lb-table td{padding:7px!important;font-size:11px!important}
-  /* Diag */
-  .diag-overlay{padding:12px!important;align-items:center!important;overflow:hidden!important}
-  .diag-box{border-radius:16px!important;max-height:82vh!important;width:100%!important;max-width:100%!important;display:flex!important;flex-direction:column!important}
-  .db-top{padding:14px 16px!important;flex-shrink:0!important}
-  .db-body{padding:12px 14px 0!important;flex:1!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-  .d-btns{padding:10px 14px 16px!important;border-top:1px solid #f0f0f0!important;background:#fff!important;flex-shrink:0!important}
-  .btn-dp,.btn-ds{padding:12px 16px!important;font-size:13px!important;flex:1!important}
+  .diag-overlay{padding:12px!important;align-items:center!important}
+  .diag-box{border-radius:16px!important;max-height:82vh!important;width:100%!important;max-width:100%!important}
+  .db-top{padding:14px 16px!important;flex-shrink:0}
+  .db-body{padding:12px 14px 0!important}
+  .d-opts{gap:7px!important}
+  .d-opt{padding:11px 13px!important;font-size:13px!important;border-radius:11px!important}
+  .d-btns{padding:10px 14px 16px!important}
+  .btn-dp,.btn-ds{padding:12px 16px!important;font-size:13px!important;border-radius:11px!important;flex:1}
   .mob-tab-bar{display:flex!important}
 }
 @media(max-width:480px){
@@ -334,13 +336,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .mob-tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:#9ca3af;font-size:10px;font-weight:600;font-family:inherit;padding:6px 0;transition:color .2s}
 .mob-tab-item.on{color:var(--primary,#6c5ce7)}
 .mob-tab-item .ti{font-size:22px;line-height:1}
-.d-btns{padding:12px 28px 20px;border-top:1px solid #f0f0f0;background:#fff;flex-shrink:0;display:flex;justify-content:space-between;gap:10px}
 </style>
 </head>
-<body>
+<body style="overflow: hidden;">
 
 <!-- ══ HERO ══ -->
-<div id="heroWrap" class="hidden">
+<div id="heroWrap">
   <div class="hero-section">
     <nav class="hero-nav">
       <div class="hn-brand">
@@ -395,7 +396,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <!-- ══ APP SHELL ══ -->
-<div id="appShell" class="app-shell">
+<div id="appShell" class="app-shell hidden">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-brand">
@@ -495,7 +496,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
               <span class="cc-title">📊 Modul taraqqiyoti</span>
               <span class="cc-badge" id="chartBadge">Kirish testi natijalari</span>
             </div>
-            <canvas id="progChart" height="606" style="display: block; box-sizing: border-box; height: 484.8px; width: 809.6px;" width="1012"></canvas>
+            <canvas id="progChart" height="610" style="display: block; box-sizing: border-box; height: 488px; width: 814.4px;" width="1018"></canvas>
             <div id="chartEmpty" style="text-align:center;padding:40px;color:var(--text3);display:none">
               <div style="font-size:36px;margin-bottom:8px">📊</div>
               <div style="font-size:14px;font-weight:600">Kirish testini topshiring</div>
@@ -592,7 +593,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <!-- DIAG OVERLAY -->
-<div class="diag-overlay" id="diagOverlay">
+<div class="diag-overlay" id="diagOverlay" style="display: flex;">
   <div class="diag-box">
     <div class="db-top">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -604,10 +605,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
       <div class="db-prog-row">
         <div class="db-pb"><div class="db-pf" id="dbPf" style="width:0%"></div></div>
-        <span class="db-pn" id="dbPn">0/20</span>
+        <span class="db-pn" id="dbPn">1/20</span>
       </div>
     </div>
-    <div class="db-body" id="dbBody"></div>
+    <div class="db-body" id="dbBody">
+    <div class="dq-mod" style="background:#ede9ff;color:#6c5ce7">🔍 Ma'lumot va axborot savodxonligi</div>
+    <div class="dq-num">Savol 1</div>
+    <div class="dq-txt">Google'da aniq ibora qidirish uchun qaysi belgi?</div>
+    <div class="d-opts"><div class="d-opt" onclick="dqSel(0)"><div class="d-k">A</div><span>Yulduzcha *</span></div><div class="d-opt" onclick="dqSel(1)"><div class="d-k">B</div><span>Qo'shtirnoq ""</span></div><div class="d-opt" onclick="dqSel(2)"><div class="d-k">C</div><span>Savol ?</span></div><div class="d-opt" onclick="dqSel(3)"><div class="d-k">D</div><span>Tire -</span></div></div>
+    <div class="d-btns">
+      
+      <button class="btn-dp" onclick="dqNext()">Keyingi →</button>
+    </div></div>
   </div>
 </div>
 
@@ -625,50 +634,34 @@ const MODS=[
 const DQ=[
   {m:'m1',q:"Google'da aniq ibora qidirish uchun qaysi belgi?",o:["Yulduzcha *","Qo'shtirnoq \"\"","Savol ?","Tire -"],a:1},
   {m:'m1',q:"Veb-sayt ishonchliligini tekshirish?",o:["Dizayni chiroyli","Muallif, sana, manbani tekshirish","Ko'p o'qilgan","Ijtimoiy tarmoqda"],a:1},
-  {m:'m1',q:"Cloud storage nima?",o:["Kompyuter xotirasi","Internet orqali masofaviy saqlash","Flesh karta","Optik disk"],a:1},
-  {m:'m1',q:"Open Access maqolalar?",o:["Pullik","Hammaga ochiq bepul","Faqat universitetlar","Arxivlangan"],a:1},
-  {m:'m2',q:"Professional emailda MAJBURIY qism?",o:["Rasm","Mavzu (Subject)","Qo'shimcha fayl","Ranglar"],a:1},
-  {m:'m2',q:"Google Meet da ekranni ulashish?",o:["Kamera o'chirish","Present now","Mikrofon o'chirish","Chat"],a:1},
-  {m:'m2',q:"Sinxron va asinxron ta'lim farqi?",o:["Farqi yo'q","Sinxron real vaqt, asinxron har vaqt","Asinxron tezroq","Sinxron arzon"],a:1},
-  {m:'m2',q:"Google Docs birgalikda ishlash afzalligi?",o:["Offline","Bir vaqtda ko'p odam tahrirlaydi","Rasmlar","Avtomatik tarjima"],a:1},
-  {m:'m3',q:"Har slaydda nechta g'oya?",o:["5-7 ta","1 ta asosiy","10 ta","Istalgancha"],a:1},
-  {m:'m3',q:"Canva nima?",o:["Video montaj","Onlayn grafik dizayn","Kod","Audio"],a:1},
-  {m:'m3',q:"Ta'lim videoda subtitl nima uchun?",o:["Chiroyli","Eshitish muammosida yordam","Uzaytirish","Ranglar"],a:1},
-  {m:'m3',q:"Creative Commons litsenziyasi?",o:["Pullik","Belgilangan shartda bepul","Faqat rasmlar","Hukumat"],a:1},
-  {m:'m4',q:"Kuchli parolda qancha belgi?",o:["6+","12+","4+","8+"],a:1},
-  {m:'m4',q:"Phishing nima?",o:["Sekinlashtirish","Aldamchi sahifalar orqali o'g'irlash","Virus","Tarmoqni to'sish"],a:1},
-  {m:'m4',q:"HTTPS va HTTP farqi?",o:["Farqi yo'q","HTTPS shifrlangan","HTTP tezroq","HTTPS pullik"],a:1},
-  {m:'m4',q:"2FA nima?",o:["2 ta parol","Parol + telefon kodi","2 ta email","2 ta hisob"],a:1},
-  {m:'m5',q:"Kompyuter muammosida birinchi qadam?",o:["Yangi kompyuter","Muammoni aniqlab qayta ishga tushirish","Usta","Internet o'chirish"],a:1},
-  {m:'m5',q:"ChatGPT ta'limda?",o:["Faqat o'yin","Dars rejasi, savol, tushuntirish","Faqat tarjima","Faqat rasm"],a:1},
-  {m:'m5',q:"LMS nima?",o:["Ijtimoiy tarmoq","Ta'lim boshqaruvi tizimi","Grafik","Antivirus"],a:1},
-  {m:'m5',q:"SAMR modeli?",o:["4 ta fan","Texnologiyadan foydalanish 4 darajasi","Baholash","Standartlar"],a:1},
+  {m:'m1',q:"Cloud storage nima?",o:["Kompyuter xotirasi","Flesh karta","Internet orqali masofaviy saqlash","Optik disk"],a:2},
+  {m:'m1',q:"Open Access maqolalar?",o:["Faqat universitetlar","Arxivlangan","Hammaga ochiq bepul","Pullik"],a:2},
+  {m:'m2',q:"Professional emailda MAJBURIY qism?",o:["Ranglar","Qo'shimcha fayl","Mavzu (Subject)","Rasm"],a:2},
+  {m:'m2',q:"Google Meet da ekranni ulashish?",o:["Kamera o'chirish","Chat","Present now","Mikrofon o'chirish"],a:2},
+  {m:'m2',q:"Sinxron va asinxron ta'lim farqi?",o:["Sinxron arzon","Farqi yo'q","Sinxron real vaqt, asinxron har vaqt","Asinxron tezroq"],a:2},
+  {m:'m2',q:"Google Docs birgalikda ishlash afzalligi?",o:["Bir vaqtda ko'p odam tahrirlaydi","Avtomatik tarjima","Rasmlar","Offline"],a:0},
+  {m:'m3',q:"Har slaydda nechta g'oya?",o:["5-7 ta","1 ta asosiy","Istalgancha","10 ta"],a:1},
+  {m:'m3',q:"Canva nima?",o:["Video montaj","Audio","Onlayn grafik dizayn","Kod"],a:2},
+  {m:'m3',q:"Ta'lim videoda subtitl nima uchun?",o:["Ranglar","Uzaytirish","Chiroyli","Eshitish muammosida yordam"],a:3},
+  {m:'m3',q:"Creative Commons litsenziyasi?",o:["Pullik","Hukumat","Faqat rasmlar","Belgilangan shartda bepul"],a:3},
+  {m:'m4',q:"Kuchli parolda qancha belgi?",o:["4+","12+","6+","8+"],a:1},
+  {m:'m4',q:"Phishing nima?",o:["Aldamchi sahifalar orqali o'g'irlash","Tarmoqni to'sish","Virus","Sekinlashtirish"],a:0},
+  {m:'m4',q:"HTTPS va HTTP farqi?",o:["HTTP tezroq","HTTPS shifrlangan","Farqi yo'q","HTTPS pullik"],a:1},
+  {m:'m4',q:"2FA nima?",o:["2 ta email","2 ta parol","Parol + telefon kodi","2 ta hisob"],a:2},
+  {m:'m5',q:"Kompyuter muammosida birinchi qadam?",o:["Yangi kompyuter","Internet o'chirish","Usta","Muammoni aniqlab qayta ishga tushirish"],a:3},
+  {m:'m5',q:"ChatGPT ta'limda?",o:["Dars rejasi, savol, tushuntirish","Faqat rasm","Faqat tarjima","Faqat o'yin"],a:0},
+  {m:'m5',q:"LMS nima?",o:["Grafik","Antivirus","Ta'lim boshqaruvi tizimi","Ijtimoiy tarmoq"],a:2},
+  {m:'m5',q:"SAMR modeli?",o:["Texnologiyadan foydalanish 4 darajasi","Baholash","4 ta fan","Standartlar"],a:0},
 ];
 
 // ═══════════════ STATE ═══════════════
-let user=null,diagState={idx:0,ans:Array(20).fill(null)};
+let user=null,diagState={idx:0,ans:Array(20).fill(null)};DQ_ACTIVE=getShuffledDiagQ();;
 let progChart=null;
 
 function getUs(){return JSON.parse(localStorage.getItem('dc2_users')||'[]')}
 function saveUs(u){localStorage.setItem('dc2_users',JSON.stringify(u))}
 function saveCur(){localStorage.setItem('dc2_cur',JSON.stringify(user))}
-function pushUser(){
-  let us=getUs();
-  let i=us.findIndex(u2=>u2.email===user.email);
-  if(i>=0)us[i]=user;else us.push(user);
-  saveUs(us);
-  saveCur();
-  // Google Sheets ga ham saqlaymiz
-  syncToSheets();
-}
-function syncToSheets(){
-  if(!user||!user.email)return;
-  fetch('https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec',{
-    method:'POST',
-    body:JSON.stringify({action:'updateUser',user:user}),
-    headers:{'Content-Type':'text/plain'}
-  }).catch(function(){});
-}
+function pushUser(){let us=getUs();let i=us.findIndex(u2=>u2.email===user.email);if(i>=0)us[i]=user;else us.push(user);saveUs(us);saveCur();}
 
 // ═══════════════ INIT ═══════════════
 (function(){
@@ -680,7 +673,6 @@ function syncToSheets(){
   const saved=localStorage.getItem('dc2_cur');
   if(saved){
     user=JSON.parse(saved);
-    // Google Sheets dan diagDone ni tekshiramiz
     fetch('https://script.google.com/macros/s/AKfycbwTRy0MWBKox2eR003uyxdOafrkbHvRMkUIIWRV6nBnsZmS7jx9sJDavPp7DD3FfA5WVw/exec?action=getByEmail&email='+encodeURIComponent(user.email))
       .then(function(r){return r.json();})
       .then(function(d){
@@ -692,8 +684,13 @@ function syncToSheets(){
         }
         enterApp();
       }).catch(function(){enterApp();});
+  } else {
+    // Login yo'q — heroWrap ko'rinsin, appShell yashirin
+    document.getElementById('heroWrap').classList.remove('hidden');
+    document.getElementById('appShell').classList.add('hidden');
+    renderHeroCard();
+    renderHeroGrid();
   }
-  else{window.location.href='index.html';}
 })();
 
 // ═══════════════ HERO ═══════════════
@@ -741,7 +738,11 @@ function enterApp(){
   if(user.diagDone)document.getElementById('diagBadge').style.display='none';
   nav('dashboard');
 }
-function logout(){user=null;localStorage.removeItem('dc2_cur');window.location.href='index.html';}
+function logout(){
+  user=null;
+  localStorage.removeItem('dc2_cur');
+  window.location.href='index.html';
+}
 
 function nav(p){
   ['dashboard','modules','progress','ranking','profile'].forEach(pg=>{
@@ -926,15 +927,44 @@ function rdProf(){
 }
 
 // ═══════════════ DIAGNOSTIC ═══════════════
+
+// Savollarni shuffle qilish
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Har modul ichida savollarni shuffle qilamiz
+function getShuffledDiagQ() {
+  // Modullar bo'yicha guruhlash
+  const byMod = {};
+  DIAG_QUESTIONS.forEach(q => {
+    if (!byMod[q.m]) byMod[q.m] = [];
+    byMod[q.m].push(q);
+  });
+  // Har moduldan 4 ta savol olib, shuffle qilamiz
+  let result = [];
+  ['m1','m2','m3','m4','m5'].forEach(m => {
+    if (byMod[m]) {
+      const shuffled = shuffleArray([...byMod[m]]);
+      result = result.concat(shuffled.slice(0, 4));
+    }
+  });
+  return result;
+}
+
 function openDiag(){
-  diagState={idx:0,ans:Array(20).fill(null)};
+  diagState={idx:0,ans:Array(20).fill(null)};DQ_ACTIVE=getShuffledDiagQ();;
   document.getElementById('diagOverlay').style.display='flex';document.body.style.overflow='hidden';
   showDQ();
 }
 function closeDiag(){document.getElementById('diagOverlay').style.display='none';document.body.style.overflow='';}
 
 function showDQ(){
-  const q=DQ[diagState.idx],mod=MODS.find(m=>m.id===q.m);
+  const q=(window.DQ_ACTIVE||DQ)[diagState.idx],mod=MODS.find(m=>m.id===q.m);
   const prog=Math.round(diagState.idx/20*100);
   document.getElementById('dbPf').style.width=prog+'%';
   document.getElementById('dbPn').textContent=(diagState.idx+1)+'/20';
@@ -954,7 +984,7 @@ function dqPrev(){if(diagState.idx>0){diagState.idx--;showDQ();}}
 
 function dqSubmit(){
   const sc={m1:0,m2:0,m3:0,m4:0,m5:0},cnt={m1:0,m2:0,m3:0,m4:0,m5:0};
-  DQ.forEach((q,i)=>{cnt[q.m]++;if(diagState.ans[i]===q.a)sc[q.m]++;});
+  (window.DQ_ACTIVE||DQ).forEach((q,i)=>{cnt[q.m]++;if(diagState.ans[i]===q.a)sc[q.m]++;});
   const pct={},lvs={};
   Object.keys(sc).forEach(m=>{pct[m]=Math.round(sc[m]/cnt[m]*100);lvs[m]=pct[m]>=75?'B2':pct[m]>=50?'B1':pct[m]>=25?'A2':'A1';});
   const tot=Math.round(Object.values(pct).reduce((a,b)=>a+b,0)/5);
@@ -997,7 +1027,7 @@ setTimeout(()=>{document.querySelectorAll('.ring-fill').forEach(el=>{el.style.an
 setTimeout(()=>{document.querySelectorAll('.mp-fill,.av-bar-fill').forEach(el=>{if(el.dataset.w)el.style.width=el.dataset.w+'%';});},600);
 </script>
 
-<div class="mob-tab-bar">
+<div class="mob-tab-bar" id="mobTabBar">
   <button class="mob-tab-item on" id="mt-dashboard" onclick="mobNav(&#39;dashboard&#39;,this)"><span class="ti">🏠</span><span>Bosh</span></button>
   <button class="mob-tab-item" id="mt-modules" onclick="mobNav(&#39;modules&#39;,this)"><span class="ti">📚</span><span>Modullar</span></button>
   <button class="mob-tab-item" id="mt-progress" onclick="mobNav(&#39;progress&#39;,this)"><span class="ti">📈</span><span>Progress</span></button>
@@ -1008,6 +1038,7 @@ setTimeout(()=>{document.querySelectorAll('.mp-fill,.av-bar-fill').forEach(el=>{
 function mobNav(page,el){
   document.querySelectorAll('.mob-tab-item').forEach(function(b){b.classList.remove('on')});
   if(el)el.classList.add('on');
+  // nav() ni to'g'ridan chaqiramiz
   nav(page);
   window.scrollTo({top:0,behavior:'smooth'});
 }
